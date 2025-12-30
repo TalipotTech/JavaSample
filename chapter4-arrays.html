@@ -1,0 +1,2682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 4: Arrays in Java</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #10B981;
+            --secondary: #3B82F6;
+            --accent: #F59E0B;
+            --dark: #0F172A;
+            --light: #F8FAFC;
+            --purple: #8B5CF6;
+            --pink: #EC4899;
+            --cyan: #06B6D4;
+            --red: #EF4444;
+            --gradient-primary: linear-gradient(135deg, #10B981 0%, #34D399 100%);
+            --gradient-secondary: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
+            --gradient-accent: linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%);
+            --gradient-purple: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
+            --gradient-dark: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            --code-bg: #1E293B;
+            --shadow-soft: 0 4px 24px rgba(0,0,0,0.08);
+            --shadow-medium: 0 8px 32px rgba(0,0,0,0.12);
+            --shadow-strong: 0 16px 48px rgba(0,0,0,0.16);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.7;
+            font-size: 17px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%);
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 150%;
+            background: radial-gradient(ellipse, rgba(16,185,129,0.2) 0%, transparent 60%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 60%;
+            height: 100%;
+            background: radial-gradient(ellipse, rgba(59,130,246,0.15) 0%, transparent 50%);
+            animation: pulse 10s ease-in-out infinite reverse;
+        }
+
+        /* Array visualization in hero */
+        .array-visual {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            gap: 8px;
+            opacity: 0.1;
+            z-index: 1;
+        }
+
+        .array-cell {
+            width: 60px;
+            height: 60px;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            color: var(--primary);
+            animation: cellFloat 3s ease-in-out infinite;
+        }
+
+        .array-cell:nth-child(1) { animation-delay: 0s; }
+        .array-cell:nth-child(2) { animation-delay: 0.2s; }
+        .array-cell:nth-child(3) { animation-delay: 0.4s; }
+        .array-cell:nth-child(4) { animation-delay: 0.6s; }
+        .array-cell:nth-child(5) { animation-delay: 0.8s; }
+        .array-cell:nth-child(6) { animation-delay: 1s; }
+        .array-cell:nth-child(7) { animation-delay: 1.2s; }
+
+        @keyframes cellFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 10;
+            padding: 2rem;
+        }
+
+        .chapter-badge {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .hero h1 span {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.7);
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 300;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        .hero-icons {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2.5rem;
+            animation: fadeInUp 0.8s ease-out 0.6s backwards;
+        }
+
+        .hero-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .hero-icon-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border: 2px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-icon span {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: white;
+            max-width: 1000px;
+            margin: -4rem auto 0;
+            border-radius: 20px;
+            padding: 2.5rem 3rem;
+            box-shadow: var(--shadow-strong);
+            position: relative;
+            z-index: 20;
+        }
+
+        .toc h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .toc-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: var(--light);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--dark);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .toc-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .toc-number {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .toc-text {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 5rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+
+        .section-number {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1.2rem;
+            line-height: 50px;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: #64748B;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Content Styles */
+        .content-block {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .content-block h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .content-block h3 .icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-secondary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .content-block p {
+            color: #475569;
+            margin-bottom: 1rem;
+        }
+
+        .content-block h4 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin: 2rem 0 1rem;
+        }
+
+        .content-block ul, .content-block ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #475569;
+        }
+
+        .content-block li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--code-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-medium);
+            position: relative;
+        }
+
+        .code-header {
+            background: #334155;
+            padding: 0.875rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .code-header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .code-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .code-dots span {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .code-dots span:nth-child(1) { background: #EF4444; }
+        .code-dots span:nth-child(2) { background: #F59E0B; }
+        .code-dots span:nth-child(3) { background: #10B981; }
+
+        .code-title {
+            color: #94A3B8;
+            font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+            margin-left: 1rem;
+        }
+
+        .code-lang {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        pre {
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 0;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: #E2E8F0;
+        }
+
+        .keyword { color: #F472B6; }
+        .string { color: #A5F3FC; }
+        .comment { color: #64748B; font-style: italic; }
+        .class-name { color: #7DD3FC; }
+        .method { color: #86EFAC; }
+        .number { color: #C4B5FD; }
+        .annotation { color: #FDBA74; }
+        .type { color: #F472B6; }
+        .variable { color: #E2E8F0; }
+        .operator { color: #F472B6; }
+
+        /* Output Block */
+        .output-block {
+            background: #0F172A;
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--primary);
+        }
+
+        .output-label {
+            color: var(--primary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .output-text {
+            color: #86EFAC;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+        }
+
+        /* Array Visualization */
+        .array-diagram {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: var(--shadow-soft);
+            overflow-x: auto;
+        }
+
+        .array-diagram-title {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .array-visual-demo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .array-indices {
+            display: flex;
+            gap: 4px;
+        }
+
+        .array-index {
+            width: 70px;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: #64748B;
+        }
+
+        .array-cells {
+            display: flex;
+            gap: 4px;
+        }
+
+        .array-cell-demo {
+            width: 70px;
+            height: 50px;
+            border: 2px solid var(--secondary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(59,130,246,0.05) 100%);
+            transition: all 0.3s ease;
+        }
+
+        .array-cell-demo:hover {
+            transform: scale(1.1);
+            background: var(--gradient-secondary);
+            color: white;
+            border-color: transparent;
+        }
+
+        .array-cell-demo.highlight {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: transparent;
+        }
+
+        .array-cell-demo.highlight-accent {
+            background: var(--gradient-accent);
+            color: white;
+            border-color: transparent;
+        }
+
+        .array-cell-demo.highlight-purple {
+            background: var(--gradient-purple);
+            color: white;
+            border-color: transparent;
+        }
+
+        .array-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-top: 0.5rem;
+        }
+
+        /* 2D Array Visualization */
+        .matrix-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .matrix-row {
+            display: flex;
+            gap: 4px;
+        }
+
+        .matrix-cell {
+            width: 55px;
+            height: 45px;
+            border: 2px solid var(--purple);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--dark);
+            background: linear-gradient(135deg, rgba(139,92,246,0.1) 0%, rgba(139,92,246,0.05) 100%);
+            transition: all 0.3s ease;
+        }
+
+        .matrix-cell:hover {
+            transform: scale(1.1);
+            background: var(--gradient-purple);
+            color: white;
+            border-color: transparent;
+        }
+
+        .row-indices {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-right: 0.5rem;
+        }
+
+        .row-index {
+            height: 45px;
+            display: flex;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: #64748B;
+        }
+
+        .matrix-container {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        /* Concept Cards */
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .concept-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .concept-card.blue::before {
+            background: var(--gradient-secondary);
+        }
+
+        .concept-card.purple::before {
+            background: var(--gradient-purple);
+        }
+
+        .concept-card.accent::before {
+            background: var(--gradient-accent);
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .concept-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-primary);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .concept-card.blue .concept-icon {
+            background: var(--gradient-secondary);
+        }
+
+        .concept-card.purple .concept-icon {
+            background: var(--gradient-purple);
+        }
+
+        .concept-card.accent .concept-icon {
+            background: var(--gradient-accent);
+        }
+
+        .concept-card h4 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .concept-card p {
+            color: #64748B;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .concept-card code {
+            background: var(--code-bg);
+            color: #F472B6;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        /* Syntax Box */
+        .syntax-box {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .syntax-box h4 {
+            color: var(--dark);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .syntax-template {
+            background: var(--code-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            color: #E2E8F0;
+            line-height: 1.8;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            margin: 1.5rem 0;
+        }
+
+        .comparison-table th {
+            background: var(--dark);
+            color: white;
+            padding: 1.1rem 1.25rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .comparison-table td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid #E2E8F0;
+            color: #475569;
+            vertical-align: top;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:hover td {
+            background: #F8FAFC;
+        }
+
+        .comparison-table code {
+            background: var(--code-bg);
+            color: #F472B6;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            background: linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(59,130,246,0.03) 100%);
+            border-left: 4px solid var(--secondary);
+            border-radius: 0 16px 16px 0;
+            padding: 1.5rem 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .info-box.warning {
+            background: linear-gradient(135deg, rgba(245,158,11,0.12) 0%, rgba(245,158,11,0.05) 100%);
+            border-left-color: var(--accent);
+        }
+
+        .info-box.success {
+            background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0.03) 100%);
+            border-left-color: var(--primary);
+        }
+
+        .info-box.tip {
+            background: linear-gradient(135deg, rgba(139,92,246,0.1) 0%, rgba(139,92,246,0.03) 100%);
+            border-left-color: var(--purple);
+        }
+
+        .info-box.danger {
+            background: linear-gradient(135deg, rgba(239,68,68,0.1) 0%, rgba(239,68,68,0.03) 100%);
+            border-left-color: var(--red);
+        }
+
+        .info-title {
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-box.warning .info-title { color: #B45309; }
+        .info-box.success .info-title { color: var(--primary); }
+        .info-box.tip .info-title { color: var(--purple); }
+        .info-box.danger .info-title { color: var(--red); }
+
+        .info-box p {
+            color: #475569;
+            margin: 0;
+        }
+
+        /* Project Section */
+        .project-section {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            color: white;
+        }
+
+        .project-section .section-header h2 {
+            color: white;
+        }
+
+        .project-section .section-header p {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .project-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .project-card h3 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .project-card .project-badge {
+            background: var(--gradient-accent);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .project-card p {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 1.5rem;
+        }
+
+        .project-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .project-feature {
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* Terminal Block */
+        .terminal-block {
+            background: #0F172A;
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .terminal-header {
+            background: #1E293B;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .terminal-title {
+            color: #94A3B8;
+            font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+            margin-left: 1rem;
+        }
+
+        .terminal-body {
+            padding: 1.5rem;
+        }
+
+        .terminal-line {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .terminal-prompt {
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            margin-right: 0.75rem;
+            user-select: none;
+        }
+
+        .terminal-command {
+            color: #E2E8F0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .terminal-output {
+            color: #94A3B8;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            margin-left: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .terminal-output.highlight {
+            color: #86EFAC;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        footer p {
+            opacity: 0.7;
+        }
+
+        .footer-nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .footer-nav a:hover {
+            background: var(--gradient-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .toc { margin: -2rem 1rem 0; padding: 1.5rem; }
+            .content-block { padding: 1.5rem; }
+            section { padding: 3rem 0; }
+            .hero-icons { gap: 1rem; }
+            .array-cells, .array-indices { gap: 2px; }
+            .array-cell-demo, .array-index { width: 50px; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #E2E8F0;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient-primary);
+            border-radius: 5px;
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="array-visual">
+            <div class="array-cell">10</div>
+            <div class="array-cell">25</div>
+            <div class="array-cell">42</div>
+            <div class="array-cell">8</div>
+            <div class="array-cell">99</div>
+            <div class="array-cell">17</div>
+            <div class="array-cell">63</div>
+        </div>
+        <div class="hero-content">
+            <span class="chapter-badge">Chapter 4</span>
+            <h1><span>Arrays</span> in Java</h1>
+            <p class="hero-subtitle">Store and manipulate collections of data with Java's powerful array system</p>
+            <div class="hero-icons">
+                <div class="hero-icon">
+                    <div class="hero-icon-circle">📦</div>
+                    <span>1D Arrays</span>
+                </div>
+                <div class="hero-icon">
+                    <div class="hero-icon-circle">🔢</div>
+                    <span>2D Arrays</span>
+                </div>
+                <div class="hero-icon">
+                    <div class="hero-icon-circle">🔍</div>
+                    <span>Operations</span>
+                </div>
+                <div class="hero-icon">
+                    <div class="hero-icon-circle">🎯</div>
+                    <span>Projects</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Table of Contents -->
+    <nav class="toc">
+        <h3>📑 In This Chapter</h3>
+        <div class="toc-grid">
+            <a href="#introduction" class="toc-item">
+                <span class="toc-number">4.1</span>
+                <span class="toc-text">Introduction to Arrays</span>
+            </a>
+            <a href="#1d-arrays" class="toc-item">
+                <span class="toc-number">4.2</span>
+                <span class="toc-text">One-Dimensional Arrays</span>
+            </a>
+            <a href="#operations" class="toc-item">
+                <span class="toc-number">4.3</span>
+                <span class="toc-text">Array Operations</span>
+            </a>
+            <a href="#2d-arrays" class="toc-item">
+                <span class="toc-number">4.4</span>
+                <span class="toc-text">Multi-Dimensional Arrays</span>
+            </a>
+            <a href="#projects" class="toc-item">
+                <span class="toc-number">4.5</span>
+                <span class="toc-text">Mini Projects</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Section 4.1: Introduction to Arrays -->
+    <section id="introduction">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">4.1</span>
+                <h2>Introduction to Arrays</h2>
+                <p>Understanding why we need arrays and their basic concepts</p>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">📦</span> What is an Array?</h3>
+                <p>An <strong>array</strong> is a container object that holds a fixed number of values of a single type. Think of it as a row of boxes, where each box can store one item of the same type.</p>
+                <p>Instead of declaring multiple variables for related data, arrays let you store multiple values in a single variable with indexed access.</p>
+
+                <div class="array-diagram">
+                    <div class="array-diagram-title">🗃️ Array Visualization: <code>int[] scores = {85, 92, 78, 90, 88}</code></div>
+                    <div class="array-visual-demo">
+                        <div class="array-indices">
+                            <div class="array-index">[0]</div>
+                            <div class="array-index">[1]</div>
+                            <div class="array-index">[2]</div>
+                            <div class="array-index">[3]</div>
+                            <div class="array-index">[4]</div>
+                        </div>
+                        <div class="array-cells">
+                            <div class="array-cell-demo">85</div>
+                            <div class="array-cell-demo highlight">92</div>
+                            <div class="array-cell-demo">78</div>
+                            <div class="array-cell-demo highlight-accent">90</div>
+                            <div class="array-cell-demo">88</div>
+                        </div>
+                        <div class="array-name">scores</div>
+                    </div>
+                </div>
+
+                <div class="info-box success">
+                    <div class="info-title">💡 Key Point</div>
+                    <p>Array indices always start at <strong>0</strong> (zero-indexed). So the first element is at index 0, the second at index 1, and so on. For an array of length 5, valid indices are 0 through 4.</p>
+                </div>
+            </div>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <div class="concept-icon">📐</div>
+                    <h4>Fixed Size</h4>
+                    <p>Once created, an array's size cannot change. You must know the size beforehand or use dynamic collections like ArrayList.</p>
+                </div>
+                <div class="concept-card blue">
+                    <div class="concept-icon">🎯</div>
+                    <h4>Same Type</h4>
+                    <p>All elements must be the same data type. An <code>int[]</code> can only hold integers, a <code>String[]</code> only strings.</p>
+                </div>
+                <div class="concept-card purple">
+                    <div class="concept-icon">⚡</div>
+                    <h4>Fast Access</h4>
+                    <p>Accessing any element by index takes constant time O(1) – extremely fast regardless of array size.</p>
+                </div>
+                <div class="concept-card accent">
+                    <div class="concept-icon">🔢</div>
+                    <h4>Zero-Indexed</h4>
+                    <p>Indices start at 0. The first element is <code>array[0]</code>, the last is <code>array[length-1]</code>.</p>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">❓</span> Why Use Arrays?</h3>
+                <p>Consider storing test scores for 100 students. Without arrays, you'd need 100 separate variables!</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">Without Arrays (❌ Bad Practice)</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="comment">// This is tedious and error-prone!</span>
+<span class="keyword">int</span> score1 = <span class="number">85</span>;
+<span class="keyword">int</span> score2 = <span class="number">92</span>;
+<span class="keyword">int</span> score3 = <span class="number">78</span>;
+<span class="keyword">int</span> score4 = <span class="number">90</span>;
+<span class="keyword">int</span> score5 = <span class="number">88</span>;
+<span class="comment">// ... imagine doing this for 100 students! 😱</span>
+
+<span class="comment">// Calculating average is a nightmare</span>
+<span class="keyword">double</span> avg = (score1 + score2 + score3 + score4 + score5) / <span class="number">5.0</span>;</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">With Arrays (✅ Best Practice)</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="comment">// Clean, scalable, and easy to manage!</span>
+<span class="keyword">int</span>[] scores = {<span class="number">85</span>, <span class="number">92</span>, <span class="number">78</span>, <span class="number">90</span>, <span class="number">88</span>};
+
+<span class="comment">// Calculating average is simple with a loop</span>
+<span class="keyword">int</span> sum = <span class="number">0</span>;
+<span class="keyword">for</span> (<span class="keyword">int</span> score : scores) {
+    sum += score;
+}
+<span class="keyword">double</span> avg = (<span class="keyword">double</span>) sum / scores.length;
+
+<span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Average: "</span> + avg);  <span class="comment">// Works for any size!</span></code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4.2: One-Dimensional Arrays -->
+    <section id="1d-arrays" style="background: linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">4.2</span>
+                <h2>One-Dimensional Arrays</h2>
+                <p>Creating, initializing, and working with single-row arrays</p>
+            </div>
+
+            <!-- Declaration & Initialization -->
+            <div class="content-block">
+                <h3><span class="icon">🛠️</span> Declaring and Initializing Arrays</h3>
+                <p>There are three common ways to create arrays in Java:</p>
+
+                <h4>Method 1: Declare then Allocate</h4>
+                <div class="syntax-box">
+                    <h4>📝 Syntax</h4>
+                    <div class="syntax-template">
+<span class="comment">// Step 1: Declare the array</span>
+<span class="type">dataType</span>[] <span class="variable">arrayName</span>;
+
+<span class="comment">// Step 2: Allocate memory</span>
+<span class="variable">arrayName</span> = <span class="keyword">new</span> <span class="type">dataType</span>[<span class="number">size</span>];
+
+<span class="comment">// Or combine in one line:</span>
+<span class="type">dataType</span>[] <span class="variable">arrayName</span> = <span class="keyword">new</span> <span class="type">dataType</span>[<span class="number">size</span>];
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">ArrayDeclaration.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">ArrayDeclaration</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="comment">// Method 1: Declare then allocate</span>
+        <span class="keyword">int</span>[] numbers;              <span class="comment">// Declaration</span>
+        numbers = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">5</span>];       <span class="comment">// Allocation (creates 5 slots)</span>
+        
+        <span class="comment">// Default values are 0 for int arrays</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Default value: "</span> + numbers[<span class="number">0</span>]);  <span class="comment">// 0</span>
+        
+        <span class="comment">// Assign values individually</span>
+        numbers[<span class="number">0</span>] = <span class="number">10</span>;
+        numbers[<span class="number">1</span>] = <span class="number">20</span>;
+        numbers[<span class="number">2</span>] = <span class="number">30</span>;
+        numbers[<span class="number">3</span>] = <span class="number">40</span>;
+        numbers[<span class="number">4</span>] = <span class="number">50</span>;
+        
+        <span class="comment">// Combined declaration and allocation</span>
+        <span class="keyword">double</span>[] prices = <span class="keyword">new</span> <span class="keyword">double</span>[<span class="number">3</span>];
+        prices[<span class="number">0</span>] = <span class="number">19.99</span>;
+        prices[<span class="number">1</span>] = <span class="number">29.99</span>;
+        prices[<span class="number">2</span>] = <span class="number">39.99</span>;
+        
+        <span class="comment">// String array</span>
+        <span class="class-name">String</span>[] names = <span class="keyword">new</span> <span class="class-name">String</span>[<span class="number">3</span>];
+        names[<span class="number">0</span>] = <span class="string">"Alice"</span>;
+        names[<span class="number">1</span>] = <span class="string">"Bob"</span>;
+        names[<span class="number">2</span>] = <span class="string">"Charlie"</span>;
+        
+        <span class="comment">// Print array length</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Array length: "</span> + numbers.length);  <span class="comment">// 5</span>
+    }
+}</code></pre>
+                </div>
+
+                <h4>Method 2: Array Literal (Initialization at Declaration)</h4>
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">ArrayLiteral.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">ArrayLiteral</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="comment">// Initialize with values directly</span>
+        <span class="keyword">int</span>[] scores = {<span class="number">85</span>, <span class="number">92</span>, <span class="number">78</span>, <span class="number">90</span>, <span class="number">88</span>};
+        
+        <span class="keyword">double</span>[] temperatures = {<span class="number">72.5</span>, <span class="number">68.3</span>, <span class="number">75.0</span>, <span class="number">80.1</span>};
+        
+        <span class="class-name">String</span>[] colors = {<span class="string">"Red"</span>, <span class="string">"Green"</span>, <span class="string">"Blue"</span>, <span class="string">"Yellow"</span>};
+        
+        <span class="keyword">char</span>[] vowels = {<span class="string">'a'</span>, <span class="string">'e'</span>, <span class="string">'i'</span>, <span class="string">'o'</span>, <span class="string">'u'</span>};
+        
+        <span class="keyword">boolean</span>[] flags = {<span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">true</span>, <span class="keyword">true</span>};
+        
+        <span class="comment">// Size is automatically determined</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Scores length: "</span> + scores.length);  <span class="comment">// 5</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Colors length: "</span> + colors.length);  <span class="comment">// 4</span>
+        
+        <span class="comment">// Access elements</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"First score: "</span> + scores[<span class="number">0</span>]);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Last color: "</span> + colors[colors.length - <span class="number">1</span>]);
+    }
+}</code></pre>
+                </div>
+
+                <div class="info-box warning">
+                    <div class="info-title">⚠️ Default Values</div>
+                    <p>When you create an array without initializing values, Java assigns defaults:<br>
+                    • <code>int</code>, <code>long</code>, <code>short</code>, <code>byte</code>: <strong>0</strong><br>
+                    • <code>double</code>, <code>float</code>: <strong>0.0</strong><br>
+                    • <code>boolean</code>: <strong>false</strong><br>
+                    • <code>char</code>: <strong>'\u0000'</strong> (null character)<br>
+                    • Object references (including <code>String</code>): <strong>null</strong></p>
+                </div>
+            </div>
+
+            <!-- Accessing & Modifying -->
+            <div class="content-block">
+                <h3><span class="icon">🔍</span> Accessing and Modifying Elements</h3>
+                <p>Use the index (position) to read or change array elements:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">ArrayAccess.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">ArrayAccess</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="keyword">int</span>[] numbers = {<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>};
+        
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="comment">// READING ELEMENTS</span>
+        <span class="comment">// ═══════════════════════════════════════</span>
+        
+        <span class="comment">// Access by index</span>
+        <span class="keyword">int</span> first = numbers[<span class="number">0</span>];     <span class="comment">// 10</span>
+        <span class="keyword">int</span> third = numbers[<span class="number">2</span>];     <span class="comment">// 30</span>
+        <span class="keyword">int</span> last = numbers[numbers.length - <span class="number">1</span>];  <span class="comment">// 50</span>
+        
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"First: "</span> + first);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Third: "</span> + third);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Last: "</span> + last);
+        
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="comment">// MODIFYING ELEMENTS</span>
+        <span class="comment">// ═══════════════════════════════════════</span>
+        
+        <span class="comment">// Change value at index 2</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\nBefore: numbers[2] = "</span> + numbers[<span class="number">2</span>]);
+        numbers[<span class="number">2</span>] = <span class="number">300</span>;  <span class="comment">// Modify</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"After: numbers[2] = "</span> + numbers[<span class="number">2</span>]);
+        
+        <span class="comment">// Increment an element</span>
+        numbers[<span class="number">0</span>]++;        <span class="comment">// 10 → 11</span>
+        numbers[<span class="number">1</span>] += <span class="number">5</span>;     <span class="comment">// 20 → 25</span>
+        numbers[<span class="number">4</span>] *= <span class="number">2</span>;     <span class="comment">// 50 → 100</span>
+        
+        <span class="comment">// Print all elements</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\nModified array:"</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> num : numbers) {
+            <span class="class-name">System</span>.out.<span class="method">print</span>(num + <span class="string">" "</span>);
+        }
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">First: 10
+Third: 30
+Last: 50
+
+Before: numbers[2] = 30
+After: numbers[2] = 300
+
+Modified array:
+11 25 300 40 100</div>
+                </div>
+
+                <div class="info-box danger">
+                    <div class="info-title">🚨 ArrayIndexOutOfBoundsException</div>
+                    <p>Accessing an index outside the valid range (0 to length-1) throws an exception! For example, if <code>arr.length</code> is 5, valid indices are 0, 1, 2, 3, 4. Accessing <code>arr[5]</code> or <code>arr[-1]</code> will crash your program.</p>
+                </div>
+            </div>
+
+            <!-- Iterating Through Arrays -->
+            <div class="content-block">
+                <h3><span class="icon">🔄</span> Iterating Through Arrays</h3>
+                <p>There are several ways to loop through array elements:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">ArrayIteration.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">import</span> java.util.Arrays;
+
+<span class="keyword">public class</span> <span class="class-name">ArrayIteration</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="class-name">String</span>[] fruits = {<span class="string">"Apple"</span>, <span class="string">"Banana"</span>, <span class="string">"Cherry"</span>, <span class="string">"Date"</span>, <span class="string">"Elderberry"</span>};
+        
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="comment">// Method 1: Traditional for loop</span>
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"=== Traditional for loop ==="</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < fruits.length; i++) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Index "</span> + i + <span class="string">": "</span> + fruits[i]);
+        }
+        
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="comment">// Method 2: Enhanced for loop (for-each)</span>
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Enhanced for loop ==="</span>);
+        <span class="keyword">for</span> (<span class="class-name">String</span> fruit : fruits) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"🍎 "</span> + fruit);
+        }
+        
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="comment">// Method 3: while loop</span>
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== While loop ==="</span>);
+        <span class="keyword">int</span> index = <span class="number">0</span>;
+        <span class="keyword">while</span> (index < fruits.length) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(fruits[index]);
+            index++;
+        }
+        
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="comment">// Method 4: Arrays.toString() - quick print</span>
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Arrays.toString() ==="</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="class-name">Arrays</span>.<span class="method">toString</span>(fruits));
+        
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="comment">// Method 5: Reverse iteration</span>
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Reverse order ==="</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = fruits.length - <span class="number">1</span>; i >= <span class="number">0</span>; i--) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(fruits[i]);
+        }
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">=== Traditional for loop ===
+Index 0: Apple
+Index 1: Banana
+Index 2: Cherry
+Index 3: Date
+Index 4: Elderberry
+
+=== Enhanced for loop ===
+🍎 Apple
+🍎 Banana
+🍎 Cherry
+🍎 Date
+🍎 Elderberry
+
+=== While loop ===
+Apple
+Banana
+Cherry
+Date
+Elderberry
+
+=== Arrays.toString() ===
+[Apple, Banana, Cherry, Date, Elderberry]
+
+=== Reverse order ===
+Elderberry
+Date
+Cherry
+Banana
+Apple</div>
+                </div>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Loop Type</th>
+                            <th>Best For</th>
+                            <th>Access Index?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>for</code> loop</td>
+                            <td>When you need the index or want to modify elements</td>
+                            <td>✅ Yes</td>
+                        </tr>
+                        <tr>
+                            <td><code>for-each</code></td>
+                            <td>Simple iteration, read-only access</td>
+                            <td>❌ No</td>
+                        </tr>
+                        <tr>
+                            <td><code>while</code></td>
+                            <td>Complex iteration conditions</td>
+                            <td>✅ Yes</td>
+                        </tr>
+                        <tr>
+                            <td><code>Arrays.toString()</code></td>
+                            <td>Quick debugging/printing</td>
+                            <td>❌ No</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4.3: Array Operations -->
+    <section id="operations">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">4.3</span>
+                <h2>Array Operations</h2>
+                <p>Common algorithms: searching, sorting, copying, and more</p>
+            </div>
+
+            <!-- Finding Min/Max/Sum -->
+            <div class="content-block">
+                <h3><span class="icon">📊</span> Finding Min, Max, Sum, and Average</h3>
+                <p>These are the most common operations performed on numeric arrays:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">ArrayStatistics.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">ArrayStatistics</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="keyword">int</span>[] numbers = {<span class="number">45</span>, <span class="number">12</span>, <span class="number">89</span>, <span class="number">33</span>, <span class="number">67</span>, <span class="number">8</span>, <span class="number">91</span>, <span class="number">23</span>};
+        
+        <span class="comment">// Initialize variables</span>
+        <span class="keyword">int</span> min = numbers[<span class="number">0</span>];
+        <span class="keyword">int</span> max = numbers[<span class="number">0</span>];
+        <span class="keyword">int</span> sum = <span class="number">0</span>;
+        
+        <span class="comment">// Single pass through array</span>
+        <span class="keyword">for</span> (<span class="keyword">int</span> num : numbers) {
+            <span class="comment">// Find minimum</span>
+            <span class="keyword">if</span> (num < min) {
+                min = num;
+            }
+            
+            <span class="comment">// Find maximum</span>
+            <span class="keyword">if</span> (num > max) {
+                max = num;
+            }
+            
+            <span class="comment">// Calculate sum</span>
+            sum += num;
+        }
+        
+        <span class="comment">// Calculate average</span>
+        <span class="keyword">double</span> average = (<span class="keyword">double</span>) sum / numbers.length;
+        
+        <span class="comment">// Display results</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"╔═══════════════════════════╗"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"║    ARRAY STATISTICS       ║"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"╠═══════════════════════════╣"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"║  Count:   "</span> + numbers.length + <span class="string">"              ║"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"║  Minimum: "</span> + min + <span class="string">"               ║"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"║  Maximum: "</span> + max + <span class="string">"              ║"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"║  Sum:     "</span> + sum + <span class="string">"             ║"</span>);
+        <span class="class-name">System</span>.out.<span class="method">printf</span>(<span class="string">"║  Average: %.2f           ║%n"</span>, average);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"╚═══════════════════════════╝"</span>);
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">╔═══════════════════════════╗
+║    ARRAY STATISTICS       ║
+╠═══════════════════════════╣
+║  Count:   8              ║
+║  Minimum: 8               ║
+║  Maximum: 91              ║
+║  Sum:     368             ║
+║  Average: 46.00           ║
+╚═══════════════════════════╝</div>
+                </div>
+            </div>
+
+            <!-- Searching -->
+            <div class="content-block">
+                <h3><span class="icon">🔍</span> Searching Arrays</h3>
+                <p>Two common search algorithms: Linear Search (for unsorted) and Binary Search (for sorted arrays).</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">ArraySearching.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">import</span> java.util.Arrays;
+
+<span class="keyword">public class</span> <span class="class-name">ArraySearching</span> {
+
+    <span class="comment">// Linear Search - works on any array</span>
+    <span class="keyword">public static int</span> <span class="method">linearSearch</span>(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> target) {
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < arr.length; i++) {
+            <span class="keyword">if</span> (arr[i] == target) {
+                <span class="keyword">return</span> i;  <span class="comment">// Found! Return index</span>
+            }
+        }
+        <span class="keyword">return</span> -<span class="number">1</span>;  <span class="comment">// Not found</span>
+    }
+    
+    <span class="comment">// Binary Search - requires SORTED array</span>
+    <span class="keyword">public static int</span> <span class="method">binarySearch</span>(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> target) {
+        <span class="keyword">int</span> left = <span class="number">0</span>;
+        <span class="keyword">int</span> right = arr.length - <span class="number">1</span>;
+        
+        <span class="keyword">while</span> (left <= right) {
+            <span class="keyword">int</span> mid = left + (right - left) / <span class="number">2</span>;
+            
+            <span class="keyword">if</span> (arr[mid] == target) {
+                <span class="keyword">return</span> mid;  <span class="comment">// Found!</span>
+            } <span class="keyword">else if</span> (arr[mid] < target) {
+                left = mid + <span class="number">1</span>;  <span class="comment">// Search right half</span>
+            } <span class="keyword">else</span> {
+                right = mid - <span class="number">1</span>;  <span class="comment">// Search left half</span>
+            }
+        }
+        <span class="keyword">return</span> -<span class="number">1</span>;  <span class="comment">// Not found</span>
+    }
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="keyword">int</span>[] unsorted = {<span class="number">45</span>, <span class="number">12</span>, <span class="number">89</span>, <span class="number">33</span>, <span class="number">67</span>, <span class="number">8</span>, <span class="number">91</span>};
+        <span class="keyword">int</span>[] sorted = {<span class="number">8</span>, <span class="number">12</span>, <span class="number">33</span>, <span class="number">45</span>, <span class="number">67</span>, <span class="number">89</span>, <span class="number">91</span>};
+        
+        <span class="comment">// Linear Search</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"=== Linear Search ==="</span>);
+        <span class="keyword">int</span> result1 = <span class="method">linearSearch</span>(unsorted, <span class="number">67</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Search for 67: index = "</span> + result1);
+        
+        <span class="keyword">int</span> result2 = <span class="method">linearSearch</span>(unsorted, <span class="number">100</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Search for 100: index = "</span> + result2 + <span class="string">" (not found)"</span>);
+        
+        <span class="comment">// Binary Search</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Binary Search ==="</span>);
+        <span class="keyword">int</span> result3 = <span class="method">binarySearch</span>(sorted, <span class="number">67</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Search for 67: index = "</span> + result3);
+        
+        <span class="comment">// Using Arrays.binarySearch() - built-in method</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Arrays.binarySearch() ==="</span>);
+        <span class="keyword">int</span> result4 = <span class="class-name">Arrays</span>.<span class="method">binarySearch</span>(sorted, <span class="number">33</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Search for 33: index = "</span> + result4);
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">=== Linear Search ===
+Search for 67: index = 4
+Search for 100: index = -1 (not found)
+
+=== Binary Search ===
+Search for 67: index = 4
+
+=== Arrays.binarySearch() ===
+Search for 33: index = 2</div>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-title">💡 Performance Comparison</div>
+                    <p><strong>Linear Search:</strong> O(n) - checks each element; works on any array.<br>
+                    <strong>Binary Search:</strong> O(log n) - much faster, but requires a sorted array. For 1 million elements: Linear needs up to 1,000,000 comparisons; Binary needs only ~20!</p>
+                </div>
+            </div>
+
+            <!-- Sorting -->
+            <div class="content-block">
+                <h3><span class="icon">📈</span> Sorting Arrays</h3>
+                <p>Use the <code>Arrays.sort()</code> method for efficient sorting, or implement your own algorithms:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">ArraySorting.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">import</span> java.util.Arrays;
+
+<span class="keyword">public class</span> <span class="class-name">ArraySorting</span> {
+
+    <span class="comment">// Bubble Sort - simple but slow O(n²)</span>
+    <span class="keyword">public static void</span> <span class="method">bubbleSort</span>(<span class="keyword">int</span>[] arr) {
+        <span class="keyword">int</span> n = arr.length;
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < n - <span class="number">1</span>; i++) {
+            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j < n - i - <span class="number">1</span>; j++) {
+                <span class="keyword">if</span> (arr[j] > arr[j + <span class="number">1</span>]) {
+                    <span class="comment">// Swap</span>
+                    <span class="keyword">int</span> temp = arr[j];
+                    arr[j] = arr[j + <span class="number">1</span>];
+                    arr[j + <span class="number">1</span>] = temp;
+                }
+            }
+        }
+    }
+    
+    <span class="comment">// Selection Sort - finds minimum and swaps</span>
+    <span class="keyword">public static void</span> <span class="method">selectionSort</span>(<span class="keyword">int</span>[] arr) {
+        <span class="keyword">int</span> n = arr.length;
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < n - <span class="number">1</span>; i++) {
+            <span class="keyword">int</span> minIdx = i;
+            <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j < n; j++) {
+                <span class="keyword">if</span> (arr[j] < arr[minIdx]) {
+                    minIdx = j;
+                }
+            }
+            <span class="comment">// Swap</span>
+            <span class="keyword">int</span> temp = arr[minIdx];
+            arr[minIdx] = arr[i];
+            arr[i] = temp;
+        }
+    }
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="comment">// Using Arrays.sort() - the recommended way</span>
+        <span class="keyword">int</span>[] numbers = {<span class="number">64</span>, <span class="number">34</span>, <span class="number">25</span>, <span class="number">12</span>, <span class="number">22</span>, <span class="number">11</span>, <span class="number">90</span>};
+        
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Original: "</span> + <span class="class-name">Arrays</span>.<span class="method">toString</span>(numbers));
+        
+        <span class="class-name">Arrays</span>.<span class="method">sort</span>(numbers);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Sorted:   "</span> + <span class="class-name">Arrays</span>.<span class="method">toString</span>(numbers));
+        
+        <span class="comment">// Sorting strings alphabetically</span>
+        <span class="class-name">String</span>[] names = {<span class="string">"Zara"</span>, <span class="string">"Alice"</span>, <span class="string">"Mike"</span>, <span class="string">"Bob"</span>};
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\nNames before: "</span> + <span class="class-name">Arrays</span>.<span class="method">toString</span>(names));
+        <span class="class-name">Arrays</span>.<span class="method">sort</span>(names);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Names after:  "</span> + <span class="class-name">Arrays</span>.<span class="method">toString</span>(names));
+        
+        <span class="comment">// Sorting a portion of array</span>
+        <span class="keyword">int</span>[] partial = {<span class="number">5</span>, <span class="number">2</span>, <span class="number">8</span>, <span class="number">1</span>, <span class="number">9</span>, <span class="number">3</span>, <span class="number">7</span>};
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\nBefore partial sort: "</span> + <span class="class-name">Arrays</span>.<span class="method">toString</span>(partial));
+        <span class="class-name">Arrays</span>.<span class="method">sort</span>(partial, <span class="number">1</span>, <span class="number">5</span>);  <span class="comment">// Sort indices 1-4</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"After partial sort:  "</span> + <span class="class-name">Arrays</span>.<span class="method">toString</span>(partial));
+        
+        <span class="comment">// Testing custom bubble sort</span>
+        <span class="keyword">int</span>[] bubbleTest = {<span class="number">64</span>, <span class="number">34</span>, <span class="number">25</span>, <span class="number">12</span>, <span class="number">22</span>};
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Bubble Sort ==="</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Before: "</span> + <span class="class-name">Arrays</span>.<span class="method">toString</span>(bubbleTest));
+        <span class="method">bubbleSort</span>(bubbleTest);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"After:  "</span> + <span class="class-name">Arrays</span>.<span class="method">toString</span>(bubbleTest));
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">Original: [64, 34, 25, 12, 22, 11, 90]
+Sorted:   [11, 12, 22, 25, 34, 64, 90]
+
+Names before: [Zara, Alice, Mike, Bob]
+Names after:  [Alice, Bob, Mike, Zara]
+
+Before partial sort: [5, 2, 8, 1, 9, 3, 7]
+After partial sort:  [5, 1, 2, 8, 9, 3, 7]
+
+=== Bubble Sort ===
+Before: [64, 34, 25, 12, 22]
+After:  [12, 22, 25, 34, 64]</div>
+                </div>
+            </div>
+
+            <!-- Copying Arrays -->
+            <div class="content-block">
+                <h3><span class="icon">📋</span> Copying Arrays</h3>
+                <p>Several ways to copy arrays - each with different use cases:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">ArrayCopying.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">import</span> java.util.Arrays;
+
+<span class="keyword">public class</span> <span class="class-name">ArrayCopying</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="keyword">int</span>[] original = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>};
+        
+        <span class="comment">// ❌ WRONG WAY - Creates a reference, NOT a copy!</span>
+        <span class="keyword">int</span>[] wrong = original;
+        wrong[<span class="number">0</span>] = <span class="number">999</span>;
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Original after 'wrong' copy: "</span> + <span class="class-name">Arrays</span>.<span class="method">toString</span>(original));
+        <span class="comment">// Output: [999, 2, 3, 4, 5] - Original was modified!</span>
+        
+        <span class="comment">// Reset</span>
+        original = <span class="keyword">new</span> <span class="keyword">int</span>[]{<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>};
+        
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="comment">// Method 1: Arrays.copyOf()</span>
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="keyword">int</span>[] copy1 = <span class="class-name">Arrays</span>.<span class="method">copyOf</span>(original, original.length);
+        copy1[<span class="number">0</span>] = <span class="number">100</span>;
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\nArrays.copyOf():"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Original: "</span> + <span class="class-name">Arrays</span>.<span class="method">toString</span>(original));
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Copy1:    "</span> + <span class="class-name">Arrays</span>.<span class="method">toString</span>(copy1));
+        
+        <span class="comment">// Can also resize when copying</span>
+        <span class="keyword">int</span>[] larger = <span class="class-name">Arrays</span>.<span class="method">copyOf</span>(original, <span class="number">8</span>);  <span class="comment">// Pads with 0s</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Larger:   "</span> + <span class="class-name">Arrays</span>.<span class="method">toString</span>(larger));
+        
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="comment">// Method 2: System.arraycopy()</span>
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="keyword">int</span>[] copy2 = <span class="keyword">new</span> <span class="keyword">int</span>[original.length];
+        <span class="class-name">System</span>.<span class="method">arraycopy</span>(original, <span class="number">0</span>, copy2, <span class="number">0</span>, original.length);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\nSystem.arraycopy(): "</span> + <span class="class-name">Arrays</span>.<span class="method">toString</span>(copy2));
+        
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="comment">// Method 3: clone()</span>
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="keyword">int</span>[] copy3 = original.<span class="method">clone</span>();
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\nclone(): "</span> + <span class="class-name">Arrays</span>.<span class="method">toString</span>(copy3));
+        
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="comment">// Method 4: Arrays.copyOfRange() - copy a portion</span>
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="keyword">int</span>[] portion = <span class="class-name">Arrays</span>.<span class="method">copyOfRange</span>(original, <span class="number">1</span>, <span class="number">4</span>);  <span class="comment">// indices 1,2,3</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\ncopyOfRange(1,4): "</span> + <span class="class-name">Arrays</span>.<span class="method">toString</span>(portion));
+        
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="comment">// Comparing Arrays</span>
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="keyword">int</span>[] a = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>};
+        <span class="keyword">int</span>[] b = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>};
+        <span class="keyword">int</span>[] c = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>};
+        
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Comparing Arrays ==="</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"a == b: "</span> + (a == b));           <span class="comment">// false (different objects)</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Arrays.equals(a,b): "</span> + <span class="class-name">Arrays</span>.<span class="method">equals</span>(a, b));  <span class="comment">// true</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Arrays.equals(a,c): "</span> + <span class="class-name">Arrays</span>.<span class="method">equals</span>(a, c));  <span class="comment">// false</span>
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">Original after 'wrong' copy: [999, 2, 3, 4, 5]
+
+Arrays.copyOf():
+Original: [1, 2, 3, 4, 5]
+Copy1:    [100, 2, 3, 4, 5]
+Larger:   [1, 2, 3, 4, 5, 0, 0, 0]
+
+System.arraycopy(): [1, 2, 3, 4, 5]
+
+clone(): [1, 2, 3, 4, 5]
+
+copyOfRange(1,4): [2, 3, 4]
+
+=== Comparing Arrays ===
+a == b: false
+Arrays.equals(a,b): true
+Arrays.equals(a,c): false</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4.4: Multi-Dimensional Arrays -->
+    <section id="2d-arrays" style="background: linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">4.4</span>
+                <h2>Multi-Dimensional Arrays</h2>
+                <p>Working with 2D arrays, matrices, and tables</p>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">🔢</span> What is a 2D Array?</h3>
+                <p>A 2D array is essentially an "array of arrays" - think of it as a table with rows and columns. It's perfect for representing grids, matrices, game boards, and tabular data.</p>
+
+                <div class="array-diagram">
+                    <div class="array-diagram-title">🗃️ 2D Array Visualization: <code>int[][] matrix = {{1,2,3}, {4,5,6}, {7,8,9}}</code></div>
+                    <div class="matrix-container" style="justify-content: center; display: flex;">
+                        <div class="row-indices">
+                            <div class="array-index" style="height: auto; margin-bottom: 4px;">[col]</div>
+                            <div class="row-index">[0]</div>
+                            <div class="row-index">[1]</div>
+                            <div class="row-index">[2]</div>
+                        </div>
+                        <div>
+                            <div class="array-indices" style="margin-bottom: 4px;">
+                                <div class="array-index" style="width: 55px;">[0]</div>
+                                <div class="array-index" style="width: 55px;">[1]</div>
+                                <div class="array-index" style="width: 55px;">[2]</div>
+                            </div>
+                            <div class="matrix-visual">
+                                <div class="matrix-row">
+                                    <div class="matrix-cell">1</div>
+                                    <div class="matrix-cell">2</div>
+                                    <div class="matrix-cell">3</div>
+                                </div>
+                                <div class="matrix-row">
+                                    <div class="matrix-cell">4</div>
+                                    <div class="matrix-cell" style="background: var(--gradient-primary); color: white; border-color: transparent;">5</div>
+                                    <div class="matrix-cell">6</div>
+                                </div>
+                                <div class="matrix-row">
+                                    <div class="matrix-cell">7</div>
+                                    <div class="matrix-cell">8</div>
+                                    <div class="matrix-cell">9</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; margin-top: 1rem; color: #64748B;">Access element: <code>matrix[1][1]</code> = 5 (row 1, column 1)</p>
+                </div>
+            </div>
+
+            <!-- Creating 2D Arrays -->
+            <div class="content-block">
+                <h3><span class="icon">🛠️</span> Creating 2D Arrays</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">TwoDArrayCreation.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">TwoDArrayCreation</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="comment">// Method 1: Declare and allocate</span>
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="keyword">int</span>[][] matrix1 = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">3</span>][<span class="number">4</span>];  <span class="comment">// 3 rows, 4 columns</span>
+        
+        <span class="comment">// Fill with values</span>
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < <span class="number">3</span>; i++) {
+            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j < <span class="number">4</span>; j++) {
+                matrix1[i][j] = i * <span class="number">4</span> + j + <span class="number">1</span>;  <span class="comment">// 1, 2, 3, ...</span>
+            }
+        }
+        
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="comment">// Method 2: Array literal</span>
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="keyword">int</span>[][] matrix2 = {
+            {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>},
+            {<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>},
+            {<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>}
+        };
+        
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="comment">// Method 3: Jagged array (unequal row lengths)</span>
+        <span class="comment">// ═══════════════════════════════════════</span>
+        <span class="keyword">int</span>[][] jagged = {
+            {<span class="number">1</span>, <span class="number">2</span>},
+            {<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>},
+            {<span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>}
+        };
+        
+        <span class="comment">// Print matrix1</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"=== Matrix 1 (3x4) ==="</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span>[] row : matrix1) {
+            <span class="keyword">for</span> (<span class="keyword">int</span> val : row) {
+                <span class="class-name">System</span>.out.<span class="method">printf</span>(<span class="string">"%3d "</span>, val);
+            }
+            <span class="class-name">System</span>.out.<span class="method">println</span>();
+        }
+        
+        <span class="comment">// Print matrix2</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Matrix 2 (3x3) ==="</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span>[] row : matrix2) {
+            <span class="keyword">for</span> (<span class="keyword">int</span> val : row) {
+                <span class="class-name">System</span>.out.<span class="method">printf</span>(<span class="string">"%3d "</span>, val);
+            }
+            <span class="class-name">System</span>.out.<span class="method">println</span>();
+        }
+        
+        <span class="comment">// Print jagged array</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Jagged Array ==="</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < jagged.length; i++) {
+            <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"Row "</span> + i + <span class="string">": "</span>);
+            <span class="keyword">for</span> (<span class="keyword">int</span> val : jagged[i]) {
+                <span class="class-name">System</span>.out.<span class="method">print</span>(val + <span class="string">" "</span>);
+            }
+            <span class="class-name">System</span>.out.<span class="method">println</span>();
+        }
+        
+        <span class="comment">// Array dimensions</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Dimensions ==="</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"matrix2.length (rows): "</span> + matrix2.length);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"matrix2[0].length (cols): "</span> + matrix2[<span class="number">0</span>].length);
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">=== Matrix 1 (3x4) ===
+  1   2   3   4 
+  5   6   7   8 
+  9  10  11  12 
+
+=== Matrix 2 (3x3) ===
+  1   2   3 
+  4   5   6 
+  7   8   9 
+
+=== Jagged Array ===
+Row 0: 1 2 
+Row 1: 3 4 5 
+Row 2: 6 7 8 9 
+
+=== Dimensions ===
+matrix2.length (rows): 3
+matrix2[0].length (cols): 3</div>
+                </div>
+            </div>
+
+            <!-- Matrix Operations -->
+            <div class="content-block">
+                <h3><span class="icon">🧮</span> Matrix Operations</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">MatrixOperations.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">MatrixOperations</span> {
+
+    <span class="comment">// Print matrix nicely</span>
+    <span class="keyword">public static void</span> <span class="method">printMatrix</span>(<span class="keyword">int</span>[][] matrix, <span class="class-name">String</span> name) {
+        <span class="class-name">System</span>.out.<span class="method">println</span>(name + <span class="string">":"</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span>[] row : matrix) {
+            <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"  │ "</span>);
+            <span class="keyword">for</span> (<span class="keyword">int</span> val : row) {
+                <span class="class-name">System</span>.out.<span class="method">printf</span>(<span class="string">"%4d "</span>, val);
+            }
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"│"</span>);
+        }
+    }
+    
+    <span class="comment">// Matrix Addition</span>
+    <span class="keyword">public static int</span>[][] <span class="method">add</span>(<span class="keyword">int</span>[][] a, <span class="keyword">int</span>[][] b) {
+        <span class="keyword">int</span> rows = a.length;
+        <span class="keyword">int</span> cols = a[<span class="number">0</span>].length;
+        <span class="keyword">int</span>[][] result = <span class="keyword">new</span> <span class="keyword">int</span>[rows][cols];
+        
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < rows; i++) {
+            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j < cols; j++) {
+                result[i][j] = a[i][j] + b[i][j];
+            }
+        }
+        <span class="keyword">return</span> result;
+    }
+    
+    <span class="comment">// Matrix Transpose</span>
+    <span class="keyword">public static int</span>[][] <span class="method">transpose</span>(<span class="keyword">int</span>[][] matrix) {
+        <span class="keyword">int</span> rows = matrix.length;
+        <span class="keyword">int</span> cols = matrix[<span class="number">0</span>].length;
+        <span class="keyword">int</span>[][] result = <span class="keyword">new</span> <span class="keyword">int</span>[cols][rows];
+        
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < rows; i++) {
+            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j < cols; j++) {
+                result[j][i] = matrix[i][j];
+            }
+        }
+        <span class="keyword">return</span> result;
+    }
+    
+    <span class="comment">// Sum of all elements</span>
+    <span class="keyword">public static int</span> <span class="method">sumAll</span>(<span class="keyword">int</span>[][] matrix) {
+        <span class="keyword">int</span> sum = <span class="number">0</span>;
+        <span class="keyword">for</span> (<span class="keyword">int</span>[] row : matrix) {
+            <span class="keyword">for</span> (<span class="keyword">int</span> val : row) {
+                sum += val;
+            }
+        }
+        <span class="keyword">return</span> sum;
+    }
+    
+    <span class="comment">// Find maximum element</span>
+    <span class="keyword">public static int</span> <span class="method">findMax</span>(<span class="keyword">int</span>[][] matrix) {
+        <span class="keyword">int</span> max = matrix[<span class="number">0</span>][<span class="number">0</span>];
+        <span class="keyword">for</span> (<span class="keyword">int</span>[] row : matrix) {
+            <span class="keyword">for</span> (<span class="keyword">int</span> val : row) {
+                <span class="keyword">if</span> (val > max) max = val;
+            }
+        }
+        <span class="keyword">return</span> max;
+    }
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="keyword">int</span>[][] matrixA = {
+            {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>},
+            {<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>}
+        };
+        
+        <span class="keyword">int</span>[][] matrixB = {
+            {<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>},
+            {<span class="number">10</span>, <span class="number">11</span>, <span class="number">12</span>}
+        };
+        
+        <span class="method">printMatrix</span>(matrixA, <span class="string">"Matrix A"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>();
+        <span class="method">printMatrix</span>(matrixB, <span class="string">"Matrix B"</span>);
+        
+        <span class="comment">// Addition</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== A + B ==="</span>);
+        <span class="keyword">int</span>[][] sum = <span class="method">add</span>(matrixA, matrixB);
+        <span class="method">printMatrix</span>(sum, <span class="string">"Sum"</span>);
+        
+        <span class="comment">// Transpose</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Transpose of A ==="</span>);
+        <span class="keyword">int</span>[][] transposed = <span class="method">transpose</span>(matrixA);
+        <span class="method">printMatrix</span>(transposed, <span class="string">"A^T"</span>);
+        
+        <span class="comment">// Statistics</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Statistics ==="</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Sum of A: "</span> + <span class="method">sumAll</span>(matrixA));
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Max in B: "</span> + <span class="method">findMax</span>(matrixB));
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">Matrix A:
+  │    1    2    3 │
+  │    4    5    6 │
+
+Matrix B:
+  │    7    8    9 │
+  │   10   11   12 │
+
+=== A + B ===
+Sum:
+  │    8   10   12 │
+  │   14   16   18 │
+
+=== Transpose of A ===
+A^T:
+  │    1    4 │
+  │    2    5 │
+  │    3    6 │
+
+=== Statistics ===
+Sum of A: 21
+Max in B: 12</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4.5: Mini Projects -->
+    <section id="projects" class="project-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">4.5</span>
+                <h2>Mini Projects</h2>
+                <p>Apply your array knowledge with practical projects</p>
+            </div>
+
+            <!-- Project 1: Grade Manager -->
+            <div class="project-card">
+                <h3>📊 Project 1: Student Grade Manager <span class="project-badge">Intermediate</span></h3>
+                <p>Build a complete grade management system using arrays to store and analyze student scores.</p>
+                
+                <div class="project-features">
+                    <span class="project-feature">1D Arrays</span>
+                    <span class="project-feature">Statistics</span>
+                    <span class="project-feature">Sorting</span>
+                    <span class="project-feature">Searching</span>
+                    <span class="project-feature">Grade Calculation</span>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">GradeManager.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">import</span> java.util.Arrays;
+<span class="keyword">import</span> java.util.Scanner;
+
+<span class="keyword">public class</span> <span class="class-name">GradeManager</span> {
+    
+    <span class="comment">// Calculate average</span>
+    <span class="keyword">public static double</span> <span class="method">calculateAverage</span>(<span class="keyword">int</span>[] scores) {
+        <span class="keyword">int</span> sum = <span class="number">0</span>;
+        <span class="keyword">for</span> (<span class="keyword">int</span> score : scores) {
+            sum += score;
+        }
+        <span class="keyword">return</span> (<span class="keyword">double</span>) sum / scores.length;
+    }
+    
+    <span class="comment">// Determine letter grade</span>
+    <span class="keyword">public static char</span> <span class="method">getLetterGrade</span>(<span class="keyword">double</span> score) {
+        <span class="keyword">if</span> (score >= <span class="number">90</span>) <span class="keyword">return</span> <span class="string">'A'</span>;
+        <span class="keyword">if</span> (score >= <span class="number">80</span>) <span class="keyword">return</span> <span class="string">'B'</span>;
+        <span class="keyword">if</span> (score >= <span class="number">70</span>) <span class="keyword">return</span> <span class="string">'C'</span>;
+        <span class="keyword">if</span> (score >= <span class="number">60</span>) <span class="keyword">return</span> <span class="string">'D'</span>;
+        <span class="keyword">return</span> <span class="string">'F'</span>;
+    }
+    
+    <span class="comment">// Count grades in each category</span>
+    <span class="keyword">public static int</span>[] <span class="method">countGrades</span>(<span class="keyword">int</span>[] scores) {
+        <span class="keyword">int</span>[] counts = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">5</span>];  <span class="comment">// A, B, C, D, F</span>
+        <span class="keyword">for</span> (<span class="keyword">int</span> score : scores) {
+            <span class="keyword">char</span> grade = <span class="method">getLetterGrade</span>(score);
+            <span class="keyword">switch</span> (grade) {
+                <span class="keyword">case</span> <span class="string">'A'</span> -> counts[<span class="number">0</span>]++;
+                <span class="keyword">case</span> <span class="string">'B'</span> -> counts[<span class="number">1</span>]++;
+                <span class="keyword">case</span> <span class="string">'C'</span> -> counts[<span class="number">2</span>]++;
+                <span class="keyword">case</span> <span class="string">'D'</span> -> counts[<span class="number">3</span>]++;
+                <span class="keyword">case</span> <span class="string">'F'</span> -> counts[<span class="number">4</span>]++;
+            }
+        }
+        <span class="keyword">return</span> counts;
+    }
+    
+    <span class="comment">// Print histogram</span>
+    <span class="keyword">public static void</span> <span class="method">printHistogram</span>(<span class="keyword">int</span>[] counts) {
+        <span class="class-name">String</span>[] grades = {<span class="string">"A"</span>, <span class="string">"B"</span>, <span class="string">"C"</span>, <span class="string">"D"</span>, <span class="string">"F"</span>};
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n📊 Grade Distribution:"</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < counts.length; i++) {
+            <span class="class-name">System</span>.out.<span class="method">printf</span>(<span class="string">"  %s: "</span>, grades[i]);
+            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j < counts[i]; j++) {
+                <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"█"</span>);
+            }
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">" ("</span> + counts[i] + <span class="string">")"</span>);
+        }
+    }
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="comment">// Sample student scores</span>
+        <span class="class-name">String</span>[] names = {<span class="string">"Alice"</span>, <span class="string">"Bob"</span>, <span class="string">"Charlie"</span>, <span class="string">"Diana"</span>, <span class="string">"Eve"</span>, 
+                          <span class="string">"Frank"</span>, <span class="string">"Grace"</span>, <span class="string">"Henry"</span>, <span class="string">"Ivy"</span>, <span class="string">"Jack"</span>};
+        <span class="keyword">int</span>[] scores = {<span class="number">95</span>, <span class="number">82</span>, <span class="number">78</span>, <span class="number">91</span>, <span class="number">67</span>, <span class="number">88</span>, <span class="number">74</span>, <span class="number">55</span>, <span class="number">93</span>, <span class="number">86</span>};
+        
+        <span class="comment">// Header</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"╔══════════════════════════════════════════════════╗"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"║          📚 STUDENT GRADE MANAGER 📚             ║"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"╚══════════════════════════════════════════════════╝"</span>);
+        
+        <span class="comment">// Print all students</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n┌────────────────────────────────────────┐"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"│  Student         Score    Grade       │"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"├────────────────────────────────────────┤"</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < names.length; i++) {
+            <span class="keyword">char</span> grade = <span class="method">getLetterGrade</span>(scores[i]);
+            <span class="class-name">String</span> status = scores[i] >= <span class="number">60</span> ? <span class="string">"✓"</span> : <span class="string">"✗"</span>;
+            <span class="class-name">System</span>.out.<span class="method">printf</span>(<span class="string">"│  %-12s    %3d       %c  %s       │%n"</span>, 
+                            names[i], scores[i], grade, status);
+        }
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"└────────────────────────────────────────┘"</span>);
+        
+        <span class="comment">// Statistics</span>
+        <span class="keyword">int</span>[] sortedScores = scores.<span class="method">clone</span>();
+        <span class="class-name">Arrays</span>.<span class="method">sort</span>(sortedScores);
+        
+        <span class="keyword">double</span> average = <span class="method">calculateAverage</span>(scores);
+        <span class="keyword">int</span> min = sortedScores[<span class="number">0</span>];
+        <span class="keyword">int</span> max = sortedScores[sortedScores.length - <span class="number">1</span>];
+        <span class="keyword">double</span> median = (sortedScores.length % <span class="number">2</span> == <span class="number">0</span>) ?
+            (sortedScores[sortedScores.length/<span class="number">2</span> - <span class="number">1</span>] + sortedScores[sortedScores.length/<span class="number">2</span>]) / <span class="number">2.0</span> :
+            sortedScores[sortedScores.length/<span class="number">2</span>];
+        
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n📈 Class Statistics:"</span>);
+        <span class="class-name">System</span>.out.<span class="method">printf</span>(<span class="string">"  Average:  %.2f (%c)%n"</span>, average, <span class="method">getLetterGrade</span>(average));
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"  Highest:  "</span> + max);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"  Lowest:   "</span> + min);
+        <span class="class-name">System</span>.out.<span class="method">printf</span>(<span class="string">"  Median:   %.1f%n"</span>, median);
+        
+        <span class="comment">// Grade distribution</span>
+        <span class="keyword">int</span>[] gradeCounts = <span class="method">countGrades</span>(scores);
+        <span class="method">printHistogram</span>(gradeCounts);
+        
+        <span class="comment">// Passing rate</span>
+        <span class="keyword">int</span> passing = gradeCounts[<span class="number">0</span>] + gradeCounts[<span class="number">1</span>] + gradeCounts[<span class="number">2</span>] + gradeCounts[<span class="number">3</span>];
+        <span class="keyword">double</span> passRate = (<span class="keyword">double</span>) passing / scores.length * <span class="number">100</span>;
+        <span class="class-name">System</span>.out.<span class="method">printf</span>(<span class="string">"\n✅ Pass Rate: %.0f%% (%d/%d students)%n"</span>, 
+                        passRate, passing, scores.length);
+    }
+}</code></pre>
+                </div>
+
+                <div class="terminal-block">
+                    <div class="terminal-header">
+                        <div class="code-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <span class="terminal-title">Sample Output</span>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-output">╔══════════════════════════════════════════════════╗</div>
+                        <div class="terminal-output">║          📚 STUDENT GRADE MANAGER 📚             ║</div>
+                        <div class="terminal-output">╚══════════════════════════════════════════════════╝</div>
+                        <div class="terminal-output"></div>
+                        <div class="terminal-output">┌────────────────────────────────────────┐</div>
+                        <div class="terminal-output">│  Student         Score    Grade       │</div>
+                        <div class="terminal-output">├────────────────────────────────────────┤</div>
+                        <div class="terminal-output">│  Alice            95       A  ✓       │</div>
+                        <div class="terminal-output">│  Bob              82       B  ✓       │</div>
+                        <div class="terminal-output">│  Charlie          78       C  ✓       │</div>
+                        <div class="terminal-output">│  ...</div>
+                        <div class="terminal-output">└────────────────────────────────────────┘</div>
+                        <div class="terminal-output"></div>
+                        <div class="terminal-output">📈 Class Statistics:</div>
+                        <div class="terminal-output highlight">  Average:  80.90 (B)</div>
+                        <div class="terminal-output">  Highest:  95</div>
+                        <div class="terminal-output">  Lowest:   55</div>
+                        <div class="terminal-output">  Median:   84.0</div>
+                        <div class="terminal-output"></div>
+                        <div class="terminal-output">📊 Grade Distribution:</div>
+                        <div class="terminal-output">  A: ███ (3)</div>
+                        <div class="terminal-output">  B: ███ (3)</div>
+                        <div class="terminal-output">  C: ██ (2)</div>
+                        <div class="terminal-output">  D: █ (1)</div>
+                        <div class="terminal-output">  F: █ (1)</div>
+                        <div class="terminal-output highlight"></div>
+                        <div class="terminal-output highlight">✅ Pass Rate: 90% (9/10 students)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 2: Tic-Tac-Toe -->
+            <div class="project-card">
+                <h3>🎮 Project 2: Tic-Tac-Toe Game <span class="project-badge">Advanced</span></h3>
+                <p>Create a classic Tic-Tac-Toe game using a 2D array to represent the game board!</p>
+                
+                <div class="project-features">
+                    <span class="project-feature">2D Arrays</span>
+                    <span class="project-feature">Game Logic</span>
+                    <span class="project-feature">Win Detection</span>
+                    <span class="project-feature">User Input</span>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">TicTacToe.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">import</span> java.util.Scanner;
+
+<span class="keyword">public class</span> <span class="class-name">TicTacToe</span> {
+    <span class="keyword">private static char</span>[][] board = <span class="keyword">new</span> <span class="keyword">char</span>[<span class="number">3</span>][<span class="number">3</span>];
+    <span class="keyword">private static char</span> currentPlayer = <span class="string">'X'</span>;
+    
+    <span class="comment">// Initialize board</span>
+    <span class="keyword">public static void</span> <span class="method">initializeBoard</span>() {
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < <span class="number">3</span>; i++) {
+            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j < <span class="number">3</span>; j++) {
+                board[i][j] = <span class="string">'-'</span>;
+            }
+        }
+    }
+    
+    <span class="comment">// Print the board</span>
+    <span class="keyword">public static void</span> <span class="method">printBoard</span>() {
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n    1   2   3"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"  ┌───┬───┬───┐"</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < <span class="number">3</span>; i++) {
+            <span class="class-name">System</span>.out.<span class="method">print</span>((i + <span class="number">1</span>) + <span class="string">" │"</span>);
+            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j < <span class="number">3</span>; j++) {
+                <span class="keyword">char</span> symbol = board[i][j];
+                <span class="keyword">if</span> (symbol == <span class="string">'X'</span>) {
+                    <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">" X │"</span>);
+                } <span class="keyword">else if</span> (symbol == <span class="string">'O'</span>) {
+                    <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">" O │"</span>);
+                } <span class="keyword">else</span> {
+                    <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"   │"</span>);
+                }
+            }
+            <span class="class-name">System</span>.out.<span class="method">println</span>();
+            <span class="keyword">if</span> (i < <span class="number">2</span>) {
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"  ├───┼───┼───┤"</span>);
+            }
+        }
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"  └───┴───┴───┘"</span>);
+    }
+    
+    <span class="comment">// Make a move</span>
+    <span class="keyword">public static boolean</span> <span class="method">makeMove</span>(<span class="keyword">int</span> row, <span class="keyword">int</span> col) {
+        <span class="keyword">if</span> (row < <span class="number">0</span> || row > <span class="number">2</span> || col < <span class="number">0</span> || col > <span class="number">2</span>) {
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+        }
+        <span class="keyword">if</span> (board[row][col] != <span class="string">'-'</span>) {
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+        }
+        board[row][col] = currentPlayer;
+        <span class="keyword">return</span> <span class="keyword">true</span>;
+    }
+    
+    <span class="comment">// Check for winner</span>
+    <span class="keyword">public static boolean</span> <span class="method">checkWin</span>() {
+        <span class="comment">// Check rows and columns</span>
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < <span class="number">3</span>; i++) {
+            <span class="keyword">if</span> (board[i][<span class="number">0</span>] != <span class="string">'-'</span> && board[i][<span class="number">0</span>] == board[i][<span class="number">1</span>] && board[i][<span class="number">1</span>] == board[i][<span class="number">2</span>]) {
+                <span class="keyword">return</span> <span class="keyword">true</span>;
+            }
+            <span class="keyword">if</span> (board[<span class="number">0</span>][i] != <span class="string">'-'</span> && board[<span class="number">0</span>][i] == board[<span class="number">1</span>][i] && board[<span class="number">1</span>][i] == board[<span class="number">2</span>][i]) {
+                <span class="keyword">return</span> <span class="keyword">true</span>;
+            }
+        }
+        <span class="comment">// Check diagonals</span>
+        <span class="keyword">if</span> (board[<span class="number">0</span>][<span class="number">0</span>] != <span class="string">'-'</span> && board[<span class="number">0</span>][<span class="number">0</span>] == board[<span class="number">1</span>][<span class="number">1</span>] && board[<span class="number">1</span>][<span class="number">1</span>] == board[<span class="number">2</span>][<span class="number">2</span>]) {
+            <span class="keyword">return</span> <span class="keyword">true</span>;
+        }
+        <span class="keyword">if</span> (board[<span class="number">0</span>][<span class="number">2</span>] != <span class="string">'-'</span> && board[<span class="number">0</span>][<span class="number">2</span>] == board[<span class="number">1</span>][<span class="number">1</span>] && board[<span class="number">1</span>][<span class="number">1</span>] == board[<span class="number">2</span>][<span class="number">0</span>]) {
+            <span class="keyword">return</span> <span class="keyword">true</span>;
+        }
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }
+    
+    <span class="comment">// Check for draw</span>
+    <span class="keyword">public static boolean</span> <span class="method">isBoardFull</span>() {
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < <span class="number">3</span>; i++) {
+            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j < <span class="number">3</span>; j++) {
+                <span class="keyword">if</span> (board[i][j] == <span class="string">'-'</span>) {
+                    <span class="keyword">return</span> <span class="keyword">false</span>;
+                }
+            }
+        }
+        <span class="keyword">return</span> <span class="keyword">true</span>;
+    }
+    
+    <span class="comment">// Switch player</span>
+    <span class="keyword">public static void</span> <span class="method">switchPlayer</span>() {
+        currentPlayer = (currentPlayer == <span class="string">'X'</span>) ? <span class="string">'O'</span> : <span class="string">'X'</span>;
+    }
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="class-name">Scanner</span> scanner = <span class="keyword">new</span> <span class="class-name">Scanner</span>(<span class="class-name">System</span>.in);
+        
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"╔════════════════════════════════╗"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"║     🎮 TIC-TAC-TOE GAME 🎮     ║"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"╚════════════════════════════════╝"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Player 1: X  |  Player 2: O"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Enter row and column (1-3) to play.\n"</span>);
+        
+        <span class="method">initializeBoard</span>();
+        <span class="method">printBoard</span>();
+        
+        <span class="keyword">boolean</span> gameOver = <span class="keyword">false</span>;
+        
+        <span class="keyword">while</span> (!gameOver) {
+            <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"\nPlayer "</span> + currentPlayer + <span class="string">"'s turn. Enter row col: "</span>);
+            <span class="keyword">int</span> row = scanner.<span class="method">nextInt</span>() - <span class="number">1</span>;
+            <span class="keyword">int</span> col = scanner.<span class="method">nextInt</span>() - <span class="number">1</span>;
+            
+            <span class="keyword">if</span> (<span class="method">makeMove</span>(row, col)) {
+                <span class="method">printBoard</span>();
+                
+                <span class="keyword">if</span> (<span class="method">checkWin</span>()) {
+                    <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n🎉 Player "</span> + currentPlayer + <span class="string">" WINS! 🎉"</span>);
+                    gameOver = <span class="keyword">true</span>;
+                } <span class="keyword">else if</span> (<span class="method">isBoardFull</span>()) {
+                    <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n🤝 It's a DRAW!"</span>);
+                    gameOver = <span class="keyword">true</span>;
+                } <span class="keyword">else</span> {
+                    <span class="method">switchPlayer</span>();
+                }
+            } <span class="keyword">else</span> {
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"❌ Invalid move! Try again."</span>);
+            }
+        }
+        
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\nThanks for playing! 👋"</span>);
+        scanner.<span class="method">close</span>();
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Chapter Summary -->
+            <div class="project-card" style="background: rgba(16,185,129,0.2);">
+                <h3>📝 Chapter Summary</h3>
+                <p>In this chapter, you've mastered arrays in Java:</p>
+                
+                <div class="concept-grid" style="margin-top: 1.5rem;">
+                    <div class="concept-card" style="background: rgba(255,255,255,0.95);">
+                        <h4>📦 1D Arrays</h4>
+                        <p>Declaration, initialization, accessing elements, iteration with for and for-each loops.</p>
+                    </div>
+                    <div class="concept-card blue" style="background: rgba(255,255,255,0.95);">
+                        <h4>🔍 Operations</h4>
+                        <p>Searching (linear, binary), sorting (Arrays.sort), copying, comparing arrays.</p>
+                    </div>
+                    <div class="concept-card purple" style="background: rgba(255,255,255,0.95);">
+                        <h4>🔢 2D Arrays</h4>
+                        <p>Matrices, tables, nested loops, row-column access, jagged arrays.</p>
+                    </div>
+                    <div class="concept-card accent" style="background: rgba(255,255,255,0.95);">
+                        <h4>🎯 Best Practices</h4>
+                        <p>Use Arrays class utilities, handle bounds, choose right data structure for the task.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-nav">
+                <a href="#">← Chapter 3: OOP Basics</a>
+                <a href="#">Chapter 5: Inheritance →</a>
+            </div>
+            <p>Chapter 4: Arrays in Java | Java 25 Edition</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;">© 2025 | Learn Java Programming</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Fade-in animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        document.querySelectorAll('.content-block, .concept-card, .project-card, .array-diagram').forEach(el => {
+            el.classList.add('fade-in');
+            observer.observe(el);
+        });
+
+        // Copy code functionality
+        document.querySelectorAll('.code-block').forEach(block => {
+            const copyBtn = document.createElement('button');
+            copyBtn.innerHTML = '📋 Copy';
+            copyBtn.style.cssText = `
+                position: absolute;
+                top: 50px;
+                right: 10px;
+                background: rgba(255,255,255,0.1);
+                border: none;
+                border-radius: 6px;
+                padding: 6px 12px;
+                cursor: pointer;
+                font-size: 12px;
+                color: #94A3B8;
+                opacity: 0;
+                transition: opacity 0.3s;
+            `;
+            
+            block.appendChild(copyBtn);
+            
+            block.addEventListener('mouseenter', () => copyBtn.style.opacity = '1');
+            block.addEventListener('mouseleave', () => copyBtn.style.opacity = '0');
+            
+            copyBtn.addEventListener('click', () => {
+                const code = block.querySelector('code').innerText;
+                navigator.clipboard.writeText(code);
+                copyBtn.innerHTML = '✅ Copied!';
+                setTimeout(() => copyBtn.innerHTML = '📋 Copy', 2000);
+            });
+        });
+
+        // Interactive array cell hover effect
+        document.querySelectorAll('.array-cell-demo, .matrix-cell').forEach(cell => {
+            cell.addEventListener('click', function() {
+                this.style.animation = 'none';
+                this.offsetHeight; // Trigger reflow
+                this.style.animation = 'pulse 0.3s ease';
+            });
+        });
+    </script>
+</body>
+</html>

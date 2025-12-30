@@ -1,0 +1,1914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 1: Introduction to Java in the AI Era</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B35;
+            --secondary: #004E89;
+            --accent: #1A936F;
+            --dark: #0D1B2A;
+            --light: #F7F7F7;
+            --gradient-primary: linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%);
+            --gradient-secondary: linear-gradient(135deg, #004E89 0%, #1B6CA8 100%);
+            --gradient-accent: linear-gradient(135deg, #1A936F 0%, #2AB090 100%);
+            --code-bg: #1E1E2E;
+            --shadow-soft: 0 4px 24px rgba(0,0,0,0.08);
+            --shadow-medium: 0 8px 32px rgba(0,0,0,0.12);
+            --shadow-strong: 0 16px 48px rgba(0,0,0,0.16);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.7;
+            font-size: 17px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 150%;
+            background: radial-gradient(ellipse, rgba(255,107,53,0.15) 0%, transparent 60%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 60%;
+            height: 100%;
+            background: radial-gradient(ellipse, rgba(0,78,137,0.2) 0%, transparent 50%);
+            animation: pulse 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 10;
+            padding: 2rem;
+        }
+
+        .chapter-badge {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .hero h1 span {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: rgba(255,255,255,0.7);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            font-weight: 300;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        .version-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-radius: 60px;
+            border: 1px solid rgba(255,255,255,0.15);
+            animation: fadeInUp 0.8s ease-out 0.6s backwards;
+        }
+
+        .version-badge .java-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .version-text {
+            color: white;
+        }
+
+        .version-text .label {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .version-text .version {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 6rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-number {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1.2rem;
+            line-height: 50px;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Content Styles */
+        .content-block {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .content-block h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .content-block h3 .icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-secondary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .content-block p {
+            color: #555;
+            margin-bottom: 1rem;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--code-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 2rem 0;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .code-header {
+            background: #2A2A3E;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .code-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .code-dots span {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .code-dots span:nth-child(1) { background: #FF5F56; }
+        .code-dots span:nth-child(2) { background: #FFBD2E; }
+        .code-dots span:nth-child(3) { background: #27C93F; }
+
+        .code-title {
+            color: #888;
+            font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+            margin-left: 1rem;
+        }
+
+        pre {
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #E4E4E7;
+        }
+
+        .keyword { color: #FF79C6; }
+        .string { color: #F1FA8C; }
+        .comment { color: #6272A4; }
+        .class-name { color: #8BE9FD; }
+        .method { color: #50FA7B; }
+        .number { color: #BD93F9; }
+        .annotation { color: #FFB86C; }
+
+        /* Diagram Styles */
+        .diagram-container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 3rem 0;
+            box-shadow: var(--shadow-soft);
+            overflow-x: auto;
+        }
+
+        .diagram-title {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 2rem;
+        }
+
+        .architecture-diagram {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 2rem;
+        }
+
+        .diagram-box {
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 500;
+            min-width: 150px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .diagram-box:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .diagram-box.primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .diagram-box.secondary {
+            background: var(--gradient-secondary);
+            color: white;
+        }
+
+        .diagram-box.accent {
+            background: var(--gradient-accent);
+            color: white;
+        }
+
+        .diagram-box.light {
+            background: var(--light);
+            border: 2px solid #E5E5E5;
+            color: var(--dark);
+        }
+
+        .diagram-arrow {
+            font-size: 2rem;
+            color: #CCC;
+        }
+
+        /* JVM Architecture Diagram */
+        .jvm-diagram {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .jvm-layer {
+            background: white;
+            border: 2px solid #E5E5E5;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .jvm-layer::after {
+            content: '↓';
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .jvm-layer:last-child::after {
+            display: none;
+        }
+
+        .jvm-layer-title {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .jvm-components {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .jvm-component {
+            background: var(--gradient-secondary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .jvm-component.orange {
+            background: var(--gradient-primary);
+        }
+
+        .jvm-component.green {
+            background: var(--gradient-accent);
+        }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        /* AI Section */
+        .ai-section {
+            background: var(--dark);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .ai-section .section-header h2 {
+            color: white;
+        }
+
+        .ai-section .section-header p {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .ai-framework-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .ai-framework-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .ai-framework-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .ai-framework-card h4 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .ai-framework-card h4 .badge {
+            background: var(--gradient-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .ai-framework-card p {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 1.5rem;
+        }
+
+        .ai-framework-card ul {
+            list-style: none;
+        }
+
+        .ai-framework-card li {
+            padding: 0.5rem 0;
+            color: rgba(255,255,255,0.85);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .ai-framework-card li::before {
+            content: '✓';
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* IDE Section */
+        .ide-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .ide-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            transition: transform 0.3s ease;
+        }
+
+        .ide-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .ide-header {
+            padding: 2rem;
+            color: white;
+        }
+
+        .ide-header.intellij { background: linear-gradient(135deg, #FE315D 0%, #FF6B35 100%); }
+        .ide-header.vscode { background: linear-gradient(135deg, #007ACC 0%, #0098FF 100%); }
+        .ide-header.copilot { background: linear-gradient(135deg, #24292E 0%, #444D56 100%); }
+        .ide-header.cursor { background: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%); }
+
+        .ide-header h4 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .ide-header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .ide-features {
+            padding: 1.5rem 2rem;
+        }
+
+        .ide-features li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #F0F0F0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #555;
+        }
+
+        .ide-features li:last-child {
+            border-bottom: none;
+        }
+
+        .ide-features li .check {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        /* Job Roles Section */
+        .job-roles-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .job-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-soft);
+            border-left: 4px solid var(--primary);
+            transition: transform 0.3s ease;
+        }
+
+        .job-card:hover {
+            transform: translateX(8px);
+        }
+
+        .job-card h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .job-card .salary {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .job-card p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 3rem auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            display: flex;
+            justify-content: flex-end;
+            padding-right: 50%;
+            position: relative;
+            margin-bottom: 3rem;
+        }
+
+        .timeline-item:nth-child(even) {
+            justify-content: flex-start;
+            padding-right: 0;
+            padding-left: 50%;
+        }
+
+        .timeline-content {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow-soft);
+            max-width: 350px;
+            position: relative;
+            margin: 0 2rem;
+        }
+
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 0 4px var(--primary);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content::before {
+            right: -2.5rem;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content::before {
+            left: -2.5rem;
+        }
+
+        .timeline-content h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-content p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Stats Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        /* Future Section */
+        .future-section {
+            background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+        }
+
+        .future-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .future-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-soft);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .future-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .future-card h4 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .future-card p {
+            color: #666;
+        }
+
+        /* Table Styles */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            margin: 2rem 0;
+        }
+
+        .comparison-table th {
+            background: var(--dark);
+            color: white;
+            padding: 1.25rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #F0F0F0;
+            color: #555;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:hover td {
+            background: #F8F9FA;
+        }
+
+        /* Flow Diagram */
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            padding: 2rem;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .flow-box {
+            background: var(--gradient-secondary);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .flow-box.orange { background: var(--gradient-primary); }
+        .flow-box.green { background: var(--gradient-accent); }
+        .flow-box.light { 
+            background: white; 
+            color: var(--dark); 
+            border: 2px solid #E5E5E5; 
+        }
+
+        .flow-arrow {
+            color: #CCC;
+            font-size: 1.5rem;
+        }
+
+        /* Callout Box */
+        .callout {
+            background: linear-gradient(135deg, rgba(255,107,53,0.1) 0%, rgba(255,107,53,0.05) 100%);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 16px 16px 0;
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+        }
+
+        .callout-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .callout p {
+            color: #555;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        footer p {
+            opacity: 0.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .timeline::before { left: 20px; }
+            .timeline-item, .timeline-item:nth-child(even) {
+                padding-left: 60px;
+                padding-right: 0;
+                justify-content: flex-start;
+            }
+            .timeline-content::before,
+            .timeline-item:nth-child(even) .timeline-content::before {
+                left: -2.5rem;
+            }
+            .content-block, .diagram-container { padding: 1.5rem; }
+            section { padding: 4rem 0; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #F0F0F0;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient-primary);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <span class="chapter-badge">Chapter 1</span>
+            <h1>Introduction to <span>Java</span></h1>
+            <p class="hero-subtitle">Master the fundamentals of the world's most versatile programming language in the era of Artificial Intelligence</p>
+            <div class="version-badge">
+                <div class="java-icon">☕</div>
+                <div class="version-text">
+                    <div class="label">Latest LTS Version</div>
+                    <div class="version">Java 25 (September 2025)</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Section 1: What is Java -->
+    <section id="what-is-java">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">1</span>
+                <h2>What is Java?</h2>
+                <p>Discover the programming language that powers billions of devices worldwide</p>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">📚</span> Overview</h3>
+                <p>Java is a high-level, class-based, object-oriented programming language designed to have as few implementation dependencies as possible. It was developed by James Gosling at Sun Microsystems (now owned by Oracle) and released in 1995.</p>
+                <p>Java follows the principle of <strong>"Write Once, Run Anywhere" (WORA)</strong>, meaning compiled Java code can run on all platforms that support Java without the need for recompilation. This is achieved through the Java Virtual Machine (JVM).</p>
+                
+                <div class="callout">
+                    <div class="callout-title">💡 Did You Know?</div>
+                    <p>As of 2025, Java powers over 3 billion devices worldwide, from smartphones and smart cards to enterprise servers and supercomputers. It remains the #1 choice for enterprise application development.</p>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">30+</div>
+                    <div class="stat-label">Years of Evolution</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3B+</div>
+                    <div class="stat-label">Devices Running Java</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">12M+</div>
+                    <div class="stat-label">Java Developers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">97%</div>
+                    <div class="stat-label">Enterprise Adoption</div>
+                </div>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h4>Platform Independent</h4>
+                    <p>Java code compiles to bytecode that runs on any system with a JVM, ensuring true cross-platform compatibility.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h4>Secure & Robust</h4>
+                    <p>Built-in security features, strong memory management, and exception handling make Java incredibly reliable.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧩</div>
+                    <h4>Object-Oriented</h4>
+                    <p>Everything in Java is an object, promoting code reusability, modularity, and easier maintenance.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h4>High Performance</h4>
+                    <p>JIT compilation and optimized garbage collection deliver near-native performance for demanding applications.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h4>Multi-threaded</h4>
+                    <p>Native support for concurrent programming enables efficient utilization of modern multi-core processors.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📦</div>
+                    <h4>Rich Ecosystem</h4>
+                    <p>Extensive standard library, frameworks, and tools for virtually any development need.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Java Architecture -->
+    <section id="architecture" style="background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">2</span>
+                <h2>Java Architecture</h2>
+                <p>Understanding how Java code executes from source to running application</p>
+            </div>
+
+            <div class="diagram-container">
+                <div class="diagram-title">🏗️ Java Program Execution Flow</div>
+                <div class="flow-diagram">
+                    <div class="flow-box orange">Source Code<br><small>.java</small></div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-box">Java Compiler<br><small>javac</small></div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-box green">Bytecode<br><small>.class</small></div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-box">JVM</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-box orange">Machine Code<br><small>Execution</small></div>
+                </div>
+            </div>
+
+            <div class="diagram-container">
+                <div class="diagram-title">🔧 JVM Architecture Components</div>
+                <div class="jvm-diagram">
+                    <div class="jvm-layer">
+                        <div class="jvm-layer-title">Class Loader Subsystem</div>
+                        <div class="jvm-components">
+                            <span class="jvm-component orange">Loading</span>
+                            <span class="jvm-component orange">Linking</span>
+                            <span class="jvm-component orange">Initialization</span>
+                        </div>
+                    </div>
+                    <div class="jvm-layer">
+                        <div class="jvm-layer-title">Runtime Data Areas</div>
+                        <div class="jvm-components">
+                            <span class="jvm-component">Method Area</span>
+                            <span class="jvm-component">Heap</span>
+                            <span class="jvm-component">Stack</span>
+                            <span class="jvm-component">PC Register</span>
+                            <span class="jvm-component">Native Stack</span>
+                        </div>
+                    </div>
+                    <div class="jvm-layer">
+                        <div class="jvm-layer-title">Execution Engine</div>
+                        <div class="jvm-components">
+                            <span class="jvm-component green">Interpreter</span>
+                            <span class="jvm-component green">JIT Compiler</span>
+                            <span class="jvm-component green">Garbage Collector</span>
+                        </div>
+                    </div>
+                    <div class="jvm-layer">
+                        <div class="jvm-layer-title">Native Interface</div>
+                        <div class="jvm-components">
+                            <span class="jvm-component">JNI (Java Native Interface)</span>
+                            <span class="jvm-component">Native Libraries</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">⚙️</span> Key Components Explained</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Description</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>JDK</strong></td>
+                            <td>Java Development Kit</td>
+                            <td>Complete development environment including compiler, debugger, and tools</td>
+                        </tr>
+                        <tr>
+                            <td><strong>JRE</strong></td>
+                            <td>Java Runtime Environment</td>
+                            <td>Provides libraries and JVM needed to run Java applications</td>
+                        </tr>
+                        <tr>
+                            <td><strong>JVM</strong></td>
+                            <td>Java Virtual Machine</td>
+                            <td>Executes bytecode and provides platform independence</td>
+                        </tr>
+                        <tr>
+                            <td><strong>JIT</strong></td>
+                            <td>Just-In-Time Compiler</td>
+                            <td>Compiles bytecode to native machine code at runtime for better performance</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Java 25 Features -->
+    <section id="java25">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">3</span>
+                <h2>Java 25 - Latest LTS Features</h2>
+                <p>Explore the cutting-edge features in the newest Long-Term Support release</p>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">🚀</span> What's New in Java 25</h3>
+                <p>Released in September 2025, Java 25 is the latest Long-Term Support (LTS) release, following Java 21. It includes 18 JDK Enhancement Proposals (JEPs) designed to improve developer productivity, application performance, and AI capabilities.</p>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h4>Compact Source Files</h4>
+                    <p>Write simpler programs without class declarations. Perfect for scripts and quick demos.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📦</div>
+                    <h4>Module Imports</h4>
+                    <p>Import entire modules with a single statement, reducing boilerplate code significantly.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h4>Structured Concurrency</h4>
+                    <p>Simplify multi-threaded programming with better task management and error handling.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h4>Primitive Pattern Matching</h4>
+                    <p>Use pattern matching with primitive types in switch and instanceof statements.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h4>PEM Encodings API</h4>
+                    <p>New cryptographic API for encoding and decoding keys in PEM format.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h4>AOT Method Profiling</h4>
+                    <p>Faster startup times through ahead-of-time compilation optimizations.</p>
+                </div>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span class="code-title">HelloWorld.java - Java 25 Compact Source File</span>
+                </div>
+                <pre><code><span class="comment">// Java 25 - No class declaration needed!</span>
+<span class="keyword">void</span> <span class="method">main</span>() {
+    <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Hello from Java 25!"</span>);
+    
+    <span class="comment">// Using module imports</span>
+    <span class="keyword">import module</span> java.base;
+    
+    <span class="comment">// Primitive pattern matching</span>
+    <span class="class-name">Object</span> value = <span class="number">42</span>;
+    <span class="keyword">if</span> (value <span class="keyword">instanceof</span> <span class="keyword">int</span> i) {
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"It's an integer: "</span> + i);
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span class="code-title">StructuredConcurrencyExample.java</span>
+                </div>
+                <pre><code><span class="keyword">import</span> java.util.concurrent.*;
+
+<span class="keyword">void</span> <span class="method">fetchUserData</span>() <span class="keyword">throws</span> <span class="class-name">Exception</span> {
+    <span class="keyword">try</span> (<span class="keyword">var</span> scope = <span class="keyword">new</span> <span class="class-name">StructuredTaskScope</span>.<span class="class-name">ShutdownOnFailure</span>()) {
+        <span class="comment">// Launch concurrent tasks</span>
+        <span class="class-name">Subtask</span>&lt;<span class="class-name">String</span>&gt; user = scope.<span class="method">fork</span>(() -> <span class="method">fetchUser</span>());
+        <span class="class-name">Subtask</span>&lt;<span class="class-name">String</span>&gt; orders = scope.<span class="method">fork</span>(() -> <span class="method">fetchOrders</span>());
+        
+        scope.<span class="method">join</span>();           <span class="comment">// Wait for all tasks</span>
+        scope.<span class="method">throwIfFailed</span>();  <span class="comment">// Propagate errors</span>
+        
+        <span class="comment">// Process results</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(user.<span class="method">get</span>() + <span class="string">" has "</span> + orders.<span class="method">get</span>());
+    }
+}</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Java Basics -->
+    <section id="basics" style="background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">4</span>
+                <h2>Java Programming Basics</h2>
+                <p>Master the fundamental building blocks of Java programming</p>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">🔤</span> Data Types</h3>
+                <p>Java is a strongly-typed language with two categories of data types:</p>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Size</th>
+                            <th>Range</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>byte</code></td>
+                            <td>1 byte</td>
+                            <td>-128 to 127</td>
+                            <td><code>byte b = 100;</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>short</code></td>
+                            <td>2 bytes</td>
+                            <td>-32,768 to 32,767</td>
+                            <td><code>short s = 1000;</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>int</code></td>
+                            <td>4 bytes</td>
+                            <td>-2³¹ to 2³¹-1</td>
+                            <td><code>int i = 100000;</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>long</code></td>
+                            <td>8 bytes</td>
+                            <td>-2⁶³ to 2⁶³-1</td>
+                            <td><code>long l = 100000L;</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>float</code></td>
+                            <td>4 bytes</td>
+                            <td>~7 decimal digits</td>
+                            <td><code>float f = 3.14f;</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>double</code></td>
+                            <td>8 bytes</td>
+                            <td>~15 decimal digits</td>
+                            <td><code>double d = 3.14159;</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>boolean</code></td>
+                            <td>1 bit</td>
+                            <td>true/false</td>
+                            <td><code>boolean flag = true;</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>char</code></td>
+                            <td>2 bytes</td>
+                            <td>Unicode character</td>
+                            <td><code>char c = 'A';</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span class="code-title">BasicSyntax.java</span>
+                </div>
+                <pre><code><span class="keyword">public class</span> <span class="class-name">BasicSyntax</span> {
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="comment">// Variables and Data Types</span>
+        <span class="class-name">String</span> name = <span class="string">"Java Developer"</span>;
+        <span class="keyword">int</span> age = <span class="number">25</span>;
+        <span class="keyword">double</span> salary = <span class="number">75000.50</span>;
+        <span class="keyword">boolean</span> isEmployed = <span class="keyword">true</span>;
+        
+        <span class="comment">// Modern var keyword (Java 10+)</span>
+        <span class="keyword">var</span> skills = <span class="class-name">List</span>.<span class="method">of</span>(<span class="string">"Spring"</span>, <span class="string">"AI"</span>, <span class="string">"Cloud"</span>);
+        
+        <span class="comment">// Control Flow</span>
+        <span class="keyword">if</span> (age >= <span class="number">18</span>) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(name + <span class="string">" is an adult"</span>);
+        }
+        
+        <span class="comment">// Enhanced for loop</span>
+        <span class="keyword">for</span> (<span class="class-name">String</span> skill : skills) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Skill: "</span> + skill);
+        }
+        
+        <span class="comment">// Switch Expression (Java 14+)</span>
+        <span class="class-name">String</span> level = <span class="keyword">switch</span> (age) {
+            <span class="keyword">case</span> <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> -> <span class="string">"Junior"</span>;
+            <span class="keyword">case</span> <span class="number">4</span>, <span class="number">5</span> -> <span class="string">"Mid-Level"</span>;
+            <span class="keyword">default</span> -> <span class="string">"Senior"</span>;
+        };
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span class="code-title">OOPExample.java - Object-Oriented Programming</span>
+                </div>
+                <pre><code><span class="comment">// Record - Immutable data class (Java 16+)</span>
+<span class="keyword">public record</span> <span class="class-name">Developer</span>(<span class="class-name">String</span> name, <span class="class-name">List</span>&lt;<span class="class-name">String</span>&gt; skills, <span class="keyword">int</span> experience) {
+    <span class="comment">// Compact constructor for validation</span>
+    <span class="keyword">public</span> <span class="class-name">Developer</span> {
+        <span class="keyword">if</span> (experience < <span class="number">0</span>) {
+            <span class="keyword">throw new</span> <span class="class-name">IllegalArgumentException</span>(<span class="string">"Experience cannot be negative"</span>);
+        }
+    }
+    
+    <span class="comment">// Instance method</span>
+    <span class="keyword">public boolean</span> <span class="method">isSenior</span>() {
+        <span class="keyword">return</span> experience >= <span class="number">5</span>;
+    }
+}
+
+<span class="comment">// Sealed classes (Java 17+)</span>
+<span class="keyword">public sealed interface</span> <span class="class-name">Shape</span> 
+    <span class="keyword">permits</span> <span class="class-name">Circle</span>, <span class="class-name">Rectangle</span>, <span class="class-name">Triangle</span> {
+    <span class="keyword">double</span> <span class="method">area</span>();
+}
+
+<span class="keyword">public final class</span> <span class="class-name">Circle</span> <span class="keyword">implements</span> <span class="class-name">Shape</span> {
+    <span class="keyword">private final double</span> radius;
+    
+    <span class="keyword">public</span> <span class="class-name">Circle</span>(<span class="keyword">double</span> radius) { <span class="keyword">this</span>.radius = radius; }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public double</span> <span class="method">area</span>() { <span class="keyword">return</span> <span class="class-name">Math</span>.PI * radius * radius; }
+}</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: AI Integration with Java -->
+    <section id="ai-java" class="ai-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">5</span>
+                <h2>Java & AI Integration</h2>
+                <p>Build intelligent applications with Java's powerful AI frameworks</p>
+            </div>
+
+            <div class="diagram-container" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                <div class="diagram-title" style="color: white;">🤖 Java AI Ecosystem Architecture</div>
+                <div class="architecture-diagram">
+                    <div class="diagram-box primary">Your Java<br>Application</div>
+                    <span class="diagram-arrow" style="color: rgba(255,255,255,0.5);">↔</span>
+                    <div class="diagram-box secondary">AI Framework<br>(LangChain4j / Spring AI)</div>
+                    <span class="diagram-arrow" style="color: rgba(255,255,255,0.5);">↔</span>
+                    <div class="diagram-box accent">LLM Provider<br>(OpenAI, Anthropic, etc.)</div>
+                </div>
+            </div>
+
+            <div class="ai-framework-grid">
+                <div class="ai-framework-card">
+                    <h4>🔗 LangChain4j <span class="badge">Popular</span></h4>
+                    <p>The leading open-source Java library for building LLM-powered applications with a unified API for multiple AI providers.</p>
+                    <ul>
+                        <li>Support for 20+ LLM providers (OpenAI, Anthropic, etc.)</li>
+                        <li>30+ vector database integrations</li>
+                        <li>RAG (Retrieval-Augmented Generation) support</li>
+                        <li>Tool calling and agent capabilities</li>
+                        <li>MCP (Model Context Protocol) support</li>
+                        <li>Spring Boot and Quarkus integration</li>
+                    </ul>
+                </div>
+
+                <div class="ai-framework-card">
+                    <h4>🌱 Spring AI <span class="badge">Enterprise</span></h4>
+                    <p>Official Spring project bringing AI capabilities to the Spring ecosystem with familiar patterns and conventions.</p>
+                    <ul>
+                        <li>Native Spring Boot integration</li>
+                        <li>Auto-configuration for AI components</li>
+                        <li>Prompt templates and function calling</li>
+                        <li>Seamless dependency injection</li>
+                        <li>Production-ready with Spring metrics</li>
+                        <li>Enterprise security integration</li>
+                    </ul>
+                </div>
+
+                <div class="ai-framework-card">
+                    <h4>🧠 Deep Java Library (DJL)</h4>
+                    <p>Amazon's deep learning framework for Java, enabling training and inference of ML models.</p>
+                    <ul>
+                        <li>Framework-agnostic API</li>
+                        <li>TensorFlow, PyTorch, MXNet support</li>
+                        <li>Pre-trained model hub</li>
+                        <li>GPU acceleration support</li>
+                        <li>Computer vision capabilities</li>
+                        <li>NLP and text processing</li>
+                    </ul>
+                </div>
+
+                <div class="ai-framework-card">
+                    <h4>🚀 JLama</h4>
+                    <p>Run LLM inference directly in Java, leveraging the Vector API for optimized performance.</p>
+                    <ul>
+                        <li>Pure Java implementation</li>
+                        <li>No external dependencies</li>
+                        <li>Supports popular open models</li>
+                        <li>Privacy-focused (local execution)</li>
+                        <li>Leverages Java Vector API</li>
+                        <li>Cost-effective (no API fees)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="code-block" style="margin-top: 3rem;">
+                <div class="code-header">
+                    <div class="code-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span class="code-title">OpenAIIntegration.java - LangChain4j with OpenAI</span>
+                </div>
+                <pre><code><span class="keyword">import</span> dev.langchain4j.model.openai.*;
+<span class="keyword">import</span> dev.langchain4j.service.*;
+
+<span class="comment">// Define an AI Service interface</span>
+<span class="keyword">interface</span> <span class="class-name">CodeAssistant</span> {
+    <span class="annotation">@SystemMessage</span>(<span class="string">"You are a helpful Java coding assistant."</span>)
+    <span class="class-name">String</span> <span class="method">chat</span>(<span class="class-name">String</span> message);
+    
+    <span class="annotation">@UserMessage</span>(<span class="string">"Explain this Java code: {{code}}"</span>)
+    <span class="class-name">String</span> <span class="method">explainCode</span>(<span class="annotation">@V</span>(<span class="string">"code"</span>) <span class="class-name">String</span> code);
+}
+
+<span class="keyword">public class</span> <span class="class-name">OpenAIIntegration</span> {
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="comment">// Create OpenAI model</span>
+        <span class="keyword">var</span> model = <span class="class-name">OpenAiChatModel</span>.<span class="method">builder</span>()
+            .<span class="method">apiKey</span>(<span class="class-name">System</span>.<span class="method">getenv</span>(<span class="string">"OPENAI_API_KEY"</span>))
+            .<span class="method">modelName</span>(<span class="string">"gpt-4o"</span>)
+            .<span class="method">build</span>();
+        
+        <span class="comment">// Create AI Service</span>
+        <span class="class-name">CodeAssistant</span> assistant = <span class="class-name">AiServices</span>.<span class="method">create</span>(
+            <span class="class-name">CodeAssistant</span>.<span class="keyword">class</span>, model
+        );
+        
+        <span class="comment">// Use the assistant</span>
+        <span class="class-name">String</span> response = assistant.<span class="method">chat</span>(
+            <span class="string">"How do I implement a binary search in Java?"</span>
+        );
+        <span class="class-name">System</span>.out.<span class="method">println</span>(response);
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span class="code-title">SpringAIController.java - Spring AI Integration</span>
+                </div>
+                <pre><code><span class="keyword">import</span> org.springframework.ai.chat.*;
+<span class="keyword">import</span> org.springframework.web.bind.annotation.*;
+
+<span class="annotation">@RestController</span>
+<span class="annotation">@RequestMapping</span>(<span class="string">"/api/ai"</span>)
+<span class="keyword">public class</span> <span class="class-name">SpringAIController</span> {
+    
+    <span class="keyword">private final</span> <span class="class-name">ChatClient</span> chatClient;
+    
+    <span class="keyword">public</span> <span class="class-name">SpringAIController</span>(<span class="class-name">ChatClient</span>.<span class="class-name">Builder</span> builder) {
+        <span class="keyword">this</span>.chatClient = builder
+            .<span class="method">defaultSystem</span>(<span class="string">"You are a helpful Java expert."</span>)
+            .<span class="method">build</span>();
+    }
+    
+    <span class="annotation">@PostMapping</span>(<span class="string">"/chat"</span>)
+    <span class="keyword">public</span> <span class="class-name">String</span> <span class="method">chat</span>(<span class="annotation">@RequestBody</span> <span class="class-name">String</span> message) {
+        <span class="keyword">return</span> chatClient.<span class="method">prompt</span>()
+            .<span class="method">user</span>(message)
+            .<span class="method">call</span>()
+            .<span class="method">content</span>();
+    }
+    
+    <span class="annotation">@PostMapping</span>(<span class="string">"/analyze-code"</span>)
+    <span class="keyword">public</span> <span class="class-name">CodeAnalysis</span> <span class="method">analyzeCode</span>(<span class="annotation">@RequestBody</span> <span class="class-name">String</span> code) {
+        <span class="keyword">return</span> chatClient.<span class="method">prompt</span>()
+            .<span class="method">user</span>(<span class="string">"Analyze this code and return JSON: "</span> + code)
+            .<span class="method">call</span>()
+            .<span class="method">entity</span>(<span class="class-name">CodeAnalysis</span>.<span class="keyword">class</span>);
+    }
+}</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 6: AI-Powered IDEs -->
+    <section id="ai-ides">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">6</span>
+                <h2>AI-Powered IDEs for Java</h2>
+                <p>Boost your productivity with intelligent development environments</p>
+            </div>
+
+            <div class="ide-grid">
+                <div class="ide-card">
+                    <div class="ide-header intellij">
+                        <h4>🧠 IntelliJ IDEA + AI Assistant</h4>
+                        <p>JetBrains' flagship IDE with integrated AI</p>
+                    </div>
+                    <ul class="ide-features">
+                        <li><span class="check">✓</span> AI-powered code completion</li>
+                        <li><span class="check">✓</span> Junie autonomous coding agent</li>
+                        <li><span class="check">✓</span> Smart refactoring suggestions</li>
+                        <li><span class="check">✓</span> Natural language code generation</li>
+                        <li><span class="check">✓</span> Best-in-class Java support</li>
+                        <li><span class="check">✓</span> Multiple LLM support (Claude, GPT)</li>
+                    </ul>
+                </div>
+
+                <div class="ide-card">
+                    <div class="ide-header copilot">
+                        <h4>🤖 GitHub Copilot</h4>
+                        <p>AI pair programmer for all major IDEs</p>
+                    </div>
+                    <ul class="ide-features">
+                        <li><span class="check">✓</span> Real-time code suggestions</li>
+                        <li><span class="check">✓</span> Agent mode for autonomous coding</li>
+                        <li><span class="check">✓</span> Chat assistance in IDE</li>
+                        <li><span class="check">✓</span> Works with IntelliJ & VS Code</li>
+                        <li><span class="check">✓</span> App modernization for Java</li>
+                        <li><span class="check">✓</span> 46% code contribution rate</li>
+                    </ul>
+                </div>
+
+                <div class="ide-card">
+                    <div class="ide-header vscode">
+                        <h4>💻 VS Code + Extensions</h4>
+                        <p>Lightweight editor with powerful AI extensions</p>
+                    </div>
+                    <ul class="ide-features">
+                        <li><span class="check">✓</span> GitHub Copilot integration</li>
+                        <li><span class="check">✓</span> Multiple AI assistant options</li>
+                        <li><span class="check">✓</span> Java Extension Pack</li>
+                        <li><span class="check">✓</span> Free with Copilot subscription</li>
+                        <li><span class="check">✓</span> Extensive marketplace</li>
+                        <li><span class="check">✓</span> Fast and lightweight</li>
+                    </ul>
+                </div>
+
+                <div class="ide-card">
+                    <div class="ide-header cursor">
+                        <h4>⚡ Cursor IDE</h4>
+                        <p>AI-native code editor built from the ground up</p>
+                    </div>
+                    <ul class="ide-features">
+                        <li><span class="check">✓</span> AI-first architecture</li>
+                        <li><span class="check">✓</span> Inline AI chat assistance</li>
+                        <li><span class="check">✓</span> Smart code refactoring</li>
+                        <li><span class="check">✓</span> Context-aware suggestions</li>
+                        <li><span class="check">✓</span> Multi-file editing</li>
+                        <li><span class="check">✓</span> Natural language commands</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content-block" style="margin-top: 3rem;">
+                <h3><span class="icon">🛠️</span> AI Coding Agents</h3>
+                <p>Beyond traditional IDE assistance, AI coding agents can autonomously execute complex development tasks:</p>
+                
+                <div class="feature-grid" style="margin-top: 2rem;">
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h4>GitHub Copilot Agent Mode</h4>
+                        <p>Execute programming tasks autonomously, running commands and modifying multiple files to complete requests.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🤖</div>
+                        <h4>JetBrains Junie</h4>
+                        <p>Autonomous AI agent that navigates projects, executes terminal commands, and creates/edits files independently.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <h4>Claude Code</h4>
+                        <p>Anthropic's command-line agentic coding tool that delegates development tasks directly from your terminal.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 7: Java Career Opportunities -->
+    <section id="careers" style="background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">7</span>
+                <h2>Java Career Opportunities</h2>
+                <p>Explore high-demand job roles in the Java ecosystem</p>
+            </div>
+
+            <div class="job-roles-container">
+                <div class="job-card">
+                    <h4>👨‍💻 Java Developer</h4>
+                    <div class="salary">$91,000 - $141,000/year</div>
+                    <p>Build and maintain Java applications, APIs, and backend services for enterprise systems.</p>
+                </div>
+                <div class="job-card">
+                    <h4>🏗️ Java Architect</h4>
+                    <div class="salary">$126,000 - $170,000/year</div>
+                    <p>Design system architecture, make technology decisions, and guide development teams.</p>
+                </div>
+                <div class="job-card">
+                    <h4>🌐 Full-Stack Developer</h4>
+                    <div class="salary">$100,000 - $150,000/year</div>
+                    <p>Develop both frontend and backend using Java with frameworks like Spring Boot and React.</p>
+                </div>
+                <div class="job-card">
+                    <h4>☁️ Cloud/DevOps Engineer</h4>
+                    <div class="salary">$110,000 - $160,000/year</div>
+                    <p>Deploy and manage Java applications on cloud platforms like AWS, Azure, and GCP.</p>
+                </div>
+                <div class="job-card">
+                    <h4>🤖 AI/ML Engineer</h4>
+                    <div class="salary">$130,000 - $200,000/year</div>
+                    <p>Build AI-powered applications using Java frameworks like LangChain4j and Spring AI.</p>
+                </div>
+                <div class="job-card">
+                    <h4>📊 Big Data Engineer</h4>
+                    <div class="salary">$120,000 - $175,000/year</div>
+                    <p>Process large datasets using Java-based tools like Apache Hadoop, Spark, and Kafka.</p>
+                </div>
+            </div>
+
+            <div class="content-block" style="margin-top: 3rem;">
+                <h3><span class="icon">📈</span> Skills in High Demand (2025)</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Required Skills</th>
+                            <th>Importance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Core Java</strong></td>
+                            <td>Java 17+, Collections, Streams, Concurrency</td>
+                            <td>⭐⭐⭐⭐⭐</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Frameworks</strong></td>
+                            <td>Spring Boot, Spring Security, Spring Cloud</td>
+                            <td>⭐⭐⭐⭐⭐</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AI Integration</strong></td>
+                            <td>LangChain4j, Spring AI, OpenAI API</td>
+                            <td>⭐⭐⭐⭐</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cloud Services</strong></td>
+                            <td>AWS, Azure, GCP, Kubernetes, Docker</td>
+                            <td>⭐⭐⭐⭐⭐</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Databases</strong></td>
+                            <td>SQL, NoSQL, JPA, Hibernate, Vector DBs</td>
+                            <td>⭐⭐⭐⭐</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AI Tools</strong></td>
+                            <td>GitHub Copilot, AI coding agents, Prompt engineering</td>
+                            <td>⭐⭐⭐⭐</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 8: Future of Java -->
+    <section id="future">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">8</span>
+                <h2>The Future of Java in the AI Era</h2>
+                <p>What's next for Java in the age of artificial intelligence</p>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>2025 - Java 25 LTS</h4>
+                        <p>Enhanced AI capabilities, improved startup times, and structured concurrency become production-ready.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>2026 - AI-First Development</h4>
+                        <p>AI coding agents become standard workflow tools, with 50%+ code generated by AI assistants.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>2027 - Project Valhalla</h4>
+                        <p>Value types and improved memory layouts revolutionize performance for data-intensive AI workloads.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>2028 - Native AI Runtime</h4>
+                        <p>JVM gains native tensor operations and ML inference capabilities for edge AI deployment.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="future-grid">
+                <div class="future-card">
+                    <h4>🚀 Enhanced Performance</h4>
+                    <p>AOT compilation, improved garbage collectors like Generational Shenandoah, and Vector API will make Java even faster for AI workloads.</p>
+                </div>
+                <div class="future-card">
+                    <h4>🔗 Seamless AI Integration</h4>
+                    <p>Native support for LLM operations, vector databases, and AI model inference directly in the Java runtime.</p>
+                </div>
+                <div class="future-card">
+                    <h4>☁️ Cloud-Native Excellence</h4>
+                    <p>Faster cold starts, reduced memory footprint, and improved containerization for serverless AI applications.</p>
+                </div>
+                <div class="future-card">
+                    <h4>🛡️ Quantum-Safe Security</h4>
+                    <p>Built-in quantum-resistant cryptography (ML-KEM) to protect against future quantum computing threats.</p>
+                </div>
+                <div class="future-card">
+                    <h4>🎓 Easier Learning Curve</h4>
+                    <p>Compact source files and simplified syntax make Java more accessible for beginners and AI-assisted learning.</p>
+                </div>
+                <div class="future-card">
+                    <h4>🤝 Enterprise Resilience</h4>
+                    <p>Continued dominance in enterprise applications with 58% of large companies planning to increase Java headcount.</p>
+                </div>
+            </div>
+
+            <div class="callout" style="margin-top: 3rem;">
+                <div class="callout-title">🎯 Key Takeaway</div>
+                <p>Java's future is intrinsically linked with AI. By 2025, 52% of companies are using AI tools for Java development. Developers who master both Java fundamentals and AI integration will be exceptionally valuable in the job market. The language continues to evolve with features specifically designed to support AI-powered applications while maintaining its enterprise-grade reliability.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Summary Section -->
+    <section id="summary" class="ai-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">✓</span>
+                <h2>Chapter Summary</h2>
+                <p>Key concepts covered in this introduction</p>
+            </div>
+
+            <div class="ai-framework-grid">
+                <div class="ai-framework-card">
+                    <h4>📚 Java Fundamentals</h4>
+                    <ul>
+                        <li>Platform-independent, object-oriented language</li>
+                        <li>Write Once, Run Anywhere (WORA) principle</li>
+                        <li>JDK, JRE, and JVM architecture</li>
+                        <li>Strong typing and robust memory management</li>
+                    </ul>
+                </div>
+                <div class="ai-framework-card">
+                    <h4>🆕 Java 25 Highlights</h4>
+                    <ul>
+                        <li>Compact source files for simpler programs</li>
+                        <li>Module imports for cleaner code</li>
+                        <li>Structured concurrency for multi-threading</li>
+                        <li>Primitive pattern matching in switch</li>
+                    </ul>
+                </div>
+                <div class="ai-framework-card">
+                    <h4>🤖 AI Integration</h4>
+                    <ul>
+                        <li>LangChain4j for LLM-powered apps</li>
+                        <li>Spring AI for enterprise integration</li>
+                        <li>OpenAI, Anthropic, and other providers</li>
+                        <li>RAG and agent capabilities</li>
+                    </ul>
+                </div>
+                <div class="ai-framework-card">
+                    <h4>💼 Career Path</h4>
+                    <ul>
+                        <li>Java Developer ($91K-$141K)</li>
+                        <li>Java Architect ($126K-$170K)</li>
+                        <li>AI/ML Engineer ($130K-$200K)</li>
+                        <li>Strong job market outlook</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>Chapter 1: Introduction to Java in the AI Era | Java 25 LTS Edition</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;">© 2025 | Created for educational purposes</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.content-block, .feature-card, .ai-framework-card, .ide-card, .job-card, .future-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

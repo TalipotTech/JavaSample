@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java & Java for Web Tutorial</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+
+        h1 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        /* Table of Contents Styling */
+        .toc-container {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .toc-container h2 {
+            margin-top: 0;
+            font-size: 1.2em;
+        }
+
+        .toc ul {
+            list-style-type: none;
+            padding-left: 5px;
+        }
+
+        .toc .main-section {
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 1.1em;
+        }
+
+        .toc .chapter {
+            padding-left: 20px;
+            font-weight: normal;
+        }
+
+        .toc a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        /* Chapter Styling */
+        .chapter {
+            background-color: #fff;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .chapter h2 {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .sub-section {
+            margin-top: 20px;
+        }
+
+        /* Code Block Styling */
+        pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            color: #d63384;
+        }
+
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            color: inherit;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .badge {
+            background-color: #e0e0e0;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Java & Java for Web Tutorial</h1>
+
+    <!-- TABLE OF CONTENTS -->
+    <div class="toc-container">
+        <h2>Table of Contents</h2>
+        <div class="toc">
+            <div class="main-section">Part 1: Core Java Fundamentals</div>
+            <ul>
+                <li class="chapter"><a href="#p1-c1">Chapter 1: Getting Started</a></li>
+                <li class="chapter"><a href="#p1-c2">Chapter 2: Control Flow</a></li>
+                <li class="chapter"><a href="#p1-c3">Chapter 3: OOP Basics</a></li>
+                <li class="chapter"><a href="#p1-c4">Chapter 4: OOP Deep Dive</a></li>
+                <li class="chapter"><a href="#p1-c5">Chapter 5: Arrays and Collections</a></li>
+                <li class="chapter"><a href="#p1-c6">Chapter 6: Exception Handling</a></li>
+                <li class="chapter"><a href="#p1-c7">Chapter 7: Essential Java APIs</a></li>
+            </ul>
+
+            <div class="main-section">Part 2: Java for Web Development</div>
+            <ul>
+                <li class="chapter"><a href="#p2-c8">Chapter 8: Web Basics</a></li>
+                <li class="chapter"><a href="#p2-c9">Chapter 9: Databases (SQL)</a></li>
+                <li class="chapter"><a href="#p2-c10">Chapter 10: JDBC</a></li>
+                <li class="chapter"><a href="#p2-c11">Chapter 11: Architecture & Build Tools</a></li>
+                <li class="chapter"><a href="#p2-c12">Chapter 12: Introduction to Spring Boot</a></li>
+                <li class="chapter"><a href="#p2-c13">Chapter 13: Building RESTful APIs</a></li>
+                <li class="chapter"><a href="#p2-c14">Chapter 14: Data Access with JPA</a></li>
+                <li class="chapter"><a href="#p2-c15">Chapter 15: Service Layer</a></li>
+                <li class="chapter"><a href="#p2-c16">Chapter 16: Frontend Integration</a></li>
+            </ul>
+
+            <div class="main-section">Part 3: Capstone Project</div>
+            <ul>
+                <li class="chapter"><a href="#p3-final">Final Project: Task Management System</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- CONTENT START -->
+
+    <!-- PART 1 -->
+    <h1 style="border-bottom: none; font-size: 2em; color: #3498db;">PART 1: CORE JAVA FUNDAMENTALS</h1>
+
+    <div id="p1-c1" class="chapter">
+        <h2>Chapter 1: Getting Started</h2>
+
+        <div class="sub-section">
+            <h3>1.1 Detailed Concepts</h3>
+            <p><strong>The Java Ecosystem:</strong> Unlike languages that compile to machine code (like C++), Java compiles to <strong>Bytecode</strong> (<code>.class</code> files). This bytecode runs on the <strong>Java Virtual Machine (JVM)</strong>. This is why Java is "Write Once, Run Anywhere"—Windows, Mac, and Linux all have their own JVMs that understand the same bytecode.</p>
+            <p><strong>JDK vs. JRE:</strong></p>
+            <ul>
+                <li><strong>JRE (Java Runtime Environment):</strong> Contains only what is needed to <em>run</em> Java programs (JVM + Libraries).</li>
+                <li><strong>JDK (Java Development Kit):</strong> Contains the JRE plus tools like the compiler (<code>javac</code>) and debugger (<code>jdb</code>). As a developer, you must install the JDK.</li>
+            </ul>
+            <p><strong>Entry Point:</strong> Every Java application must have a class with a <code>main</code> method. This is the method the JVM looks for to start the program.</p>
+        </div>
+
+        <div class="sub-section">
+            <h3>1.2 Sample Code</h3>
+<pre><code>/**
+ * This is a documentation comment.
+ * Class name must match the file name (HelloWorld.java)
+ */
+public class HelloWorld {
+
+    // 'public' means accessible from anywhere.
+    // 'static' means we don't need to create an object of the class to run this.
+    // 'void' means this method returns nothing.
+    // 'String[] args' is an array of command-line arguments.
+    public static void main(String[] args) {
+        
+        // Variables must declare a type (Strong Typing)
+        String message = "Welcome to Java Mastery";
+        int currentYear = 2023;
+        boolean isJavaFun = true;
+
+        // String Concatenation
+        System.out.println(message + " - Year: " + currentYear);
+        
+        // Control Flow check
+        if (isJavaFun) {
+            System.out.println("Java is indeed fun!");
+        }
+    }
+}</code></pre>
+        </div>
+
+        <div class="sub-section">
+            <h3>1.3 Common Pitfalls</h3>
+            <ul>
+                <li><strong>Case Sensitivity:</strong> <code>System.out.println</code> works; <code>system.out.println</code> does not.</li>
+                <li><strong>Missing Semicolons:</strong> Unlike Python or JavaScript, Java statements <em>must</em> end with a semicolon.</li>
+            </ul>
+        </div>
+
+        <div class="sub-section">
+            <h3>1.4 Practice Questions</h3>
+            <table>
+                <tr><th>Question</th><th>Answer</th></tr>
+                <tr><td>Why do we declare the <code>main</code> method as <code>static</code>?</td><td>Because the JVM needs to call the method before creating any objects of the class.</td></tr>
+                <tr><td>What happens if you name your class <code>Test</code> but save the file as <code>Hello.java</code>?</td><td>The code will fail to compile. In Java, the public class name must exactly match the filename.</td></tr>
+            </table>
+        </div>
+
+        <div class="sub-section">
+            <h3>1.6 Exercise</h3>
+            <p>Write a program that declares two integers (e.g., <code>length</code> and <code>width</code>). Calculate the perimeter (<code>2 * (length + width)</code>) and area (<code>length * width</code>). Print the results in the format: <code>Area: 20, Perimeter: 18</code>.</p>
+        </div>
+    </div>
+
+    <div id="p1-c2" class="chapter">
+        <h2>Chapter 2: Control Flow</h2>
+        <div class="sub-section">
+            <h3>2.1 Detailed Concepts</h3>
+            <p><strong>The <code>switch</code> Statement:</strong> A cleaner alternative to many <code>if-else</code> statements when checking a single variable against specific values.</p>
+            <p><strong>Enhanced For-Loop (For-Each):</strong> Designed for iterating over arrays and collections without using an index counter.</p>
+        </div>
+
+        <div class="sub-section">
+            <h3>2.2 Sample Code</h3>
+<pre><code>public class FlowControl {
+    public static void main(String[] args) {
+        int dayOfWeek = 5;
+        
+        // Traditional Switch
+        switch (dayOfWeek) {
+            case 1:
+                System.out.println("Monday");
+                break; // Without break, it "falls through" to the next case!
+            case 5:
+                System.out.println("Friday - TGIF!");
+                break;
+            default:
+                System.out.println("Mid-week day");
+        }
+
+        // Enhanced For-Loop
+        String[] fruits = {"Apple", "Banana", "Cherry"};
+        System.out.println("\nMy Fruit List:");
+        for (String fruit : fruits) {
+            System.out.println("- " + fruit);
+        }
+    }
+}</code></pre>
+        </div>
+
+        <div class="sub-section">
+            <h3>2.4 Practice Questions</h3>
+            <table>
+                <tr><th>Question</th><th>Answer</th></tr>
+                <tr><td>What is the difference between <code>x++</code> and <code>++x</code> inside a loop condition?</td><td><code>x++</code> (post-increment) returns the value of <code>x</code> first, then adds 1. <code>++x</code> (pre-increment) adds 1 first, then returns the value.</td></tr>
+                <tr><td>Can a <code>switch</code> statement work on a String in Java?</td><td>Yes, starting from Java 7.</td></tr>
+            </table>
+        </div>
+
+        <div class="sub-section">
+            <h3>2.6 Exercise</h3>
+            <p>Create a simple "FizzBuzz" program. Loop from 1 to 30. If the number is divisible by 3, print "Fizz". If divisible by 5, print "Buzz". If divisible by both, print "FizzBuzz". Otherwise, print the number.</p>
+        </div>
+    </div>
+
+    <div id="p1-c3" class="chapter">
+        <h2>Chapter 3: OOP Basics</h2>
+        <div class="sub-section">
+            <h3>3.1 Detailed Concepts</h3>
+            <p><strong>State vs. Behavior:</strong> Objects have <strong>State</strong> (fields/variables) and <strong>Behavior</strong> (methods).</p>
+            <p><strong>The <code>this</code> keyword:</strong> Refers to the current instance of the object. It is used to distinguish between class fields and parameters with the same name (shadowing).</p>
+        </div>
+
+        <div class="sub-section">
+            <h3>3.2 Sample Code</h3>
+<pre><code>class Student {
+    // Fields (State) - Encapsulated (private)
+    private String name;
+    private int age;
+
+    // Constructor: Runs once when object is created
+    public Student(String name, int age) {
+        this.name = name; // 'this.name' is the field, 'name' is the parameter
+        this.age = age;
+    }
+
+    // Method (Behavior)
+    public void introduce() {
+        System.out.println("Hi, I am " + name + " and I am " + age + " years old.");
+    }
+    
+    // Getters (Accessors)
+    public String getName() { return name; }
+}</code></pre>
+        </div>
+
+        <div class="sub-section">
+            <h3>3.4 Practice Questions</h3>
+            <table>
+                <tr><th>Question</th><th>Answer</th></tr>
+                <tr><td>Can a class have more than one constructor?</td><td>Yes, this is called <strong>Constructor Overloading</strong>.</td></tr>
+                <tr><td>What is a local variable vs. an instance variable?</td><td>A local variable is declared inside a method and exists only while that method runs. An instance variable (field) is declared in the class and exists as long as the object exists.</td></tr>
+            </table>
+        </div>
+        
+        <div class="sub-section">
+            <h3>3.6 Exercise</h3>
+            <p>Create a class <code>BankAccount</code>. Fields: <code>accountNumber</code> (String), <code>balance</code> (double). Constructor: Initialize account number and set balance to 0. Methods: <code>deposit(double amount)</code> and <code>withdraw(double amount)</code>. Ensure withdrawal fails if balance is insufficient. Print a message for every transaction.</p>
+        </div>
+    </div>
+
+    <div id="p1-c4" class="chapter">
+        <h2>Chapter 4: OOP Deep Dive</h2>
+        <div class="sub-section">
+            <h3>4.1 Detailed Concepts</h3>
+            <p><strong>Inheritance (<code>extends</code>):</strong> Allows code reuse. The subclass inherits all non-private members of the superclass.</p>
+            <p><strong>Method Overriding:</strong> Redefining a parent's method in the child to provide specific behavior. Requires the <code>@Override</code> annotation.</p>
+            <p><strong>Abstract Classes:</strong> Cannot be instantiated. They are designed to be subclassed. They can have both abstract (no body) and concrete methods.</p>
+        </div>
+
+        <div class="sub-section">
+            <h3>4.2 Sample Code</h3>
+<pre><code>// Abstract Parent Class
+abstract class Shape {
+    String color;
+
+    public Shape(String color) {
+        this.color = color;
+    }
+
+    // Abstract method: Child classes MUST implement this
+    abstract double area();
+    
+    void displayColor() {
+        System.out.println("Shape color is " + color);
+    }
+}
+
+// Child Class
+class Circle extends Shape {
+    double radius;
+
+    public Circle(String color, double radius) {
+        super(color); // Calls parent constructor
+        this.radius = radius;
+    }
+
+    @Override
+    double area() {
+        return Math.PI * radius * radius;
+    }
+}</code></pre>
+        </div>
+        
+        <div class="sub-section">
+            <h3>4.6 Exercise</h3>
+            <p>1. Create an abstract class <code>Vehicle</code> with a method <code>startEngine()</code>. 2. Create <code>Car</code> and <code>Motorcycle</code> classes extending <code>Vehicle</code>. 3. Override <code>startEngine()</code> to print specific sounds ("Vroom" vs "Pop-pop"). 4. Create an array of type <code>Vehicle</code> containing one car and one motorcycle. Loop through the array and start all engines (Polymorphism).</p>
+        </div>
+    </div>
+
+    <div id="p1-c5" class="chapter">
+        <h2>Chapter 5: Arrays and Collections</h2>
+        <div class="sub-section">
+            <h3>5.1 Detailed Concepts</h3>
+            <p><strong>Wrapper Classes:</strong> Java Collections (List, Map) cannot store primitives (<code>int</code>, <code>double</code>). They store Objects. Java provides wrapper classes (<code>Integer</code>, <code>Double</code>) to wrap primitives into objects.</p>
+            <p><strong>Generics (<code>&lt;&gt;</code>):</strong> Ensures type safety. Without generics, a List would accept any Object, leading to runtime crashes when casting.</p>
+        </div>
+
+        <div class="sub-section">
+            <h3>5.2 Sample Code</h3>
+<pre><code>import java.util.*;
+
+public class CollectionDemo {
+    public static void main(String[] args) {
+        // 1. ArrayList - Dynamic array
+        List&lt;String&gt; shoppingList = new ArrayList&lt;&gt;();
+        shoppingList.add("Milk");
+        shoppingList.add("Eggs");
+
+        // 2. HashMap - Key/Value pairs
+        Map&lt;String, String&gt; phoneBook = new HashMap&lt;&gt;();
+        phoneBook.put("Alice", "555-1234");
+        phoneBook.put("Bob", "555-9876");
+    }
+}</code></pre>
+        </div>
+
+        <div class="sub-section">
+            <h3>5.4 Practice Questions</h3>
+            <table>
+                <tr><th>Question</th><th>Answer</th></tr>
+                <tr><td>Does <code>ArrayList</code> allow duplicate elements?</td><td>Yes.</td></tr>
+                <tr><td>What happens if you put a duplicate key into a <code>HashMap</code>?</td><td>The new value overwrites the old value for that key.</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="p1-c6" class="chapter">
+        <h2>Chapter 6: Exception Handling & Basic I/O</h2>
+        <div class="sub-section">
+            <h3>6.1 Detailed Concepts</h3>
+            <p><strong>Checked vs. Unchecked Exceptions:</strong></p>
+            <ul>
+                <li><strong>Checked:</strong> The compiler forces you to handle them (e.g., <code>IOException</code>). Usually recoverable.</li>
+                <li><strong>Unchecked:</strong> Runtime errors (e.g., <code>NullPointerException</code>, <code>ArithmeticException</code>). Usually programming bugs.</li>
+            </ul>
+            <p><strong>Try-With-Resources:</strong> A syntax (Java 7+) that automatically closes resources (like Files) to prevent memory leaks.</p>
+        </div>
+
+        <div class="sub-section">
+            <h3>6.2 Sample Code</h3>
+<pre><code>import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+public class ExceptionDemo {
+    public static void main(String[] args) {
+        // Try-with-resources ensures 'scanner' closes automatically
+        try (Scanner scanner = new Scanner(new File("numbers.txt"))) {
+            while (scanner.hasNext()) {
+                System.out.println(scanner.nextInt());
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found! Please create numbers.txt");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+        </div>
+    </div>
+
+    <div id="p1-c7" class="chapter">
+        <h2>Chapter 7: Essential Java APIs</h2>
+        <div class="sub-section">
+            <h3>7.1 Detailed Concepts</h3>
+            <p><strong>String Immutability:</strong> Strings in Java are immutable. Every time you "edit" a string, Java creates a <em>new</em> String object.</p>
+            <p><strong>StringBuilder:</strong> A mutable sequence of characters. Highly efficient for loops or string manipulation.</p>
+        </div>
+
+        <div class="sub-section">
+            <h3>7.2 Sample Code</h3>
+<pre><code>import java.time.LocalDate;
+
+public class APIDemo {
+    public static void main(String[] args) {
+        // String Immutability
+        String s1 = "Hello";
+        String s2 = s1.concat(" World"); // Creates a new object!
+        
+        // StringBuilder (Efficient)
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i&lt;100; i++) {
+            sb.append(i); // Modifies the SAME object
+        }
+
+        // Java Time API
+        LocalDate now = LocalDate.now();
+        LocalDate future = now.plusDays(10);
+    }
+}</code></pre>
+        </div>
+    </div>
+
+    <!-- PART 2 -->
+    <h1 style="border-bottom: none; font-size: 2em; color: #3498db;">PART 2: JAVA FOR WEB DEVELOPMENT</h1>
+
+    <div id="p2-c8" class="chapter">
+        <h2>Chapter 8: Web Basics (The Context)</h2>
+        <div class="sub-section">
+            <h3>8.1 Detailed Concepts</h3>
+            <p><strong>The Request/Response Cycle:</strong> Client (Browser) sends HTTP Request -> Server processes -> Server sends HTTP Response (Status Code, Body).</p>
+            <p><strong>HTTP Methods:</strong> GET (Retrieve), POST (Create), PUT/PATCH (Update), DELETE (Remove).</p>
+        </div>
+
+        <div class="sub-section">
+            <h3>8.2 Sample Data (JSON)</h3>
+<pre><code>{
+  "username": "john_doe",
+  "email": "john@example.com"
+}</code></pre>
+        </div>
+
+        <div class="sub-section">
+            <h3>8.4 Practice Questions</h3>
+            <table>
+                <tr><th>Question</th><th>Answer</th></tr>
+                <tr><td>In a REST API, which HTTP method is idempotent (can be called multiple times with same result)?</td><td>GET, PUT, DELETE. POST is not idempotent.</td></tr>
+                <tr><td>What is the difference between 401 and 403?</td><td>401 Unauthorized (User not logged in). 403 Forbidden (User logged in, but lacks permission).</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="p2-c9" class="chapter">
+        <h2>Chapter 9: Databases (SQL)</h2>
+        <div class="sub-section">
+            <h3>9.1 Detailed Concepts</h3>
+            <p><strong>Primary Key (PK):</strong> A unique ID for every row.</p>
+            <p><strong>Foreign Key (FK):</strong> A field in one table that links to the PK of another table.</p>
+        </div>
+
+        <div class="sub-section">
+            <h3>9.2 Sample SQL</h3>
+<pre><code>-- Join Tables (Find employees and their dept name)
+SELECT e.name, d.name as department
+FROM employees e
+JOIN departments d ON e.department_id = d.id;</code></pre>
+        </div>
+    </div>
+
+    <div id="p2-c10" class="chapter">
+        <h2>Chapter 10: JDBC</h2>
+        <div class="sub-section">
+            <h3>10.1 Detailed Concepts</h3>
+            <p><strong>PreparedStatement:</strong> Precompiles the SQL query. It is safer and faster than <code>Statement</code>. It prevents <strong>SQL Injection</strong>.</p>
+        </div>
+
+        <div class="sub-section">
+            <h3>10.2 Sample Code</h3>
+<pre><code>import java.sql.*;
+
+public class JDBCDemo {
+    static final String DB_URL = "jdbc:mysql://localhost/mydb";
+
+    public static void main(String[] args) {
+        String query = "SELECT id, name, salary FROM employees WHERE salary &gt; ?";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, "root", "pass");
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setDouble(1, 50000.0);
+            ResultSet rs = pstmt.executeQuery();
+
+            while(rs.next()){
+                System.out.println(rs.getInt("id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+        </div>
+    </div>
+
+    <div id="p2-c11" class="chapter">
+        <h2>Chapter 11: Web Architecture & Build Tools</h2>
+        <div class="sub-section">
+            <h3>11.1 Detailed Concepts</h3>
+            <p><strong>Maven:</strong> Uses <code>pom.xml</code> to define dependencies.</p>
+            <p><strong>MVC Pattern:</strong> Model (Data), View (UI), Controller (Traffic Cop).</p>
+        </div>
+
+        <div class="sub-section">
+            <h3>11.2 Sample Maven Configuration</h3>
+<pre><code>&lt;dependencies&gt;
+    &lt;!-- Spring Boot Starter Web --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+        </div>
+    </div>
+
+    <div id="p2-c12" class="chapter">
+        <h2>Chapter 12: Introduction to Spring Boot</h2>
+        <div class="sub-section">
+            <h3>12.1 Detailed Concepts</h3>
+            <p><strong>Inversion of Control (IoC):</strong> The Spring Container creates and manages objects (Beans), not you.</p>
+            <p><strong>Auto-Configuration:</strong> Spring Boot guesses what you need based on the classpath.</p>
+        </div>
+
+        <div class="sub-section">
+            <h3>12.2 Sample Code</h3>
+<pre><code>import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class MyApplication {
+    public static void main(String[] args) {
+        // Starts the embedded Tomcat server
+        SpringApplication.run(MyApplication.class, args);
+    }
+}</code></pre>
+        </div>
+    </div>
+
+    <div id="p2-c13" class="chapter">
+        <h2>Chapter 13: Building RESTful APIs</h2>
+        <div class="sub-section">
+            <h3>13.1 Detailed Concepts</h3>
+            <p><strong>Annotations:</strong> <code>@GetMapping</code>, <code>@PostMapping</code>, <code>@PathVariable</code>, <code>@RequestBody</code>.</p>
+        </div>
+
+        <div class="sub-section">
+            <h3>13.2 Sample Code</h3>
+<pre><code>import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/products")
+public class ProductController {
+
+    // POST http://localhost:8080/api/products
+    @PostMapping
+    public String createProduct(@RequestBody Product product) {
+        return "Product created: " + product.getName();
+    }
+}
+
+class Product {
+    private String name;
+    // Getters and Setters required
+}</code></pre>
+        </div>
+    </div>
+
+    <div id="p2-c14" class="chapter">
+        <h2>Chapter 14: Data Access with Spring Data JPA</h2>
+        <div class="sub-section">
+            <h3>14.1 Detailed Concepts</h3>
+            <p><strong>ORM:</strong> Technique to convert data between object-oriented systems and relational databases.</p>
+            <p><strong>Spring Data JPA:</strong> You don't write SQL; you write method names.</p>
+        </div>
+
+        <div class="sub-section">
+            <h3>14.2 Sample Code</h3>
+<pre><code>import javax.persistence.*;
+
+@Entity
+@Table(name = "users")
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    private String username;
+    // Getters/Setters
+}
+
+public interface UserRepository extends JpaRepository&lt;User, Long&gt; {
+    // Spring generates SQL automatically
+    User findByUsername(String username);
+}</code></pre>
+        </div>
+    </div>
+
+    <div id="p2-c15" class="chapter">
+        <h2>Chapter 15: Service Layer & Business Logic</h2>
+        <div class="sub-section">
+            <h3>15.1 Detailed Concepts</h3>
+            <p><strong>Separation of Concerns:</strong> Controller (HTTP), Service (Logic), Repository (SQL).</p>
+            <p><strong>@Transactional:</strong> Ensures a group of DB operations either all succeed or all fail.</p>
+        </div>
+
+        <div class="sub-section">
+            <h3>15.2 Sample Code</h3>
+<pre><code>import org.springframework.stereotype.Service;
+
+@Service
+public class UserService {
+    @Autowired
+    private UserRepository userRepo;
+
+    public User registerUser(User user) {
+        if (user.getUsername() == null || user.getUsername().length() &lt; 3) {
+            throw new IllegalArgumentException("Username too short");
+        }
+        return userRepo.save(user);
+    }
+}</code></pre>
+        </div>
+    </div>
+
+    <div id="p2-c16" class="chapter">
+        <h2>Chapter 16: Frontend Integration (Basic)</h2>
+        <div class="sub-section">
+            <h3>16.1 Detailed Concepts</h3>
+            <p><strong>CORS (Cross-Origin Resource Sharing):</strong> A security feature. If your Java backend runs on port 8080 and your frontend on 3000, the browser will block requests unless allowed.</p>
+        </div>
+
+        <div class="sub-section">
+            <h3>16.2 Sample Code (Handling CORS)</h3>
+<pre><code>import org.springframework.web.bind.annotation.CrossOrigin;
+
+@RestController
+@RequestMapping("/api/data")
+@CrossOrigin(origins = "http://localhost:3000") // Allow React app
+public class DataController {
+    // ...
+}</code></pre>
+        </div>
+    </div>
+
+    <!-- PART 3 -->
+    <h1 style="border-bottom: none; font-size: 2em; color: #3498db;">PART 3: CAPSTONE PROJECT</h1>
+
+    <div id="p3-final" class="chapter">
+        <h2>Final Project: Task Management System</h2>
+        <div class="sub-section">
+            <h3>Project Goal</h3>
+            <p>Create a fully functional REST API where users can manage their daily tasks.</p>
+        </div>
+
+        <div class="sub-section">
+            <h3>Requirements</h3>
+            <ol>
+                <li><strong>Setup:</strong> Spring Boot, H2 or MySQL.</li>
+                <li><strong>Entity:</strong> <code>Task</code> with id, title, description, completed.</li>
+                <li><strong>Repository:</strong> <code>TaskRepository</code> extending <code>JpaRepository</code>.</li>
+                <li><strong>Service:</strong> Logic to create, complete, and delete tasks.</li>
+                <li><strong>Controller:</strong> Endpoints for GET, POST, PUT, DELETE.</li>
+            </ol>
+        </div>
+
+        <div class="sub-section">
+            <h3>Solution Guide: Entity</h3>
+<pre><code>import javax.persistence.*;
+
+@Entity
+public class Task {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @Column(nullable = false)
+    private String title;
+    
+    private boolean completed = false; // Default false
+    
+    public Task(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
+    // Getters and Setters...
+}</code></pre>
+        </div>
+
+        <div class="sub-section">
+            <h3>Solution Guide: Service Implementation</h3>
+<pre><code>import org.springframework.stereotype.Service;
+
+@Service
+public class TaskService {
+    @Autowired
+    private TaskRepository taskRepository;
+
+    public Task completeTask(Long id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+        task.setCompleted(true);
+        return taskRepository.save(task);
+    }
+}</code></pre>
+        </div>
+    </div>
+
+</body>
+</html>

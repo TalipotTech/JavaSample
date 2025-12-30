@@ -1,0 +1,2881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 5: Inheritance & Polymorphism in Java</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8B5CF6;
+            --secondary: #EC4899;
+            --accent: #06B6D4;
+            --dark: #0F172A;
+            --light: #F8FAFC;
+            --green: #10B981;
+            --orange: #F59E0B;
+            --blue: #3B82F6;
+            --red: #EF4444;
+            --gradient-primary: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
+            --gradient-secondary: linear-gradient(135deg, #EC4899 0%, #F472B6 100%);
+            --gradient-accent: linear-gradient(135deg, #06B6D4 0%, #22D3EE 100%);
+            --gradient-green: linear-gradient(135deg, #10B981 0%, #34D399 100%);
+            --gradient-dark: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            --code-bg: #1E293B;
+            --shadow-soft: 0 4px 24px rgba(0,0,0,0.08);
+            --shadow-medium: 0 8px 32px rgba(0,0,0,0.12);
+            --shadow-strong: 0 16px 48px rgba(0,0,0,0.16);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.7;
+            font-size: 17px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%);
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 150%;
+            background: radial-gradient(ellipse, rgba(139,92,246,0.2) 0%, transparent 60%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 60%;
+            height: 100%;
+            background: radial-gradient(ellipse, rgba(236,72,153,0.15) 0%, transparent 50%);
+            animation: pulse 10s ease-in-out infinite reverse;
+        }
+
+        /* Inheritance visual in hero */
+        .inheritance-visual {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.1;
+            z-index: 1;
+        }
+
+        .class-hierarchy {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .hierarchy-box {
+            padding: 15px 30px;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--primary);
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .hierarchy-box.parent {
+            animation: floatParent 4s ease-in-out infinite;
+        }
+
+        .hierarchy-box.child {
+            animation: floatChild 4s ease-in-out infinite 0.5s;
+        }
+
+        .hierarchy-arrow {
+            width: 2px;
+            height: 30px;
+            background: var(--primary);
+            position: relative;
+        }
+
+        .hierarchy-arrow::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 10px solid var(--primary);
+        }
+
+        @keyframes floatParent {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes floatChild {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 10;
+            padding: 2rem;
+        }
+
+        .chapter-badge {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .hero h1 span {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #94A3B8;
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: white;
+            padding: 3rem 2rem;
+            margin-top: -60px;
+            position: relative;
+            z-index: 20;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 24px;
+            box-shadow: var(--shadow-strong);
+        }
+
+        .toc h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .toc-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: var(--light);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--dark);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .toc-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .toc-number {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .toc-text {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 5rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+
+        .section-number {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1.2rem;
+            line-height: 50px;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: #64748B;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Content Styles */
+        .content-block {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .content-block h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .content-block h3 .icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-secondary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .content-block p {
+            color: #475569;
+            margin-bottom: 1rem;
+        }
+
+        .content-block h4 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin: 2rem 0 1rem;
+        }
+
+        .content-block ul, .content-block ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #475569;
+        }
+
+        .content-block li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--code-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-medium);
+            position: relative;
+        }
+
+        .code-header {
+            background: #334155;
+            padding: 0.875rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .code-header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .code-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .code-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .code-dot.red { background: #EF4444; }
+        .code-dot.yellow { background: #F59E0B; }
+        .code-dot.green { background: #10B981; }
+
+        .code-filename {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #94A3B8;
+        }
+
+        .code-content {
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+
+        .code-content pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: #E2E8F0;
+            margin: 0;
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: #C084FC; font-weight: 500; }
+        .type { color: #22D3EE; }
+        .string { color: #86EFAC; }
+        .number { color: #FDE68A; }
+        .comment { color: #64748B; font-style: italic; }
+        .method { color: #FBBF24; }
+        .annotation { color: #FB923C; }
+        .variable { color: #E2E8F0; }
+        .operator { color: #F472B6; }
+
+        /* Output Blocks */
+        .output-block {
+            background: linear-gradient(135deg, #065F46 0%, #047857 100%);
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: #D1FAE5;
+            position: relative;
+        }
+
+        .output-block::before {
+            content: '▶ Output';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: #10B981;
+            padding: 2px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .output-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .info-box.tip {
+            background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(52,211,153,0.1) 100%);
+            border: 1px solid rgba(16,185,129,0.2);
+        }
+
+        .info-box.warning {
+            background: linear-gradient(135deg, rgba(245,158,11,0.1) 0%, rgba(251,191,36,0.1) 100%);
+            border: 1px solid rgba(245,158,11,0.2);
+        }
+
+        .info-box.note {
+            background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(96,165,250,0.1) 100%);
+            border: 1px solid rgba(59,130,246,0.2);
+        }
+
+        .info-box.danger {
+            background: linear-gradient(135deg, rgba(239,68,68,0.1) 0%, rgba(248,113,113,0.1) 100%);
+            border: 1px solid rgba(239,68,68,0.2);
+        }
+
+        .info-box-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .info-box.tip .info-box-icon { background: var(--gradient-green); color: white; }
+        .info-box.warning .info-box-icon { background: linear-gradient(135deg, #F59E0B, #FBBF24); color: white; }
+        .info-box.note .info-box-icon { background: linear-gradient(135deg, #3B82F6, #60A5FA); color: white; }
+        .info-box.danger .info-box-icon { background: linear-gradient(135deg, #EF4444, #F87171); color: white; }
+
+        .info-box-content h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box.tip .info-box-content h4 { color: #059669; }
+        .info-box.warning .info-box-content h4 { color: #D97706; }
+        .info-box.note .info-box-content h4 { color: #2563EB; }
+        .info-box.danger .info-box-content h4 { color: #DC2626; }
+
+        .info-box-content p {
+            margin: 0;
+            color: #475569;
+            font-size: 0.95rem;
+        }
+
+        /* Concept Cards */
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, rgba(139,92,246,0.05) 0%, rgba(236,72,153,0.05) 100%);
+            border-radius: 16px;
+            padding: 1.75rem;
+            border: 1px solid rgba(139,92,246,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+            border-color: var(--primary);
+        }
+
+        .concept-card-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .concept-card h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .concept-card p {
+            color: #64748B;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Inheritance Diagram */
+        .inheritance-diagram {
+            background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .diagram-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .diagram-class {
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            min-width: 200px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .diagram-class.parent {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+        }
+
+        .diagram-class.child {
+            background: var(--gradient-secondary);
+            color: white;
+            border: none;
+        }
+
+        .diagram-class.grandchild {
+            background: var(--gradient-accent);
+            color: white;
+            border: none;
+        }
+
+        .diagram-class-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .diagram-class-type {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            margin-top: 0.25rem;
+        }
+
+        .diagram-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--primary);
+        }
+
+        .diagram-arrow-line {
+            width: 2px;
+            height: 25px;
+            background: var(--primary);
+        }
+
+        .diagram-arrow-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            border: 1px solid var(--primary);
+            margin: 0.25rem 0;
+        }
+
+        .diagram-arrow-head {
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 10px solid var(--primary);
+        }
+
+        .diagram-children {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .comparison-table th {
+            background: var(--gradient-primary);
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #F8FAFC;
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(139,92,246,0.05);
+        }
+
+        .comparison-table td {
+            color: #475569;
+        }
+
+        .comparison-table code {
+            background: #E2E8F0;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--primary);
+        }
+
+        /* Syntax Box */
+        .syntax-box {
+            background: linear-gradient(135deg, rgba(139,92,246,0.05) 0%, rgba(236,72,153,0.05) 100%);
+            border: 2px dashed rgba(139,92,246,0.3);
+            border-radius: 16px;
+            padding: 1.75rem;
+            margin: 1.5rem 0;
+        }
+
+        .syntax-box-title {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .syntax-box pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            color: var(--dark);
+            margin: 0;
+            line-height: 1.8;
+        }
+
+        /* Method Breakdown */
+        .method-breakdown {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            border: 1px solid #E2E8F0;
+        }
+
+        .method-signature {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px dashed #E2E8F0;
+        }
+
+        .method-part {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .method-part.annotation {
+            background: linear-gradient(135deg, #FB923C, #FDBA74);
+            color: white;
+        }
+
+        .method-part.modifier {
+            background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+            color: white;
+        }
+
+        .method-part.return-type {
+            background: linear-gradient(135deg, #06B6D4, #22D3EE);
+            color: white;
+        }
+
+        .method-part.method-name {
+            background: linear-gradient(135deg, #F59E0B, #FBBF24);
+            color: white;
+        }
+
+        .method-part.params {
+            background: linear-gradient(135deg, #10B981, #34D399);
+            color: white;
+        }
+
+        .method-legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .legend-color.annotation { background: linear-gradient(135deg, #FB923C, #FDBA74); }
+        .legend-color.modifier { background: linear-gradient(135deg, #8B5CF6, #A78BFA); }
+        .legend-color.return-type { background: linear-gradient(135deg, #06B6D4, #22D3EE); }
+        .legend-color.method-name { background: linear-gradient(135deg, #F59E0B, #FBBF24); }
+        .legend-color.params { background: linear-gradient(135deg, #10B981, #34D399); }
+
+        /* Polymorphism Diagram */
+        .poly-diagram {
+            background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .poly-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .poly-box {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+            border: 2px solid #E2E8F0;
+            min-width: 150px;
+        }
+
+        .poly-box.reference {
+            border-color: var(--primary);
+        }
+
+        .poly-box.object {
+            border-color: var(--secondary);
+        }
+
+        .poly-box-label {
+            font-size: 0.75rem;
+            color: #64748B;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .poly-box-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .poly-box.reference .poly-box-value { color: var(--primary); }
+        .poly-box.object .poly-box-value { color: var(--secondary); }
+
+        .poly-equals {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .poly-keyword {
+            background: var(--gradient-accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+
+        /* Abstract/Interface Box */
+        .abstract-box {
+            background: linear-gradient(135deg, rgba(236,72,153,0.05) 0%, rgba(139,92,246,0.05) 100%);
+            border: 2px solid rgba(236,72,153,0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .abstract-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .abstract-badge {
+            background: var(--gradient-secondary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .abstract-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        /* Interface Diagram */
+        .interface-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .interface-box {
+            background: linear-gradient(135deg, #06B6D4, #22D3EE);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .interface-box-type {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        .interface-box-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .implements-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .implements-line {
+            width: 2px;
+            height: 20px;
+            background: var(--accent);
+            border: 1px dashed var(--accent);
+        }
+
+        .implements-text {
+            font-size: 0.75rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .implements-head {
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid var(--accent);
+        }
+
+        .implementing-class {
+            background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+        }
+
+        /* Multiple Interfaces */
+        .multi-interface-container {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Scroll Animation */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .section-header h2 {
+                font-size: 1.75rem;
+            }
+
+            .content-block {
+                padding: 1.5rem;
+            }
+
+            .code-content {
+                padding: 1rem;
+            }
+
+            .code-content pre {
+                font-size: 0.8rem;
+            }
+
+            .toc {
+                margin: -40px 1rem 0;
+                padding: 2rem 1.5rem;
+            }
+
+            .method-signature {
+                font-size: 0.9rem;
+            }
+
+            .poly-row {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .diagram-children {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="inheritance-visual">
+            <div class="class-hierarchy">
+                <div class="hierarchy-box parent">Animal</div>
+                <div class="hierarchy-arrow"></div>
+                <div class="hierarchy-box child">Dog</div>
+            </div>
+        </div>
+        <div class="hero-content">
+            <div class="chapter-badge">Chapter 5</div>
+            <h1>Inheritance & <span>Polymorphism</span></h1>
+            <p class="hero-subtitle">Master the pillars of Object-Oriented Programming: code reuse through inheritance and flexible design through polymorphism.</p>
+        </div>
+    </header>
+
+    <!-- Table of Contents -->
+    <nav class="toc">
+        <h2>📚 What You'll Learn</h2>
+        <div class="toc-grid">
+            <a href="#inheritance" class="toc-item">
+                <span class="toc-number">5.1</span>
+                <span class="toc-text">Inheritance Basics</span>
+            </a>
+            <a href="#super" class="toc-item">
+                <span class="toc-number">5.2</span>
+                <span class="toc-text">The super Keyword</span>
+            </a>
+            <a href="#overriding" class="toc-item">
+                <span class="toc-number">5.3</span>
+                <span class="toc-text">Method Overriding</span>
+            </a>
+            <a href="#polymorphism" class="toc-item">
+                <span class="toc-number">5.4</span>
+                <span class="toc-text">Polymorphism</span>
+            </a>
+            <a href="#abstract" class="toc-item">
+                <span class="toc-number">5.5</span>
+                <span class="toc-text">Abstract Classes</span>
+            </a>
+            <a href="#interfaces" class="toc-item">
+                <span class="toc-number">5.6</span>
+                <span class="toc-text">Interfaces</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Section 5.1: Inheritance Basics -->
+        <section id="inheritance">
+            <div class="section-header animate-on-scroll">
+                <div class="section-number">5.1</div>
+                <h2>Inheritance Basics</h2>
+                <p>Learn how classes can inherit properties and behaviors from other classes, promoting code reuse.</p>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">🧬</span> What is Inheritance?</h3>
+                <p>Inheritance is a fundamental OOP concept that allows a new class (child/subclass) to inherit attributes and methods from an existing class (parent/superclass). This promotes code reuse and establishes a natural hierarchy between classes.</p>
+
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <div class="concept-card-icon">👨‍👧</div>
+                        <h4>Parent Class (Superclass)</h4>
+                        <p>The class whose properties and methods are inherited. Also called the base class.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-card-icon">👶</div>
+                        <h4>Child Class (Subclass)</h4>
+                        <p>The class that inherits from another class. Also called the derived class.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-card-icon">🔗</div>
+                        <h4>extends Keyword</h4>
+                        <p>The Java keyword used to establish inheritance between classes.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-card-icon">♻️</div>
+                        <h4>Code Reuse</h4>
+                        <p>Child classes automatically get all non-private members of the parent class.</p>
+                    </div>
+                </div>
+
+                <div class="syntax-box">
+                    <span class="syntax-box-title">Inheritance Syntax</span>
+<pre><span class="keyword">class</span> <span class="type">ChildClass</span> <span class="keyword">extends</span> <span class="type">ParentClass</span> {
+    <span class="comment">// Child class inherits all non-private members from ParentClass</span>
+    <span class="comment">// Can add new fields and methods</span>
+    <span class="comment">// Can override parent methods</span>
+}</pre>
+                </div>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">🐾</span> Inheritance Example: Animal Hierarchy</h3>
+                <p>Let's create a classic inheritance example with animals:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">Animal.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="comment">// Parent class (Superclass)</span>
+<span class="keyword">public class</span> <span class="type">Animal</span> {
+    <span class="comment">// Fields</span>
+    <span class="keyword">protected</span> <span class="type">String</span> name;
+    <span class="keyword">protected</span> <span class="type">int</span> age;
+    <span class="keyword">protected</span> <span class="type">String</span> color;
+    
+    <span class="comment">// Constructor</span>
+    <span class="keyword">public</span> <span class="method">Animal</span>(<span class="type">String</span> name, <span class="type">int</span> age, <span class="type">String</span> color) {
+        <span class="keyword">this</span>.name = name;
+        <span class="keyword">this</span>.age = age;
+        <span class="keyword">this</span>.color = color;
+    }
+    
+    <span class="comment">// Methods</span>
+    <span class="keyword">public void</span> <span class="method">eat</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(name + <span class="string">" is eating."</span>);
+    }
+    
+    <span class="keyword">public void</span> <span class="method">sleep</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(name + <span class="string">" is sleeping."</span>);
+    }
+    
+    <span class="keyword">public void</span> <span class="method">makeSound</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(name + <span class="string">" makes a sound."</span>);
+    }
+    
+    <span class="keyword">public void</span> <span class="method">displayInfo</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Name: "</span> + name);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Age: "</span> + age + <span class="string">" years"</span>);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Color: "</span> + color);
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">Dog.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="comment">// Child class (Subclass) - inherits from Animal</span>
+<span class="keyword">public class</span> <span class="type">Dog</span> <span class="keyword">extends</span> <span class="type">Animal</span> {
+    <span class="comment">// Additional field specific to Dog</span>
+    <span class="keyword">private</span> <span class="type">String</span> breed;
+    
+    <span class="comment">// Constructor</span>
+    <span class="keyword">public</span> <span class="method">Dog</span>(<span class="type">String</span> name, <span class="type">int</span> age, <span class="type">String</span> color, <span class="type">String</span> breed) {
+        <span class="keyword">super</span>(name, age, color);  <span class="comment">// Call parent constructor</span>
+        <span class="keyword">this</span>.breed = breed;
+    }
+    
+    <span class="comment">// Additional method specific to Dog</span>
+    <span class="keyword">public void</span> <span class="method">fetch</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(name + <span class="string">" is fetching the ball!"</span>);
+    }
+    
+    <span class="keyword">public void</span> <span class="method">wagTail</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(name + <span class="string">" is wagging its tail happily!"</span>);
+    }
+    
+    <span class="comment">// Getter for breed</span>
+    <span class="keyword">public</span> <span class="type">String</span> <span class="method">getBreed</span>() {
+        <span class="keyword">return</span> breed;
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">Cat.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="comment">// Another child class</span>
+<span class="keyword">public class</span> <span class="type">Cat</span> <span class="keyword">extends</span> <span class="type">Animal</span> {
+    <span class="comment">// Additional field specific to Cat</span>
+    <span class="keyword">private</span> <span class="type">boolean</span> isIndoor;
+    
+    <span class="comment">// Constructor</span>
+    <span class="keyword">public</span> <span class="method">Cat</span>(<span class="type">String</span> name, <span class="type">int</span> age, <span class="type">String</span> color, <span class="type">boolean</span> isIndoor) {
+        <span class="keyword">super</span>(name, age, color);
+        <span class="keyword">this</span>.isIndoor = isIndoor;
+    }
+    
+    <span class="comment">// Additional methods specific to Cat</span>
+    <span class="keyword">public void</span> <span class="method">scratch</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(name + <span class="string">" is scratching the furniture!"</span>);
+    }
+    
+    <span class="keyword">public void</span> <span class="method">purr</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(name + <span class="string">" is purring contentedly."</span>);
+    }
+    
+    <span class="keyword">public</span> <span class="type">boolean</span> <span class="method">isIndoorCat</span>() {
+        <span class="keyword">return</span> isIndoor;
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">InheritanceDemo.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">InheritanceDemo</span> {
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="comment">// Create a Dog object</span>
+        <span class="type">Dog</span> myDog = <span class="keyword">new</span> <span class="type">Dog</span>(<span class="string">"Buddy"</span>, <span class="number">3</span>, <span class="string">"Golden"</span>, <span class="string">"Golden Retriever"</span>);
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"=== Dog Information ==="</span>);
+        myDog.<span class="method">displayInfo</span>();           <span class="comment">// Inherited from Animal</span>
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Breed: "</span> + myDog.<span class="method">getBreed</span>());
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Dog Actions ==="</span>);
+        myDog.<span class="method">eat</span>();                   <span class="comment">// Inherited from Animal</span>
+        myDog.<span class="method">sleep</span>();                 <span class="comment">// Inherited from Animal</span>
+        myDog.<span class="method">makeSound</span>();             <span class="comment">// Inherited from Animal</span>
+        myDog.<span class="method">fetch</span>();                 <span class="comment">// Dog's own method</span>
+        myDog.<span class="method">wagTail</span>();               <span class="comment">// Dog's own method</span>
+        
+        <span class="comment">// Create a Cat object</span>
+        <span class="type">Cat</span> myCat = <span class="keyword">new</span> <span class="type">Cat</span>(<span class="string">"Whiskers"</span>, <span class="number">2</span>, <span class="string">"Gray"</span>, <span class="keyword">true</span>);
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Cat Information ==="</span>);
+        myCat.<span class="method">displayInfo</span>();           <span class="comment">// Inherited from Animal</span>
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Indoor cat: "</span> + myCat.<span class="method">isIndoorCat</span>());
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Cat Actions ==="</span>);
+        myCat.<span class="method">eat</span>();                   <span class="comment">// Inherited from Animal</span>
+        myCat.<span class="method">purr</span>();                  <span class="comment">// Cat's own method</span>
+        myCat.<span class="method">scratch</span>();               <span class="comment">// Cat's own method</span>
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-block">
+<pre>=== Dog Information ===
+Name: Buddy
+Age: 3 years
+Color: Golden
+Breed: Golden Retriever
+
+=== Dog Actions ===
+Buddy is eating.
+Buddy is sleeping.
+Buddy makes a sound.
+Buddy is fetching the ball!
+Buddy is wagging its tail happily!
+
+=== Cat Information ===
+Name: Whiskers
+Age: 2 years
+Color: Gray
+Indoor cat: true
+
+=== Cat Actions ===
+Whiskers is eating.
+Whiskers is purring contentedly.
+Whiskers is scratching the furniture!</pre>
+                </div>
+
+                <div class="inheritance-diagram">
+                    <h4 style="margin-bottom: 1.5rem; color: var(--dark);">📊 Inheritance Hierarchy</h4>
+                    <div class="diagram-container">
+                        <div class="diagram-class parent">
+                            <div class="diagram-class-name">Animal</div>
+                            <div class="diagram-class-type">Parent Class</div>
+                        </div>
+                        <div class="diagram-arrow">
+                            <div class="diagram-arrow-line"></div>
+                            <div class="diagram-arrow-text">extends</div>
+                            <div class="diagram-arrow-head"></div>
+                        </div>
+                        <div class="diagram-children">
+                            <div class="diagram-class child">
+                                <div class="diagram-class-name">Dog</div>
+                                <div class="diagram-class-type">Child Class</div>
+                            </div>
+                            <div class="diagram-class child">
+                                <div class="diagram-class-name">Cat</div>
+                                <div class="diagram-class-type">Child Class</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box note">
+                    <div class="info-box-icon">📝</div>
+                    <div class="info-box-content">
+                        <h4>The protected Modifier</h4>
+                        <p>Fields declared as <code>protected</code> are accessible within the same package and by subclasses, making them ideal for inheritance scenarios where child classes need direct access.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5.2: The super Keyword -->
+        <section id="super">
+            <div class="section-header animate-on-scroll">
+                <div class="section-number">5.2</div>
+                <h2>The super Keyword</h2>
+                <p>Access parent class constructors and methods using the super keyword.</p>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">⬆️</span> Understanding super</h3>
+                <p>The <code>super</code> keyword refers to the parent class. It's used to call the parent's constructor and access parent class members that might be hidden by child class members.</p>
+
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <div class="concept-card-icon">🏗️</div>
+                        <h4>super() Constructor</h4>
+                        <p>Calls the parent class constructor. Must be the first statement in child constructor.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-card-icon">🔧</div>
+                        <h4>super.method()</h4>
+                        <p>Calls a method from the parent class, useful when the method is overridden.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-card-icon">📦</div>
+                        <h4>super.field</h4>
+                        <p>Accesses a field from the parent class when it's shadowed by a child field.</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">Vehicle.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="comment">// Parent class</span>
+<span class="keyword">public class</span> <span class="type">Vehicle</span> {
+    <span class="keyword">protected</span> <span class="type">String</span> brand;
+    <span class="keyword">protected</span> <span class="type">String</span> model;
+    <span class="keyword">protected</span> <span class="type">int</span> year;
+    <span class="keyword">protected</span> <span class="type">double</span> price;
+    
+    <span class="comment">// Constructor</span>
+    <span class="keyword">public</span> <span class="method">Vehicle</span>(<span class="type">String</span> brand, <span class="type">String</span> model, <span class="type">int</span> year, <span class="type">double</span> price) {
+        <span class="keyword">this</span>.brand = brand;
+        <span class="keyword">this</span>.model = model;
+        <span class="keyword">this</span>.year = year;
+        <span class="keyword">this</span>.price = price;
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Vehicle constructor called"</span>);
+    }
+    
+    <span class="keyword">public void</span> <span class="method">start</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Vehicle is starting..."</span>);
+    }
+    
+    <span class="keyword">public void</span> <span class="method">displayInfo</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Brand: "</span> + brand);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Model: "</span> + model);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Year: "</span> + year);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Price: $"</span> + price);
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">Car.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="comment">// Child class demonstrating super keyword usage</span>
+<span class="keyword">public class</span> <span class="type">Car</span> <span class="keyword">extends</span> <span class="type">Vehicle</span> {
+    <span class="keyword">private</span> <span class="type">int</span> numDoors;
+    <span class="keyword">private</span> <span class="type">String</span> fuelType;
+    <span class="keyword">private</span> <span class="type">boolean</span> isAutomatic;
+    
+    <span class="comment">// Constructor using super() to call parent constructor</span>
+    <span class="keyword">public</span> <span class="method">Car</span>(<span class="type">String</span> brand, <span class="type">String</span> model, <span class="type">int</span> year, <span class="type">double</span> price, 
+              <span class="type">int</span> numDoors, <span class="type">String</span> fuelType, <span class="type">boolean</span> isAutomatic) {
+        
+        <span class="comment">// super() MUST be the first statement!</span>
+        <span class="keyword">super</span>(brand, model, year, price);
+        
+        <span class="keyword">this</span>.numDoors = numDoors;
+        <span class="keyword">this</span>.fuelType = fuelType;
+        <span class="keyword">this</span>.isAutomatic = isAutomatic;
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Car constructor called"</span>);
+    }
+    
+    <span class="comment">// Override start() but also call parent's start()</span>
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> <span class="method">start</span>() {
+        <span class="keyword">super</span>.<span class="method">start</span>();  <span class="comment">// Call parent's start method</span>
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Car engine is running!"</span>);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Dashboard lights are on."</span>);
+    }
+    
+    <span class="comment">// Override displayInfo() and extend it</span>
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> <span class="method">displayInfo</span>() {
+        <span class="keyword">super</span>.<span class="method">displayInfo</span>();  <span class="comment">// Call parent's displayInfo</span>
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Doors: "</span> + numDoors);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Fuel Type: "</span> + fuelType);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Transmission: "</span> + (isAutomatic ? <span class="string">"Automatic"</span> : <span class="string">"Manual"</span>));
+    }
+    
+    <span class="comment">// Car-specific methods</span>
+    <span class="keyword">public void</span> <span class="method">honk</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Beep beep!"</span>);
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">SuperDemo.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">SuperDemo</span> {
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"=== Creating a Car ==="</span>);
+        <span class="type">Car</span> myCar = <span class="keyword">new</span> <span class="type">Car</span>(<span class="string">"Toyota"</span>, <span class="string">"Camry"</span>, <span class="number">2024</span>, <span class="number">28000</span>, 
+                              <span class="number">4</span>, <span class="string">"Gasoline"</span>, <span class="keyword">true</span>);
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Car Information ==="</span>);
+        myCar.<span class="method">displayInfo</span>();
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Starting the Car ==="</span>);
+        myCar.<span class="method">start</span>();
+        
+        <span class="type">System</span>.out.<span class="method">println</span>();
+        myCar.<span class="method">honk</span>();
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-block">
+<pre>=== Creating a Car ===
+Vehicle constructor called
+Car constructor called
+
+=== Car Information ===
+Brand: Toyota
+Model: Camry
+Year: 2024
+Price: $28000.0
+Doors: 4
+Fuel Type: Gasoline
+Transmission: Automatic
+
+=== Starting the Car ===
+Vehicle is starting...
+Car engine is running!
+Dashboard lights are on.
+
+Beep beep!</pre>
+                </div>
+
+                <div class="info-box warning">
+                    <div class="info-box-icon">⚠️</div>
+                    <div class="info-box-content">
+                        <h4>super() Must Be First!</h4>
+                        <p>When calling the parent constructor with <code>super()</code>, it must be the very first statement in the child constructor. Java enforces this rule strictly.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">🔗</span> Constructor Chaining</h3>
+                <p>When you create an object of a child class, the parent constructor is always called first, either explicitly or implicitly. This creates a chain of constructor calls.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">ConstructorChaining.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="comment">// Demonstrating constructor chaining</span>
+
+<span class="keyword">class</span> <span class="type">Grandparent</span> {
+    <span class="keyword">public</span> <span class="method">Grandparent</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"1. Grandparent constructor"</span>);
+    }
+}
+
+<span class="keyword">class</span> <span class="type">Parent</span> <span class="keyword">extends</span> <span class="type">Grandparent</span> {
+    <span class="keyword">public</span> <span class="method">Parent</span>() {
+        <span class="comment">// super() is called implicitly here</span>
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"2. Parent constructor"</span>);
+    }
+}
+
+<span class="keyword">class</span> <span class="type">Child</span> <span class="keyword">extends</span> <span class="type">Parent</span> {
+    <span class="keyword">public</span> <span class="method">Child</span>() {
+        <span class="comment">// super() is called implicitly here</span>
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"3. Child constructor"</span>);
+    }
+}
+
+<span class="keyword">public class</span> <span class="type">ConstructorChaining</span> {
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Creating a Child object:"</span>);
+        <span class="type">Child</span> child = <span class="keyword">new</span> <span class="type">Child</span>();
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-block">
+<pre>Creating a Child object:
+1. Grandparent constructor
+2. Parent constructor
+3. Child constructor</pre>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-icon">💡</div>
+                    <div class="info-box-content">
+                        <h4>Implicit super() Call</h4>
+                        <p>If you don't explicitly call <code>super()</code>, Java automatically inserts <code>super()</code> (the no-argument version) as the first line. This fails if the parent class doesn't have a no-arg constructor!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5.3: Method Overriding -->
+        <section id="overriding">
+            <div class="section-header animate-on-scroll">
+                <div class="section-number">5.3</div>
+                <h2>Method Overriding</h2>
+                <p>Learn how child classes can provide their own implementation of parent methods.</p>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">🔄</span> What is Method Overriding?</h3>
+                <p>Method overriding occurs when a child class provides a specific implementation for a method that is already defined in its parent class. The overriding method must have the same signature (name, parameters, and return type).</p>
+
+                <div class="method-breakdown">
+                    <h4 style="margin-bottom: 1rem;">Override Signature Requirements</h4>
+                    <div class="method-signature">
+                        <span class="method-part annotation">@Override</span>
+                        <span class="method-part modifier">public</span>
+                        <span class="method-part return-type">void</span>
+                        <span class="method-part method-name">methodName</span>
+                        <span class="method-part params">(params)</span>
+                    </div>
+                    <div class="method-legend">
+                        <div class="legend-item">
+                            <span class="legend-color annotation"></span>
+                            <span>@Override annotation (recommended)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color modifier"></span>
+                            <span>Same or wider access modifier</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color return-type"></span>
+                            <span>Same return type</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color method-name"></span>
+                            <span>Same method name</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color params"></span>
+                            <span>Same parameters</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">Shape.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="comment">// Parent class with methods to override</span>
+<span class="keyword">public class</span> <span class="type">Shape</span> {
+    <span class="keyword">protected</span> <span class="type">String</span> name;
+    <span class="keyword">protected</span> <span class="type">String</span> color;
+    
+    <span class="keyword">public</span> <span class="method">Shape</span>(<span class="type">String</span> name, <span class="type">String</span> color) {
+        <span class="keyword">this</span>.name = name;
+        <span class="keyword">this</span>.color = color;
+    }
+    
+    <span class="comment">// Method to be overridden</span>
+    <span class="keyword">public</span> <span class="type">double</span> <span class="method">calculateArea</span>() {
+        <span class="keyword">return</span> <span class="number">0.0</span>;
+    }
+    
+    <span class="comment">// Method to be overridden</span>
+    <span class="keyword">public</span> <span class="type">double</span> <span class="method">calculatePerimeter</span>() {
+        <span class="keyword">return</span> <span class="number">0.0</span>;
+    }
+    
+    <span class="keyword">public void</span> <span class="method">display</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"This is a "</span> + color + <span class="string">" "</span> + name);
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">Circle.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">Circle</span> <span class="keyword">extends</span> <span class="type">Shape</span> {
+    <span class="keyword">private</span> <span class="type">double</span> radius;
+    
+    <span class="keyword">public</span> <span class="method">Circle</span>(<span class="type">String</span> color, <span class="type">double</span> radius) {
+        <span class="keyword">super</span>(<span class="string">"Circle"</span>, color);
+        <span class="keyword">this</span>.radius = radius;
+    }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="type">double</span> <span class="method">calculateArea</span>() {
+        <span class="keyword">return</span> <span class="type">Math</span>.PI * radius * radius;
+    }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="type">double</span> <span class="method">calculatePerimeter</span>() {
+        <span class="keyword">return</span> <span class="number">2</span> * <span class="type">Math</span>.PI * radius;
+    }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> <span class="method">display</span>() {
+        <span class="keyword">super</span>.<span class="method">display</span>();
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Radius: "</span> + radius);
+        <span class="type">System</span>.out.<span class="method">printf</span>(<span class="string">"Area: %.2f%n"</span>, <span class="method">calculateArea</span>());
+        <span class="type">System</span>.out.<span class="method">printf</span>(<span class="string">"Perimeter: %.2f%n"</span>, <span class="method">calculatePerimeter</span>());
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">Rectangle.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">Rectangle</span> <span class="keyword">extends</span> <span class="type">Shape</span> {
+    <span class="keyword">private</span> <span class="type">double</span> width;
+    <span class="keyword">private</span> <span class="type">double</span> height;
+    
+    <span class="keyword">public</span> <span class="method">Rectangle</span>(<span class="type">String</span> color, <span class="type">double</span> width, <span class="type">double</span> height) {
+        <span class="keyword">super</span>(<span class="string">"Rectangle"</span>, color);
+        <span class="keyword">this</span>.width = width;
+        <span class="keyword">this</span>.height = height;
+    }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="type">double</span> <span class="method">calculateArea</span>() {
+        <span class="keyword">return</span> width * height;
+    }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="type">double</span> <span class="method">calculatePerimeter</span>() {
+        <span class="keyword">return</span> <span class="number">2</span> * (width + height);
+    }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> <span class="method">display</span>() {
+        <span class="keyword">super</span>.<span class="method">display</span>();
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Width: "</span> + width + <span class="string">", Height: "</span> + height);
+        <span class="type">System</span>.out.<span class="method">printf</span>(<span class="string">"Area: %.2f%n"</span>, <span class="method">calculateArea</span>());
+        <span class="type">System</span>.out.<span class="method">printf</span>(<span class="string">"Perimeter: %.2f%n"</span>, <span class="method">calculatePerimeter</span>());
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">OverridingDemo.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">OverridingDemo</span> {
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="type">Circle</span> circle = <span class="keyword">new</span> <span class="type">Circle</span>(<span class="string">"Red"</span>, <span class="number">5.0</span>);
+        <span class="type">Rectangle</span> rectangle = <span class="keyword">new</span> <span class="type">Rectangle</span>(<span class="string">"Blue"</span>, <span class="number">4.0</span>, <span class="number">6.0</span>);
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"=== Circle ==="</span>);
+        circle.<span class="method">display</span>();
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Rectangle ==="</span>);
+        rectangle.<span class="method">display</span>();
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-block">
+<pre>=== Circle ===
+This is a Red Circle
+Radius: 5.0
+Area: 78.54
+Perimeter: 31.42
+
+=== Rectangle ===
+This is a Blue Rectangle
+Width: 4.0, Height: 6.0
+Area: 24.00
+Perimeter: 20.00</pre>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-icon">💡</div>
+                    <div class="info-box-content">
+                        <h4>Always Use @Override</h4>
+                        <p>The <code>@Override</code> annotation is optional but highly recommended. It tells the compiler you intend to override a method, and it will give an error if the method doesn't actually override anything (e.g., due to a typo).</p>
+                    </div>
+                </div>
+
+                <h4>Overriding vs Overloading</h4>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>Method Overriding</th>
+                            <th>Method Overloading</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Definition</td>
+                            <td>Same method in child class</td>
+                            <td>Same method name, different parameters</td>
+                        </tr>
+                        <tr>
+                            <td>Classes</td>
+                            <td>Requires inheritance (two classes)</td>
+                            <td>Can be in the same class</td>
+                        </tr>
+                        <tr>
+                            <td>Parameters</td>
+                            <td>Must be the same</td>
+                            <td>Must be different</td>
+                        </tr>
+                        <tr>
+                            <td>Return Type</td>
+                            <td>Must be the same (or covariant)</td>
+                            <td>Can be different</td>
+                        </tr>
+                        <tr>
+                            <td>Resolution</td>
+                            <td>Runtime (dynamic binding)</td>
+                            <td>Compile time (static binding)</td>
+                        </tr>
+                        <tr>
+                            <td>Annotation</td>
+                            <td><code>@Override</code> recommended</td>
+                            <td>No annotation needed</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 5.4: Polymorphism -->
+        <section id="polymorphism">
+            <div class="section-header animate-on-scroll">
+                <div class="section-number">5.4</div>
+                <h2>Polymorphism</h2>
+                <p>Understand how objects can take many forms and behave differently based on their actual type.</p>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">🎭</span> What is Polymorphism?</h3>
+                <p>Polymorphism means "many forms." In Java, it allows objects of different classes to be treated as objects of a common parent class. The actual method that gets called is determined at runtime based on the object's actual type, not the reference type.</p>
+
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <div class="concept-card-icon">📚</div>
+                        <h4>Compile-Time Polymorphism</h4>
+                        <p>Method overloading - resolved during compilation based on method signature.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-card-icon">⚡</div>
+                        <h4>Runtime Polymorphism</h4>
+                        <p>Method overriding - resolved during execution based on actual object type.</p>
+                    </div>
+                </div>
+
+                <div class="poly-diagram">
+                    <h4 style="text-align: center; margin-bottom: 1.5rem; color: var(--dark);">🔍 Understanding Reference vs Object Types</h4>
+                    <div class="poly-row">
+                        <div class="poly-box reference">
+                            <div class="poly-box-label">Reference Type</div>
+                            <div class="poly-box-value">Animal</div>
+                        </div>
+                        <div class="poly-equals">=</div>
+                        <div class="poly-keyword">new</div>
+                        <div class="poly-box object">
+                            <div class="poly-box-label">Object Type</div>
+                            <div class="poly-box-value">Dog()</div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; margin-top: 1rem; color: #64748B;">The reference type determines what methods you can call. The object type determines which version runs.</p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">PolymorphismDemo.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="comment">// Base class</span>
+<span class="keyword">class</span> <span class="type">Animal</span> {
+    <span class="keyword">public void</span> <span class="method">makeSound</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Some generic animal sound"</span>);
+    }
+    
+    <span class="keyword">public void</span> <span class="method">eat</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Animal is eating"</span>);
+    }
+}
+
+<span class="comment">// Child classes with overridden methods</span>
+<span class="keyword">class</span> <span class="type">Dog</span> <span class="keyword">extends</span> <span class="type">Animal</span> {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> <span class="method">makeSound</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Woof! Woof!"</span>);
+    }
+    
+    <span class="keyword">public void</span> <span class="method">fetch</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Dog is fetching the ball"</span>);
+    }
+}
+
+<span class="keyword">class</span> <span class="type">Cat</span> <span class="keyword">extends</span> <span class="type">Animal</span> {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> <span class="method">makeSound</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Meow! Meow!"</span>);
+    }
+    
+    <span class="keyword">public void</span> <span class="method">scratch</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Cat is scratching"</span>);
+    }
+}
+
+<span class="keyword">class</span> <span class="type">Bird</span> <span class="keyword">extends</span> <span class="type">Animal</span> {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> <span class="method">makeSound</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Tweet! Tweet!"</span>);
+    }
+    
+    <span class="keyword">public void</span> <span class="method">fly</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Bird is flying"</span>);
+    }
+}
+
+<span class="keyword">public class</span> <span class="type">PolymorphismDemo</span> {
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="comment">// Polymorphic references - parent type, child object</span>
+        <span class="type">Animal</span> animal1 = <span class="keyword">new</span> <span class="type">Dog</span>();
+        <span class="type">Animal</span> animal2 = <span class="keyword">new</span> <span class="type">Cat</span>();
+        <span class="type">Animal</span> animal3 = <span class="keyword">new</span> <span class="type">Bird</span>();
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"=== Polymorphism in Action ==="</span>);
+        <span class="comment">// Same method call, different behavior!</span>
+        animal1.<span class="method">makeSound</span>();  <span class="comment">// Calls Dog's makeSound</span>
+        animal2.<span class="method">makeSound</span>();  <span class="comment">// Calls Cat's makeSound</span>
+        animal3.<span class="method">makeSound</span>();  <span class="comment">// Calls Bird's makeSound</span>
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Using an Array of Animals ==="</span>);
+        <span class="type">Animal</span>[] animals = {<span class="keyword">new</span> <span class="type">Dog</span>(), <span class="keyword">new</span> <span class="type">Cat</span>(), <span class="keyword">new</span> <span class="type">Bird</span>()};
+        
+        <span class="keyword">for</span> (<span class="type">Animal</span> animal : animals) {
+            animal.<span class="method">makeSound</span>();  <span class="comment">// Polymorphic method call</span>
+            animal.<span class="method">eat</span>();        <span class="comment">// Inherited method</span>
+            <span class="type">System</span>.out.<span class="method">println</span>();
+        }
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-block">
+<pre>=== Polymorphism in Action ===
+Woof! Woof!
+Meow! Meow!
+Tweet! Tweet!
+
+=== Using an Array of Animals ===
+Woof! Woof!
+Animal is eating
+
+Meow! Meow!
+Animal is eating
+
+Tweet! Tweet!
+Animal is eating</pre>
+                </div>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">🔄</span> instanceof and Type Casting</h3>
+                <p>Sometimes you need to check the actual type of an object or cast it to access child-specific methods.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">TypeCastingDemo.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">TypeCastingDemo</span> {
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="comment">// Array of different animals</span>
+        <span class="type">Animal</span>[] animals = {
+            <span class="keyword">new</span> <span class="type">Dog</span>(),
+            <span class="keyword">new</span> <span class="type">Cat</span>(),
+            <span class="keyword">new</span> <span class="type">Bird</span>(),
+            <span class="keyword">new</span> <span class="type">Dog</span>()
+        };
+        
+        <span class="keyword">for</span> (<span class="type">Animal</span> animal : animals) {
+            <span class="comment">// Check the actual type using instanceof</span>
+            <span class="keyword">if</span> (animal <span class="keyword">instanceof</span> <span class="type">Dog</span>) {
+                <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Found a dog!"</span>);
+                <span class="type">Dog</span> dog = (<span class="type">Dog</span>) animal;  <span class="comment">// Downcast to access Dog methods</span>
+                dog.<span class="method">fetch</span>();
+            } <span class="keyword">else if</span> (animal <span class="keyword">instanceof</span> <span class="type">Cat</span>) {
+                <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Found a cat!"</span>);
+                <span class="type">Cat</span> cat = (<span class="type">Cat</span>) animal;  <span class="comment">// Downcast to access Cat methods</span>
+                cat.<span class="method">scratch</span>();
+            } <span class="keyword">else if</span> (animal <span class="keyword">instanceof</span> <span class="type">Bird</span>) {
+                <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Found a bird!"</span>);
+                <span class="type">Bird</span> bird = (<span class="type">Bird</span>) animal;  <span class="comment">// Downcast to access Bird methods</span>
+                bird.<span class="method">fly</span>();
+            }
+            <span class="type">System</span>.out.<span class="method">println</span>();
+        }
+        
+        <span class="comment">// Java 16+ Pattern Matching (cleaner syntax)</span>
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"=== Pattern Matching (Java 16+) ==="</span>);
+        <span class="type">Animal</span> myAnimal = <span class="keyword">new</span> <span class="type">Dog</span>();
+        
+        <span class="keyword">if</span> (myAnimal <span class="keyword">instanceof</span> <span class="type">Dog</span> d) {
+            d.<span class="method">fetch</span>();  <span class="comment">// d is already cast to Dog</span>
+        }
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-block">
+<pre>Found a dog!
+Dog is fetching the ball
+
+Found a cat!
+Cat is scratching
+
+Found a bird!
+Bird is flying
+
+Found a dog!
+Dog is fetching the ball
+
+=== Pattern Matching (Java 16+) ===
+Dog is fetching the ball</pre>
+                </div>
+
+                <div class="info-box warning">
+                    <div class="info-box-icon">⚠️</div>
+                    <div class="info-box-content">
+                        <h4>ClassCastException</h4>
+                        <p>Always check with <code>instanceof</code> before casting! Casting an object to an incompatible type throws a <code>ClassCastException</code> at runtime.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5.5: Abstract Classes -->
+        <section id="abstract">
+            <div class="section-header animate-on-scroll">
+                <div class="section-number">5.5</div>
+                <h2>Abstract Classes</h2>
+                <p>Create blueprints that define structure but leave implementation to child classes.</p>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">📋</span> What are Abstract Classes?</h3>
+                <p>An abstract class is a class that cannot be instantiated directly. It serves as a base class that defines common behavior and can include both complete methods and abstract methods (methods without a body) that child classes must implement.</p>
+
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <div class="concept-card-icon">🚫</div>
+                        <h4>Cannot Instantiate</h4>
+                        <p>You cannot create objects directly from an abstract class using <code>new</code>.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-card-icon">📝</div>
+                        <h4>Abstract Methods</h4>
+                        <p>Methods declared without a body - child classes must provide implementation.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-card-icon">✅</div>
+                        <h4>Concrete Methods</h4>
+                        <p>Can also have regular methods with full implementations.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-card-icon">🔧</div>
+                        <h4>Constructors</h4>
+                        <p>Can have constructors that are called by child class constructors.</p>
+                    </div>
+                </div>
+
+                <div class="syntax-box">
+                    <span class="syntax-box-title">Abstract Class Syntax</span>
+<pre><span class="keyword">abstract class</span> <span class="type">ClassName</span> {
+    <span class="comment">// Fields</span>
+    <span class="keyword">protected</span> <span class="type">int</span> field;
+    
+    <span class="comment">// Constructor</span>
+    <span class="keyword">public</span> <span class="method">ClassName</span>(<span class="type">int</span> field) {
+        <span class="keyword">this</span>.field = field;
+    }
+    
+    <span class="comment">// Abstract method (no body) - MUST be implemented by child</span>
+    <span class="keyword">public abstract void</span> <span class="method">abstractMethod</span>();
+    
+    <span class="comment">// Concrete method (has body) - inherited as-is</span>
+    <span class="keyword">public void</span> <span class="method">concreteMethod</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Regular method"</span>);
+    }
+}</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">Employee.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="comment">// Abstract class - cannot be instantiated</span>
+<span class="keyword">public abstract class</span> <span class="type">Employee</span> {
+    <span class="keyword">protected</span> <span class="type">String</span> name;
+    <span class="keyword">protected</span> <span class="type">int</span> employeeId;
+    <span class="keyword">protected</span> <span class="type">double</span> baseSalary;
+    
+    <span class="comment">// Constructor</span>
+    <span class="keyword">public</span> <span class="method">Employee</span>(<span class="type">String</span> name, <span class="type">int</span> employeeId, <span class="type">double</span> baseSalary) {
+        <span class="keyword">this</span>.name = name;
+        <span class="keyword">this</span>.employeeId = employeeId;
+        <span class="keyword">this</span>.baseSalary = baseSalary;
+    }
+    
+    <span class="comment">// Abstract method - each employee type calculates salary differently</span>
+    <span class="keyword">public abstract</span> <span class="type">double</span> <span class="method">calculateSalary</span>();
+    
+    <span class="comment">// Abstract method - each employee type has different responsibilities</span>
+    <span class="keyword">public abstract</span> <span class="type">String</span> <span class="method">getResponsibilities</span>();
+    
+    <span class="comment">// Concrete method - same for all employees</span>
+    <span class="keyword">public void</span> <span class="method">displayInfo</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Employee ID: "</span> + employeeId);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Name: "</span> + name);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Base Salary: $"</span> + baseSalary);
+        <span class="type">System</span>.out.<span class="method">printf</span>(<span class="string">"Total Salary: $%.2f%n"</span>, <span class="method">calculateSalary</span>());
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Responsibilities: "</span> + <span class="method">getResponsibilities</span>());
+    }
+    
+    <span class="comment">// Concrete method</span>
+    <span class="keyword">public void</span> <span class="method">clockIn</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(name + <span class="string">" has clocked in."</span>);
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">Manager.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">Manager</span> <span class="keyword">extends</span> <span class="type">Employee</span> {
+    <span class="keyword">private</span> <span class="type">double</span> bonus;
+    <span class="keyword">private</span> <span class="type">int</span> teamSize;
+    
+    <span class="keyword">public</span> <span class="method">Manager</span>(<span class="type">String</span> name, <span class="type">int</span> employeeId, <span class="type">double</span> baseSalary, 
+                  <span class="type">double</span> bonus, <span class="type">int</span> teamSize) {
+        <span class="keyword">super</span>(name, employeeId, baseSalary);
+        <span class="keyword">this</span>.bonus = bonus;
+        <span class="keyword">this</span>.teamSize = teamSize;
+    }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="type">double</span> <span class="method">calculateSalary</span>() {
+        <span class="comment">// Manager gets base salary + bonus</span>
+        <span class="keyword">return</span> baseSalary + bonus;
+    }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="type">String</span> <span class="method">getResponsibilities</span>() {
+        <span class="keyword">return</span> <span class="string">"Lead team of "</span> + teamSize + <span class="string">", project planning, performance reviews"</span>;
+    }
+    
+    <span class="keyword">public void</span> <span class="method">conductMeeting</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(name + <span class="string">" is conducting a team meeting."</span>);
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">Developer.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">Developer</span> <span class="keyword">extends</span> <span class="type">Employee</span> {
+    <span class="keyword">private</span> <span class="type">String</span> programmingLanguage;
+    <span class="keyword">private</span> <span class="type">int</span> overtimeHours;
+    <span class="keyword">private</span> <span class="type">double</span> overtimeRate;
+    
+    <span class="keyword">public</span> <span class="method">Developer</span>(<span class="type">String</span> name, <span class="type">int</span> employeeId, <span class="type">double</span> baseSalary,
+                     <span class="type">String</span> programmingLanguage, <span class="type">int</span> overtimeHours) {
+        <span class="keyword">super</span>(name, employeeId, baseSalary);
+        <span class="keyword">this</span>.programmingLanguage = programmingLanguage;
+        <span class="keyword">this</span>.overtimeHours = overtimeHours;
+        <span class="keyword">this</span>.overtimeRate = <span class="number">50.0</span>;  <span class="comment">// $50 per overtime hour</span>
+    }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="type">double</span> <span class="method">calculateSalary</span>() {
+        <span class="comment">// Developer gets base salary + overtime pay</span>
+        <span class="keyword">return</span> baseSalary + (overtimeHours * overtimeRate);
+    }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="type">String</span> <span class="method">getResponsibilities</span>() {
+        <span class="keyword">return</span> <span class="string">"Write code in "</span> + programmingLanguage + <span class="string">", code reviews, debugging"</span>;
+    }
+    
+    <span class="keyword">public void</span> <span class="method">writeCode</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(name + <span class="string">" is writing "</span> + programmingLanguage + <span class="string">" code."</span>);
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">AbstractDemo.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">AbstractDemo</span> {
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="comment">// Cannot do this: Employee emp = new Employee(...); // Error!</span>
+        
+        <span class="comment">// Create concrete implementations</span>
+        <span class="type">Manager</span> manager = <span class="keyword">new</span> <span class="type">Manager</span>(<span class="string">"Alice Johnson"</span>, <span class="number">101</span>, <span class="number">80000</span>, <span class="number">15000</span>, <span class="number">8</span>);
+        <span class="type">Developer</span> developer = <span class="keyword">new</span> <span class="type">Developer</span>(<span class="string">"Bob Smith"</span>, <span class="number">102</span>, <span class="number">70000</span>, <span class="string">"Java"</span>, <span class="number">20</span>);
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"=== Manager ==="</span>);
+        manager.<span class="method">clockIn</span>();          <span class="comment">// Inherited method</span>
+        manager.<span class="method">displayInfo</span>();      <span class="comment">// Inherited method using abstract methods</span>
+        manager.<span class="method">conductMeeting</span>();   <span class="comment">// Manager-specific method</span>
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Developer ==="</span>);
+        developer.<span class="method">clockIn</span>();        <span class="comment">// Inherited method</span>
+        developer.<span class="method">displayInfo</span>();    <span class="comment">// Inherited method using abstract methods</span>
+        developer.<span class="method">writeCode</span>();      <span class="comment">// Developer-specific method</span>
+        
+        <span class="comment">// Polymorphism with abstract class</span>
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Polymorphism with Abstract Class ==="</span>);
+        <span class="type">Employee</span>[] employees = {manager, developer};
+        
+        <span class="type">double</span> totalPayroll = <span class="number">0</span>;
+        <span class="keyword">for</span> (<span class="type">Employee</span> emp : employees) {
+            totalPayroll += emp.<span class="method">calculateSalary</span>();
+        }
+        <span class="type">System</span>.out.<span class="method">printf</span>(<span class="string">"Total Payroll: $%.2f%n"</span>, totalPayroll);
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-block">
+<pre>=== Manager ===
+Alice Johnson has clocked in.
+Employee ID: 101
+Name: Alice Johnson
+Base Salary: $80000.0
+Total Salary: $95000.00
+Responsibilities: Lead team of 8, project planning, performance reviews
+Alice Johnson is conducting a team meeting.
+
+=== Developer ===
+Bob Smith has clocked in.
+Employee ID: 102
+Name: Bob Smith
+Base Salary: $70000.0
+Total Salary: $71000.00
+Responsibilities: Write code in Java, code reviews, debugging
+Bob Smith is writing Java code.
+
+=== Polymorphism with Abstract Class ===
+Total Payroll: $166000.00</pre>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-icon">💡</div>
+                    <div class="info-box-content">
+                        <h4>When to Use Abstract Classes</h4>
+                        <p>Use abstract classes when you want to share code among several closely related classes, when you expect classes that extend your abstract class to have many common methods or fields, or when you need non-public members or non-static/non-final fields.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5.6: Interfaces -->
+        <section id="interfaces">
+            <div class="section-header animate-on-scroll">
+                <div class="section-number">5.6</div>
+                <h2>Interfaces</h2>
+                <p>Define contracts that classes must follow, enabling multiple inheritance of type.</p>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">📜</span> What are Interfaces?</h3>
+                <p>An interface is a completely abstract type that defines a contract of methods that implementing classes must provide. Unlike classes, a class can implement multiple interfaces, enabling a form of multiple inheritance.</p>
+
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <div class="concept-card-icon">📝</div>
+                        <h4>Abstract Methods</h4>
+                        <p>All methods are implicitly public and abstract (before Java 8).</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-card-icon">🔒</div>
+                        <h4>Constants Only</h4>
+                        <p>Fields are implicitly public, static, and final (constants).</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-card-icon">🔗</div>
+                        <h4>Multiple Implementation</h4>
+                        <p>A class can implement multiple interfaces.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-card-icon">⚙️</div>
+                        <h4>Default Methods (Java 8+)</h4>
+                        <p>Interfaces can have methods with default implementations.</p>
+                    </div>
+                </div>
+
+                <div class="syntax-box">
+                    <span class="syntax-box-title">Interface Syntax</span>
+<pre><span class="keyword">interface</span> <span class="type">InterfaceName</span> {
+    <span class="comment">// Constants (public static final by default)</span>
+    <span class="type">int</span> CONSTANT = <span class="number">100</span>;
+    
+    <span class="comment">// Abstract methods (public abstract by default)</span>
+    <span class="type">void</span> <span class="method">abstractMethod</span>();
+    <span class="type">String</span> <span class="method">anotherMethod</span>(<span class="type">int</span> param);
+    
+    <span class="comment">// Default method (Java 8+)</span>
+    <span class="keyword">default void</span> <span class="method">defaultMethod</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Default implementation"</span>);
+    }
+    
+    <span class="comment">// Static method (Java 8+)</span>
+    <span class="keyword">static void</span> <span class="method">staticMethod</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Static method in interface"</span>);
+    }
+}</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">Interfaces.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="comment">// Interface definitions</span>
+<span class="keyword">interface</span> <span class="type">Drawable</span> {
+    <span class="type">void</span> <span class="method">draw</span>();
+    <span class="type">String</span> <span class="method">getColor</span>();
+}
+
+<span class="keyword">interface</span> <span class="type">Resizable</span> {
+    <span class="type">void</span> <span class="method">resize</span>(<span class="type">double</span> factor);
+    <span class="type">double</span> <span class="method">getSize</span>();
+}
+
+<span class="keyword">interface</span> <span class="type">Movable</span> {
+    <span class="type">void</span> <span class="method">move</span>(<span class="type">int</span> x, <span class="type">int</span> y);
+    <span class="type">int</span> <span class="method">getX</span>();
+    <span class="type">int</span> <span class="method">getY</span>();
+    
+    <span class="comment">// Default method</span>
+    <span class="keyword">default void</span> <span class="method">moveToOrigin</span>() {
+        <span class="method">move</span>(<span class="number">0</span>, <span class="number">0</span>);
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">GraphicCircle.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="comment">// Class implementing multiple interfaces</span>
+<span class="keyword">public class</span> <span class="type">GraphicCircle</span> <span class="keyword">implements</span> <span class="type">Drawable</span>, <span class="type">Resizable</span>, <span class="type">Movable</span> {
+    <span class="keyword">private</span> <span class="type">String</span> color;
+    <span class="keyword">private</span> <span class="type">double</span> radius;
+    <span class="keyword">private</span> <span class="type">int</span> x, y;
+    
+    <span class="keyword">public</span> <span class="method">GraphicCircle</span>(<span class="type">String</span> color, <span class="type">double</span> radius, <span class="type">int</span> x, <span class="type">int</span> y) {
+        <span class="keyword">this</span>.color = color;
+        <span class="keyword">this</span>.radius = radius;
+        <span class="keyword">this</span>.x = x;
+        <span class="keyword">this</span>.y = y;
+    }
+    
+    <span class="comment">// Implementing Drawable interface</span>
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> <span class="method">draw</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Drawing a "</span> + color + <span class="string">" circle at ("</span> + x + <span class="string">", "</span> + y + <span class="string">")"</span>);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Radius: "</span> + radius);
+    }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="type">String</span> <span class="method">getColor</span>() {
+        <span class="keyword">return</span> color;
+    }
+    
+    <span class="comment">// Implementing Resizable interface</span>
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> <span class="method">resize</span>(<span class="type">double</span> factor) {
+        radius *= factor;
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Circle resized. New radius: "</span> + radius);
+    }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="type">double</span> <span class="method">getSize</span>() {
+        <span class="keyword">return</span> radius;
+    }
+    
+    <span class="comment">// Implementing Movable interface</span>
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> <span class="method">move</span>(<span class="type">int</span> newX, <span class="type">int</span> newY) {
+        <span class="keyword">this</span>.x = newX;
+        <span class="keyword">this</span>.y = newY;
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Circle moved to ("</span> + x + <span class="string">", "</span> + y + <span class="string">")"</span>);
+    }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="type">int</span> <span class="method">getX</span>() { <span class="keyword">return</span> x; }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="type">int</span> <span class="method">getY</span>() { <span class="keyword">return</span> y; }
+    
+    <span class="comment">// Uses default method from Movable interface</span>
+}</pre>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">InterfaceDemo.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">InterfaceDemo</span> {
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="type">GraphicCircle</span> circle = <span class="keyword">new</span> <span class="type">GraphicCircle</span>(<span class="string">"Blue"</span>, <span class="number">5.0</span>, <span class="number">10</span>, <span class="number">20</span>);
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"=== Using Drawable Interface ==="</span>);
+        circle.<span class="method">draw</span>();
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Using Resizable Interface ==="</span>);
+        circle.<span class="method">resize</span>(<span class="number">2.0</span>);
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Using Movable Interface ==="</span>);
+        circle.<span class="method">move</span>(<span class="number">50</span>, <span class="number">50</span>);
+        circle.<span class="method">moveToOrigin</span>();  <span class="comment">// Default method</span>
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Polymorphism with Interfaces ==="</span>);
+        <span class="comment">// Can reference object through any implemented interface</span>
+        <span class="type">Drawable</span> drawable = circle;
+        <span class="type">Resizable</span> resizable = circle;
+        <span class="type">Movable</span> movable = circle;
+        
+        drawable.<span class="method">draw</span>();
+        resizable.<span class="method">resize</span>(<span class="number">0.5</span>);
+        movable.<span class="method">move</span>(<span class="number">100</span>, <span class="number">100</span>);
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-block">
+<pre>=== Using Drawable Interface ===
+Drawing a Blue circle at (10, 20)
+Radius: 5.0
+
+=== Using Resizable Interface ===
+Circle resized. New radius: 10.0
+
+=== Using Movable Interface ===
+Circle moved to (50, 50)
+Circle moved to (0, 0)
+
+=== Polymorphism with Interfaces ===
+Drawing a Blue circle at (0, 0)
+Radius: 10.0
+Circle resized. New radius: 5.0
+Circle moved to (100, 100)</pre>
+                </div>
+
+                <div class="interface-diagram">
+                    <h4 style="text-align: center; margin-bottom: 1.5rem; color: var(--dark);">🔗 Multiple Interface Implementation</h4>
+                    <div class="multi-interface-container">
+                        <div class="interface-box">
+                            <div class="interface-box-type">«interface»</div>
+                            <div class="interface-box-name">Drawable</div>
+                        </div>
+                        <div class="interface-box">
+                            <div class="interface-box-type">«interface»</div>
+                            <div class="interface-box-name">Resizable</div>
+                        </div>
+                        <div class="interface-box">
+                            <div class="interface-box-type">«interface»</div>
+                            <div class="interface-box-name">Movable</div>
+                        </div>
+                    </div>
+                    <div class="implements-arrow">
+                        <div class="implements-line"></div>
+                        <div class="implements-text">implements</div>
+                        <div class="implements-head"></div>
+                    </div>
+                    <div class="implementing-class">
+                        <div class="interface-box-type">class</div>
+                        <div class="interface-box-name">GraphicCircle</div>
+                    </div>
+                </div>
+
+                <h4>Abstract Class vs Interface</h4>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Abstract Class</th>
+                            <th>Interface</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Keyword</td>
+                            <td><code>extends</code></td>
+                            <td><code>implements</code></td>
+                        </tr>
+                        <tr>
+                            <td>Multiple inheritance</td>
+                            <td>No (single inheritance)</td>
+                            <td>Yes (can implement multiple)</td>
+                        </tr>
+                        <tr>
+                            <td>Constructor</td>
+                            <td>Can have constructors</td>
+                            <td>Cannot have constructors</td>
+                        </tr>
+                        <tr>
+                            <td>Fields</td>
+                            <td>Can have any fields</td>
+                            <td>Only public static final</td>
+                        </tr>
+                        <tr>
+                            <td>Method types</td>
+                            <td>Abstract and concrete</td>
+                            <td>Abstract, default, static</td>
+                        </tr>
+                        <tr>
+                            <td>Access modifiers</td>
+                            <td>Any</td>
+                            <td>Public only</td>
+                        </tr>
+                        <tr>
+                            <td>Use case</td>
+                            <td>Related classes, shared code</td>
+                            <td>Unrelated classes, capability</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box tip">
+                    <div class="info-box-icon">💡</div>
+                    <div class="info-box-content">
+                        <h4>When to Use Interfaces</h4>
+                        <p>Use interfaces when unrelated classes need to implement the same behavior (like <code>Comparable</code>), when you want to specify behavior but not implementation, or when you need to achieve multiple inheritance of type.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">🎯</span> Real-World Interface Example</h3>
+                <p>Let's see a practical example using interfaces for a payment processing system:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">PaymentSystem.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="comment">// Payment interface</span>
+<span class="keyword">interface</span> <span class="type">PaymentMethod</span> {
+    <span class="type">boolean</span> <span class="method">processPayment</span>(<span class="type">double</span> amount);
+    <span class="type">String</span> <span class="method">getPaymentType</span>();
+    
+    <span class="keyword">default void</span> <span class="method">printReceipt</span>(<span class="type">double</span> amount) {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Payment of $"</span> + amount + <span class="string">" processed via "</span> + <span class="method">getPaymentType</span>());
+    }
+}
+
+<span class="comment">// Credit Card implementation</span>
+<span class="keyword">class</span> <span class="type">CreditCard</span> <span class="keyword">implements</span> <span class="type">PaymentMethod</span> {
+    <span class="keyword">private</span> <span class="type">String</span> cardNumber;
+    <span class="keyword">private</span> <span class="type">String</span> cardHolder;
+    
+    <span class="keyword">public</span> <span class="method">CreditCard</span>(<span class="type">String</span> cardNumber, <span class="type">String</span> cardHolder) {
+        <span class="keyword">this</span>.cardNumber = cardNumber;
+        <span class="keyword">this</span>.cardHolder = cardHolder;
+    }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="type">boolean</span> <span class="method">processPayment</span>(<span class="type">double</span> amount) {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Processing credit card payment..."</span>);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Card: **** **** **** "</span> + cardNumber.<span class="method">substring</span>(<span class="number">12</span>));
+        <span class="keyword">return</span> <span class="keyword">true</span>;
+    }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="type">String</span> <span class="method">getPaymentType</span>() {
+        <span class="keyword">return</span> <span class="string">"Credit Card"</span>;
+    }
+}
+
+<span class="comment">// PayPal implementation</span>
+<span class="keyword">class</span> <span class="type">PayPal</span> <span class="keyword">implements</span> <span class="type">PaymentMethod</span> {
+    <span class="keyword">private</span> <span class="type">String</span> email;
+    
+    <span class="keyword">public</span> <span class="method">PayPal</span>(<span class="type">String</span> email) {
+        <span class="keyword">this</span>.email = email;
+    }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="type">boolean</span> <span class="method">processPayment</span>(<span class="type">double</span> amount) {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Processing PayPal payment..."</span>);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Account: "</span> + email);
+        <span class="keyword">return</span> <span class="keyword">true</span>;
+    }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="type">String</span> <span class="method">getPaymentType</span>() {
+        <span class="keyword">return</span> <span class="string">"PayPal"</span>;
+    }
+}
+
+<span class="comment">// Cryptocurrency implementation</span>
+<span class="keyword">class</span> <span class="type">Cryptocurrency</span> <span class="keyword">implements</span> <span class="type">PaymentMethod</span> {
+    <span class="keyword">private</span> <span class="type">String</span> walletAddress;
+    <span class="keyword">private</span> <span class="type">String</span> cryptoType;
+    
+    <span class="keyword">public</span> <span class="method">Cryptocurrency</span>(<span class="type">String</span> walletAddress, <span class="type">String</span> cryptoType) {
+        <span class="keyword">this</span>.walletAddress = walletAddress;
+        <span class="keyword">this</span>.cryptoType = cryptoType;
+    }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="type">boolean</span> <span class="method">processPayment</span>(<span class="type">double</span> amount) {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Processing "</span> + cryptoType + <span class="string">" payment..."</span>);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Wallet: "</span> + walletAddress.<span class="method">substring</span>(<span class="number">0</span>, <span class="number">10</span>) + <span class="string">"..."</span>);
+        <span class="keyword">return</span> <span class="keyword">true</span>;
+    }
+    
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="type">String</span> <span class="method">getPaymentType</span>() {
+        <span class="keyword">return</span> cryptoType;
+    }
+}
+
+<span class="keyword">public class</span> <span class="type">PaymentSystem</span> {
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="comment">// Array of different payment methods (polymorphism!)</span>
+        <span class="type">PaymentMethod</span>[] payments = {
+            <span class="keyword">new</span> <span class="type">CreditCard</span>(<span class="string">"1234567890123456"</span>, <span class="string">"John Doe"</span>),
+            <span class="keyword">new</span> <span class="type">PayPal</span>(<span class="string">"john@example.com"</span>),
+            <span class="keyword">new</span> <span class="type">Cryptocurrency</span>(<span class="string">"0x1234abcd5678efgh"</span>, <span class="string">"Bitcoin"</span>)
+        };
+        
+        <span class="type">double</span>[] amounts = {<span class="number">99.99</span>, <span class="number">49.50</span>, <span class="number">0.005</span>};
+        
+        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i < payments.<span class="method">length</span>; i++) {
+            <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"=== Payment "</span> + (i + <span class="number">1</span>) + <span class="string">" ==="</span>);
+            
+            <span class="keyword">if</span> (payments[i].<span class="method">processPayment</span>(amounts[i])) {
+                payments[i].<span class="method">printReceipt</span>(amounts[i]);  <span class="comment">// Default method</span>
+            }
+            <span class="type">System</span>.out.<span class="method">println</span>();
+        }
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-block">
+<pre>=== Payment 1 ===
+Processing credit card payment...
+Card: **** **** **** 3456
+Payment of $99.99 processed via Credit Card
+
+=== Payment 2 ===
+Processing PayPal payment...
+Account: john@example.com
+Payment of $49.5 processed via PayPal
+
+=== Payment 3 ===
+Processing Bitcoin payment...
+Wallet: 0x1234abcd...
+Payment of $0.005 processed via Bitcoin</pre>
+                </div>
+
+                <div class="info-box note">
+                    <div class="info-box-icon">📝</div>
+                    <div class="info-box-content">
+                        <h4>Programming to Interfaces</h4>
+                        <p>Notice how the main method works with <code>PaymentMethod[]</code> rather than specific types. This "programming to interfaces" principle allows easy addition of new payment methods without changing existing code!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer style="background: var(--gradient-dark); color: white; padding: 3rem 2rem; text-align: center; margin-top: 4rem;">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">🎉 Chapter 5 Complete!</h3>
+            <p style="color: #94A3B8; margin-bottom: 1.5rem;">You've mastered inheritance, polymorphism, abstract classes, and interfaces - the core pillars of OOP!</p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <span style="background: rgba(139,92,246,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">✓ Inheritance</span>
+                <span style="background: rgba(139,92,246,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">✓ super Keyword</span>
+                <span style="background: rgba(139,92,246,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">✓ Method Overriding</span>
+                <span style="background: rgba(139,92,246,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">✓ Polymorphism</span>
+                <span style="background: rgba(139,92,246,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">✓ Abstract Classes</span>
+                <span style="background: rgba(139,92,246,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">✓ Interfaces</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

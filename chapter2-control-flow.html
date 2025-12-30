@@ -1,0 +1,2695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 2: Control Flow in Java</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B35;
+            --secondary: #004E89;
+            --accent: #1A936F;
+            --dark: #0D1B2A;
+            --light: #F7F7F7;
+            --purple: #7C3AED;
+            --pink: #EC4899;
+            --cyan: #06B6D4;
+            --gradient-primary: linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%);
+            --gradient-secondary: linear-gradient(135deg, #004E89 0%, #1B6CA8 100%);
+            --gradient-accent: linear-gradient(135deg, #1A936F 0%, #2AB090 100%);
+            --gradient-purple: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%);
+            --gradient-pink: linear-gradient(135deg, #EC4899 0%, #F472B6 100%);
+            --gradient-cyan: linear-gradient(135deg, #06B6D4 0%, #22D3EE 100%);
+            --code-bg: #1E1E2E;
+            --shadow-soft: 0 4px 24px rgba(0,0,0,0.08);
+            --shadow-medium: 0 8px 32px rgba(0,0,0,0.12);
+            --shadow-strong: 0 16px 48px rgba(0,0,0,0.16);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.7;
+            font-size: 17px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%);
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 150%;
+            background: radial-gradient(ellipse, rgba(124,58,237,0.2) 0%, transparent 60%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 60%;
+            height: 100%;
+            background: radial-gradient(ellipse, rgba(6,182,212,0.15) 0%, transparent 50%);
+            animation: pulse 10s ease-in-out infinite reverse;
+        }
+
+        /* Animated flow lines */
+        .flow-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            opacity: 0.1;
+        }
+
+        .flow-line {
+            position: absolute;
+            width: 2px;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, var(--cyan), transparent);
+            animation: flowDown 3s ease-in-out infinite;
+        }
+
+        .flow-line:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .flow-line:nth-child(2) { left: 25%; animation-delay: 0.5s; }
+        .flow-line:nth-child(3) { left: 40%; animation-delay: 1s; }
+        .flow-line:nth-child(4) { left: 55%; animation-delay: 1.5s; }
+        .flow-line:nth-child(5) { left: 70%; animation-delay: 2s; }
+        .flow-line:nth-child(6) { left: 85%; animation-delay: 2.5s; }
+
+        @keyframes flowDown {
+            0% { transform: translateY(-100px); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 10;
+            padding: 2rem;
+        }
+
+        .chapter-badge {
+            display: inline-block;
+            background: var(--gradient-purple);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .hero h1 span {
+            background: var(--gradient-cyan);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.7);
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 300;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        .hero-icons {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2.5rem;
+            animation: fadeInUp 0.8s ease-out 0.6s backwards;
+        }
+
+        .hero-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .hero-icon-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border: 2px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-icon span {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: white;
+            max-width: 1000px;
+            margin: -4rem auto 0;
+            border-radius: 20px;
+            padding: 2.5rem 3rem;
+            box-shadow: var(--shadow-strong);
+            position: relative;
+            z-index: 20;
+        }
+
+        .toc h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .toc-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: var(--light);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--dark);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .toc-item:hover {
+            border-color: var(--purple);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .toc-number {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient-purple);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .toc-text {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 5rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+
+        .section-number {
+            display: inline-block;
+            background: var(--gradient-purple);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1.2rem;
+            line-height: 50px;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Content Styles */
+        .content-block {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .content-block h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .content-block h3 .icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-secondary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .content-block p {
+            color: #555;
+            margin-bottom: 1rem;
+        }
+
+        .content-block h4 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin: 2rem 0 1rem;
+        }
+
+        .content-block ul, .content-block ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #555;
+        }
+
+        .content-block li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--code-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-medium);
+            position: relative;
+        }
+
+        .code-header {
+            background: #2A2A3E;
+            padding: 0.875rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .code-header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .code-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .code-dots span {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .code-dots span:nth-child(1) { background: #FF5F56; }
+        .code-dots span:nth-child(2) { background: #FFBD2E; }
+        .code-dots span:nth-child(3) { background: #27C93F; }
+
+        .code-title {
+            color: #888;
+            font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+            margin-left: 1rem;
+        }
+
+        .code-lang {
+            background: var(--gradient-purple);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        pre {
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 0;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: #E4E4E7;
+        }
+
+        .keyword { color: #FF79C6; }
+        .string { color: #F1FA8C; }
+        .comment { color: #6272A4; font-style: italic; }
+        .class-name { color: #8BE9FD; }
+        .method { color: #50FA7B; }
+        .number { color: #BD93F9; }
+        .annotation { color: #FFB86C; }
+        .type { color: #FF79C6; }
+        .variable { color: #F8F8F2; }
+        .operator { color: #FF79C6; }
+
+        /* Output Block */
+        .output-block {
+            background: #1A1A2E;
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .output-label {
+            color: var(--accent);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .output-text {
+            color: #50FA7B;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+        }
+
+        /* Terminal Block */
+        .terminal-block {
+            background: #0D0D0D;
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .terminal-header {
+            background: #2D2D2D;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .terminal-title {
+            color: #999;
+            font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+            margin-left: 1rem;
+        }
+
+        .terminal-body {
+            padding: 1.5rem;
+        }
+
+        .terminal-line {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .terminal-prompt {
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            margin-right: 0.75rem;
+            user-select: none;
+        }
+
+        .terminal-command {
+            color: #F8F8F2;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .terminal-output {
+            color: #888;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            margin-left: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .terminal-output.highlight {
+            color: #50FA7B;
+        }
+
+        .terminal-output.input {
+            color: #F1FA8C;
+        }
+
+        /* Flowchart Diagram */
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 2rem;
+        }
+
+        .flow-node {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 500;
+            text-align: center;
+            min-width: 150px;
+            transition: transform 0.3s ease;
+        }
+
+        .flow-node:hover {
+            transform: scale(1.05);
+        }
+
+        .flow-node.start-end {
+            background: var(--gradient-accent);
+            color: white;
+            border-radius: 30px;
+        }
+
+        .flow-node.condition {
+            background: var(--gradient-purple);
+            color: white;
+            transform: rotate(0deg);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            padding: 2rem 3rem;
+        }
+
+        .flow-node.process {
+            background: var(--gradient-secondary);
+            color: white;
+        }
+
+        .flow-node.io {
+            background: var(--gradient-primary);
+            color: white;
+            transform: skewX(-10deg);
+        }
+
+        .flow-node.io span {
+            display: inline-block;
+            transform: skewX(10deg);
+        }
+
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: #999;
+        }
+
+        .flow-row {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .flow-branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .flow-label {
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: 600;
+        }
+
+        /* Concept Cards */
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .concept-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-purple);
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .concept-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-purple);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .concept-card h4 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .concept-card p {
+            color: #666;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .concept-card code {
+            background: var(--code-bg);
+            color: #FF79C6;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        /* Loop Visualization */
+        .loop-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .loop-box {
+            background: white;
+            border: 3px solid var(--purple);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .loop-box h5 {
+            color: var(--purple);
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .loop-box p {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .loop-arrow-cycle {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            color: var(--purple);
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            margin: 1.5rem 0;
+        }
+
+        .comparison-table th {
+            background: var(--dark);
+            color: white;
+            padding: 1.1rem 1.25rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .comparison-table td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid #F0F0F0;
+            color: #555;
+            vertical-align: top;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:hover td {
+            background: #F8F9FA;
+        }
+
+        .comparison-table code {
+            background: var(--code-bg);
+            color: #FF79C6;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            background: linear-gradient(135deg, rgba(0,78,137,0.08) 0%, rgba(0,78,137,0.03) 100%);
+            border-left: 4px solid var(--secondary);
+            border-radius: 0 16px 16px 0;
+            padding: 1.5rem 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .info-box.warning {
+            background: linear-gradient(135deg, rgba(255,189,46,0.15) 0%, rgba(255,189,46,0.05) 100%);
+            border-left-color: #FFBD2E;
+        }
+
+        .info-box.success {
+            background: linear-gradient(135deg, rgba(26,147,111,0.1) 0%, rgba(26,147,111,0.03) 100%);
+            border-left-color: var(--accent);
+        }
+
+        .info-box.tip {
+            background: linear-gradient(135deg, rgba(124,58,237,0.1) 0%, rgba(124,58,237,0.03) 100%);
+            border-left-color: var(--purple);
+        }
+
+        .info-title {
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-box.warning .info-title { color: #B8860B; }
+        .info-box.success .info-title { color: var(--accent); }
+        .info-box.tip .info-title { color: var(--purple); }
+
+        .info-box p {
+            color: #555;
+            margin: 0;
+        }
+
+        /* Project Section */
+        .project-section {
+            background: linear-gradient(135deg, #1A1A2E 0%, #16213E 100%);
+            color: white;
+        }
+
+        .project-section .section-header h2 {
+            color: white;
+        }
+
+        .project-section .section-header p {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .project-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .project-card h3 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .project-card .project-badge {
+            background: var(--gradient-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .project-card p {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 1.5rem;
+        }
+
+        .project-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .project-feature {
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* Syntax Highlight Box */
+        .syntax-box {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .syntax-box h4 {
+            color: var(--dark);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .syntax-template {
+            background: var(--code-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            color: #E4E4E7;
+            line-height: 1.8;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        footer p {
+            opacity: 0.7;
+        }
+
+        .footer-nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .footer-nav a:hover {
+            background: var(--gradient-purple);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .toc { margin: -2rem 1rem 0; padding: 1.5rem; }
+            .content-block { padding: 1.5rem; }
+            section { padding: 3rem 0; }
+            .hero-icons { gap: 1rem; }
+            .flow-row { flex-direction: column; gap: 1rem; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #F0F0F0;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient-purple);
+            border-radius: 5px;
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="flow-lines">
+            <div class="flow-line"></div>
+            <div class="flow-line"></div>
+            <div class="flow-line"></div>
+            <div class="flow-line"></div>
+            <div class="flow-line"></div>
+            <div class="flow-line"></div>
+        </div>
+        <div class="hero-content">
+            <span class="chapter-badge">Chapter 2</span>
+            <h1><span>Control Flow</span> in Java</h1>
+            <p class="hero-subtitle">Master decision-making and loops to control how your programs execute</p>
+            <div class="hero-icons">
+                <div class="hero-icon">
+                    <div class="hero-icon-circle">🔀</div>
+                    <span>Conditionals</span>
+                </div>
+                <div class="hero-icon">
+                    <div class="hero-icon-circle">🔄</div>
+                    <span>Loops</span>
+                </div>
+                <div class="hero-icon">
+                    <div class="hero-icon-circle">⏹️</div>
+                    <span>Branching</span>
+                </div>
+                <div class="hero-icon">
+                    <div class="hero-icon-circle">🎮</div>
+                    <span>Projects</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Table of Contents -->
+    <nav class="toc">
+        <h3>📑 In This Chapter</h3>
+        <div class="toc-grid">
+            <a href="#conditionals" class="toc-item">
+                <span class="toc-number">2.1</span>
+                <span class="toc-text">Conditional Statements</span>
+            </a>
+            <a href="#loops" class="toc-item">
+                <span class="toc-number">2.2</span>
+                <span class="toc-text">Loops</span>
+            </a>
+            <a href="#branching" class="toc-item">
+                <span class="toc-number">2.3</span>
+                <span class="toc-text">Branching</span>
+            </a>
+            <a href="#projects" class="toc-item">
+                <span class="toc-number">2.4</span>
+                <span class="toc-text">Mini Projects</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Section 2.1: Conditional Statements -->
+    <section id="conditionals">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">2.1</span>
+                <h2>Conditional Statements</h2>
+                <p>Make decisions in your code based on conditions</p>
+            </div>
+
+            <!-- Introduction -->
+            <div class="content-block">
+                <h3><span class="icon">🔀</span> What are Conditional Statements?</h3>
+                <p>Conditional statements allow your program to make decisions and execute different code blocks based on whether certain conditions are true or false. Think of them as the "if-then" logic in everyday life.</p>
+
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <div class="concept-icon">🚦</div>
+                        <h4>if Statement</h4>
+                        <p>Execute code only <code>if</code> a condition is true. The most basic form of decision-making.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-icon" style="background: var(--gradient-secondary);">🔄</div>
+                        <h4>if-else Statement</h4>
+                        <p>Choose between two paths: one if true, another if false using <code>else</code>.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-icon" style="background: var(--gradient-accent);">🌳</div>
+                        <h4>else if Ladder</h4>
+                        <p>Check multiple conditions in sequence using <code>else if</code> chains.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-icon" style="background: var(--gradient-primary);">🎛️</div>
+                        <h4>switch Statement</h4>
+                        <p>Select one of many code blocks based on a variable's value using <code>switch</code>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- if Statement -->
+            <div class="content-block">
+                <h3><span class="icon">🚦</span> The if Statement</h3>
+                <p>The simplest conditional statement. It executes a block of code only if the specified condition evaluates to <code>true</code>.</p>
+
+                <div class="syntax-box">
+                    <h4>📐 Syntax</h4>
+                    <div class="syntax-template">
+<span class="keyword">if</span> (<span class="variable">condition</span>) {
+    <span class="comment">// Code to execute if condition is true</span>
+}
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">IfStatement.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">IfStatement</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="keyword">int</span> age = <span class="number">20</span>;
+        <span class="keyword">int</span> temperature = <span class="number">35</span>;
+        <span class="keyword">boolean</span> hasTicket = <span class="keyword">true</span>;
+        
+        <span class="comment">// Simple if statement</span>
+        <span class="keyword">if</span> (age >= <span class="number">18</span>) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"You are an adult."</span>);
+        }
+        
+        <span class="comment">// if with comparison operator</span>
+        <span class="keyword">if</span> (temperature > <span class="number">30</span>) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"It's a hot day! 🌞"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Stay hydrated!"</span>);
+        }
+        
+        <span class="comment">// if with boolean variable</span>
+        <span class="keyword">if</span> (hasTicket) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Welcome to the show! 🎭"</span>);
+        }
+        
+        <span class="comment">// if with logical operators</span>
+        <span class="keyword">if</span> (age >= <span class="number">18</span> && hasTicket) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"You can enter the venue."</span>);
+        }
+        
+        <span class="comment">// Nested if statements</span>
+        <span class="keyword">if</span> (age >= <span class="number">18</span>) {
+            <span class="keyword">if</span> (hasTicket) {
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Enjoy the concert!"</span>);
+            }
+        }
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">You are an adult.
+It's a hot day! 🌞
+Stay hydrated!
+Welcome to the show! 🎭
+You can enter the venue.
+Enjoy the concert!</div>
+                </div>
+            </div>
+
+            <!-- if-else Statement -->
+            <div class="content-block">
+                <h3><span class="icon">🔄</span> The if-else Statement</h3>
+                <p>When you need to choose between two alternatives: execute one block if the condition is true, another block if it's false.</p>
+
+                <div class="syntax-box">
+                    <h4>📐 Syntax</h4>
+                    <div class="syntax-template">
+<span class="keyword">if</span> (<span class="variable">condition</span>) {
+    <span class="comment">// Code if condition is TRUE</span>
+} <span class="keyword">else</span> {
+    <span class="comment">// Code if condition is FALSE</span>
+}
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">IfElseStatement.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">IfElseStatement</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="keyword">int</span> number = <span class="number">7</span>;
+        <span class="keyword">int</span> score = <span class="number">45</span>;
+        <span class="keyword">double</span> balance = <span class="number">150.75</span>;
+        
+        <span class="comment">// Check if number is even or odd</span>
+        <span class="keyword">if</span> (number % <span class="number">2</span> == <span class="number">0</span>) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(number + <span class="string">" is even"</span>);
+        } <span class="keyword">else</span> {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(number + <span class="string">" is odd"</span>);
+        }
+        
+        <span class="comment">// Pass or fail check</span>
+        <span class="keyword">if</span> (score >= <span class="number">50</span>) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"✅ Congratulations! You passed!"</span>);
+        } <span class="keyword">else</span> {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"❌ Sorry, you failed. Score: "</span> + score);
+        }
+        
+        <span class="comment">// Check account balance</span>
+        <span class="keyword">double</span> withdrawal = <span class="number">100.00</span>;
+        <span class="keyword">if</span> (balance >= withdrawal) {
+            balance -= withdrawal;
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Withdrawal successful!"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"New balance: $"</span> + balance);
+        } <span class="keyword">else</span> {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Insufficient funds!"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Current balance: $"</span> + balance);
+        }
+        
+        <span class="comment">// Ternary operator - shorthand if-else</span>
+        <span class="class-name">String</span> result = (score >= <span class="number">50</span>) ? <span class="string">"Pass"</span> : <span class="string">"Fail"</span>;
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Result: "</span> + result);
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">7 is odd
+❌ Sorry, you failed. Score: 45
+Withdrawal successful!
+New balance: $50.75
+Result: Fail</div>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-title">💡 Ternary Operator</div>
+                    <p>The ternary operator <code>condition ? valueIfTrue : valueIfFalse</code> is a compact way to write simple if-else statements. Use it for simple assignments, but avoid it for complex logic as it reduces readability.</p>
+                </div>
+            </div>
+
+            <!-- else if Ladder -->
+            <div class="content-block">
+                <h3><span class="icon">🌳</span> The else if Ladder</h3>
+                <p>When you have multiple conditions to check in sequence. The first condition that evaluates to true will execute its block, and all remaining conditions are skipped.</p>
+
+                <div class="syntax-box">
+                    <h4>📐 Syntax</h4>
+                    <div class="syntax-template">
+<span class="keyword">if</span> (<span class="variable">condition1</span>) {
+    <span class="comment">// Code if condition1 is true</span>
+} <span class="keyword">else if</span> (<span class="variable">condition2</span>) {
+    <span class="comment">// Code if condition2 is true</span>
+} <span class="keyword">else if</span> (<span class="variable">condition3</span>) {
+    <span class="comment">// Code if condition3 is true</span>
+} <span class="keyword">else</span> {
+    <span class="comment">// Code if ALL conditions are false</span>
+}
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">GradeCalculator.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">GradeCalculator</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="keyword">int</span> score = <span class="number">85</span>;
+        <span class="class-name">String</span> grade;
+        <span class="class-name">String</span> feedback;
+        
+        <span class="comment">// Grade calculation using else-if ladder</span>
+        <span class="keyword">if</span> (score >= <span class="number">90</span>) {
+            grade = <span class="string">"A+"</span>;
+            feedback = <span class="string">"Outstanding! 🌟"</span>;
+        } <span class="keyword">else if</span> (score >= <span class="number">80</span>) {
+            grade = <span class="string">"A"</span>;
+            feedback = <span class="string">"Excellent work! 🎉"</span>;
+        } <span class="keyword">else if</span> (score >= <span class="number">70</span>) {
+            grade = <span class="string">"B"</span>;
+            feedback = <span class="string">"Good job! 👍"</span>;
+        } <span class="keyword">else if</span> (score >= <span class="number">60</span>) {
+            grade = <span class="string">"C"</span>;
+            feedback = <span class="string">"Satisfactory 📚"</span>;
+        } <span class="keyword">else if</span> (score >= <span class="number">50</span>) {
+            grade = <span class="string">"D"</span>;
+            feedback = <span class="string">"Needs improvement 📖"</span>;
+        } <span class="keyword">else</span> {
+            grade = <span class="string">"F"</span>;
+            feedback = <span class="string">"Please see the instructor ⚠️"</span>;
+        }
+        
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"╔════════════════════════════╗"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"║     GRADE REPORT           ║"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"╠════════════════════════════╣"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"║  Score: "</span> + score + <span class="string">"/100            ║"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"║  Grade: "</span> + grade + <span class="string">"                 ║"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"╚════════════════════════════╝"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(feedback);
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">╔════════════════════════════╗
+║     GRADE REPORT           ║
+╠════════════════════════════╣
+║  Score: 85/100            ║
+║  Grade: A                 ║
+╚════════════════════════════╝
+Excellent work! 🎉</div>
+                </div>
+            </div>
+
+            <!-- switch Statement -->
+            <div class="content-block">
+                <h3><span class="icon">🎛️</span> The switch Statement</h3>
+                <p>The switch statement is perfect when you need to compare a single variable against multiple possible values. It's cleaner and often more efficient than long else-if chains.</p>
+
+                <div class="syntax-box">
+                    <h4>📐 Traditional Syntax</h4>
+                    <div class="syntax-template">
+<span class="keyword">switch</span> (<span class="variable">expression</span>) {
+    <span class="keyword">case</span> <span class="variable">value1</span>:
+        <span class="comment">// Code for value1</span>
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="variable">value2</span>:
+        <span class="comment">// Code for value2</span>
+        <span class="keyword">break</span>;
+    <span class="keyword">default</span>:
+        <span class="comment">// Code if no case matches</span>
+}
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">SwitchExample.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">SwitchExample</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="keyword">int</span> dayNumber = <span class="number">3</span>;
+        <span class="class-name">String</span> dayName;
+        
+        <span class="comment">// Traditional switch statement</span>
+        <span class="keyword">switch</span> (dayNumber) {
+            <span class="keyword">case</span> <span class="number">1</span>:
+                dayName = <span class="string">"Monday"</span>;
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="number">2</span>:
+                dayName = <span class="string">"Tuesday"</span>;
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="number">3</span>:
+                dayName = <span class="string">"Wednesday"</span>;
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="number">4</span>:
+                dayName = <span class="string">"Thursday"</span>;
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="number">5</span>:
+                dayName = <span class="string">"Friday"</span>;
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="number">6</span>:
+                dayName = <span class="string">"Saturday"</span>;
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="number">7</span>:
+                dayName = <span class="string">"Sunday"</span>;
+                <span class="keyword">break</span>;
+            <span class="keyword">default</span>:
+                dayName = <span class="string">"Invalid day"</span>;
+        }
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Day "</span> + dayNumber + <span class="string">" is "</span> + dayName);
+        
+        <span class="comment">// Switch with String (Java 7+)</span>
+        <span class="class-name">String</span> month = <span class="string">"March"</span>;
+        <span class="keyword">int</span> days;
+        
+        <span class="keyword">switch</span> (month) {
+            <span class="keyword">case</span> <span class="string">"January"</span>:
+            <span class="keyword">case</span> <span class="string">"March"</span>:
+            <span class="keyword">case</span> <span class="string">"May"</span>:
+            <span class="keyword">case</span> <span class="string">"July"</span>:
+            <span class="keyword">case</span> <span class="string">"August"</span>:
+            <span class="keyword">case</span> <span class="string">"October"</span>:
+            <span class="keyword">case</span> <span class="string">"December"</span>:
+                days = <span class="number">31</span>;
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="string">"April"</span>:
+            <span class="keyword">case</span> <span class="string">"June"</span>:
+            <span class="keyword">case</span> <span class="string">"September"</span>:
+            <span class="keyword">case</span> <span class="string">"November"</span>:
+                days = <span class="number">30</span>;
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="string">"February"</span>:
+                days = <span class="number">28</span>; <span class="comment">// Not accounting for leap year</span>
+                <span class="keyword">break</span>;
+            <span class="keyword">default</span>:
+                days = <span class="number">0</span>;
+        }
+        <span class="class-name">System</span>.out.<span class="method">println</span>(month + <span class="string">" has "</span> + days + <span class="string">" days"</span>);
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">Day 3 is Wednesday
+March has 31 days</div>
+                </div>
+
+                <h4>Switch Expressions (Java 14+)</h4>
+                <p>Modern Java introduced switch expressions with arrow syntax - cleaner, no fall-through, and can return values directly.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">ModernSwitch.java</span>
+                        </div>
+                        <span class="code-lang">Java 14+</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">ModernSwitch</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="keyword">int</span> dayNumber = <span class="number">5</span>;
+        
+        <span class="comment">// Switch expression with arrow syntax</span>
+        <span class="class-name">String</span> dayType = <span class="keyword">switch</span> (dayNumber) {
+            <span class="keyword">case</span> <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span> -> <span class="string">"Weekday"</span>;
+            <span class="keyword">case</span> <span class="number">6</span>, <span class="number">7</span> -> <span class="string">"Weekend"</span>;
+            <span class="keyword">default</span> -> <span class="string">"Invalid"</span>;
+        };
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Day "</span> + dayNumber + <span class="string">" is a "</span> + dayType);
+        
+        <span class="comment">// Switch expression with blocks</span>
+        <span class="class-name">String</span> season = <span class="string">"Summer"</span>;
+        <span class="class-name">String</span> activity = <span class="keyword">switch</span> (season) {
+            <span class="keyword">case</span> <span class="string">"Spring"</span> -> {
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"🌸 Flowers are blooming!"</span>);
+                <span class="keyword">yield</span> <span class="string">"Go hiking"</span>;
+            }
+            <span class="keyword">case</span> <span class="string">"Summer"</span> -> {
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"☀️ It's hot outside!"</span>);
+                <span class="keyword">yield</span> <span class="string">"Go swimming"</span>;
+            }
+            <span class="keyword">case</span> <span class="string">"Fall"</span>, <span class="string">"Autumn"</span> -> {
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"🍂 Leaves are falling!"</span>);
+                <span class="keyword">yield</span> <span class="string">"Go apple picking"</span>;
+            }
+            <span class="keyword">case</span> <span class="string">"Winter"</span> -> {
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"❄️ It's cold outside!"</span>);
+                <span class="keyword">yield</span> <span class="string">"Go skiing"</span>;
+            }
+            <span class="keyword">default</span> -> <span class="string">"Stay home"</span>;
+        };
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Suggested activity: "</span> + activity);
+        
+        <span class="comment">// Pattern matching in switch (Java 21+)</span>
+        <span class="class-name">Object</span> value = <span class="number">42</span>;
+        <span class="class-name">String</span> result = <span class="keyword">switch</span> (value) {
+            <span class="keyword">case</span> <span class="class-name">Integer</span> i <span class="keyword">when</span> i > <span class="number">0</span> -> <span class="string">"Positive integer: "</span> + i;
+            <span class="keyword">case</span> <span class="class-name">Integer</span> i -> <span class="string">"Non-positive integer: "</span> + i;
+            <span class="keyword">case</span> <span class="class-name">String</span> s -> <span class="string">"String: "</span> + s;
+            <span class="keyword">case</span> <span class="keyword">null</span> -> <span class="string">"Null value"</span>;
+            <span class="keyword">default</span> -> <span class="string">"Unknown type"</span>;
+        };
+        <span class="class-name">System</span>.out.<span class="method">println</span>(result);
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">Day 5 is a Weekday
+☀️ It's hot outside!
+Suggested activity: Go swimming
+Positive integer: 42</div>
+                </div>
+
+                <div class="info-box warning">
+                    <div class="info-title">⚠️ Don't Forget break!</div>
+                    <p>In traditional switch statements, forgetting <code>break</code> causes "fall-through" where execution continues to the next case. The modern arrow syntax (<code>-></code>) doesn't have this problem.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2.2: Loops -->
+    <section id="loops" style="background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">2.2</span>
+                <h2>Loops</h2>
+                <p>Execute code repeatedly until a condition is met</p>
+            </div>
+
+            <!-- Introduction to Loops -->
+            <div class="content-block">
+                <h3><span class="icon">🔄</span> What are Loops?</h3>
+                <p>Loops allow you to execute a block of code multiple times. Instead of writing repetitive code, loops make your programs efficient and maintainable.</p>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Loop Type</th>
+                            <th>Best For</th>
+                            <th>Condition Check</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>for</code></td>
+                            <td>Known number of iterations</td>
+                            <td>Before each iteration</td>
+                        </tr>
+                        <tr>
+                            <td><code>while</code></td>
+                            <td>Unknown iterations, condition-based</td>
+                            <td>Before each iteration</td>
+                        </tr>
+                        <tr>
+                            <td><code>do-while</code></td>
+                            <td>Must execute at least once</td>
+                            <td>After each iteration</td>
+                        </tr>
+                        <tr>
+                            <td><code>for-each</code></td>
+                            <td>Iterating through collections/arrays</td>
+                            <td>Automatic</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- for Loop -->
+            <div class="content-block">
+                <h3><span class="icon">🔢</span> The for Loop</h3>
+                <p>The most commonly used loop when you know exactly how many times you want to iterate. It has three parts: initialization, condition, and update.</p>
+
+                <div class="syntax-box">
+                    <h4>📐 Syntax</h4>
+                    <div class="syntax-template">
+<span class="keyword">for</span> (<span class="variable">initialization</span>; <span class="variable">condition</span>; <span class="variable">update</span>) {
+    <span class="comment">// Code to repeat</span>
+}
+
+<span class="comment">// Example:</span>
+<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < <span class="number">5</span>; i++) {
+    <span class="comment">// Runs 5 times (i = 0, 1, 2, 3, 4)</span>
+}
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">ForLoopExamples.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">ForLoopExamples</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="comment">// Basic for loop - counting up</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"=== Counting 1 to 5 ==="</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i <= <span class="number">5</span>; i++) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Count: "</span> + i);
+        }
+        
+        <span class="comment">// Counting down</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Countdown ==="</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">5</span>; i >= <span class="number">1</span>; i--) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(i + <span class="string">"..."</span>);
+        }
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"🚀 Liftoff!"</span>);
+        
+        <span class="comment">// Stepping by 2</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Even numbers 2-10 ==="</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i <= <span class="number">10</span>; i += <span class="number">2</span>) {
+            <span class="class-name">System</span>.out.<span class="method">print</span>(i + <span class="string">" "</span>);
+        }
+        <span class="class-name">System</span>.out.<span class="method">println</span>();
+        
+        <span class="comment">// Multiplication table</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== 5x Table ==="</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i <= <span class="number">10</span>; i++) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"5 x "</span> + i + <span class="string">" = "</span> + (<span class="number">5</span> * i));
+        }
+        
+        <span class="comment">// Sum of numbers</span>
+        <span class="keyword">int</span> sum = <span class="number">0</span>;
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i <= <span class="number">100</span>; i++) {
+            sum += i;
+        }
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\nSum of 1-100: "</span> + sum);
+        
+        <span class="comment">// Nested for loops - pattern printing</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Star Pattern ==="</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i <= <span class="number">5</span>; i++) {
+            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j <= i; j++) {
+                <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"⭐"</span>);
+            }
+            <span class="class-name">System</span>.out.<span class="method">println</span>();
+        }
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">=== Counting 1 to 5 ===
+Count: 1
+Count: 2
+Count: 3
+Count: 4
+Count: 5
+
+=== Countdown ===
+5...
+4...
+3...
+2...
+1...
+🚀 Liftoff!
+
+=== Even numbers 2-10 ===
+2 4 6 8 10 
+
+=== 5x Table ===
+5 x 1 = 5
+5 x 2 = 10
+5 x 3 = 15
+...
+5 x 10 = 50
+
+Sum of 1-100: 5050
+
+=== Star Pattern ===
+⭐
+⭐⭐
+⭐⭐⭐
+⭐⭐⭐⭐
+⭐⭐⭐⭐⭐</div>
+                </div>
+
+                <h4>Enhanced for Loop (for-each)</h4>
+                <p>A simpler syntax for iterating through arrays and collections:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">ForEachLoop.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">ForEachLoop</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="comment">// Array of numbers</span>
+        <span class="keyword">int</span>[] numbers = {<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>};
+        
+        <span class="comment">// Traditional for loop</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Using traditional for:"</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < numbers.length; i++) {
+            <span class="class-name">System</span>.out.<span class="method">print</span>(numbers[i] + <span class="string">" "</span>);
+        }
+        
+        <span class="comment">// Enhanced for loop (for-each)</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n\nUsing for-each:"</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> num : numbers) {
+            <span class="class-name">System</span>.out.<span class="method">print</span>(num + <span class="string">" "</span>);
+        }
+        
+        <span class="comment">// With String array</span>
+        <span class="class-name">String</span>[] fruits = {<span class="string">"Apple"</span>, <span class="string">"Banana"</span>, <span class="string">"Cherry"</span>, <span class="string">"Date"</span>};
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n\n🍎 Fruits:"</span>);
+        <span class="keyword">for</span> (<span class="class-name">String</span> fruit : fruits) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"  - "</span> + fruit);
+        }
+        
+        <span class="comment">// Calculate sum with for-each</span>
+        <span class="keyword">int</span> sum = <span class="number">0</span>;
+        <span class="keyword">for</span> (<span class="keyword">int</span> num : numbers) {
+            sum += num;
+        }
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\nSum: "</span> + sum);
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- while Loop -->
+            <div class="content-block">
+                <h3><span class="icon">🔁</span> The while Loop</h3>
+                <p>Executes a block of code as long as the condition is true. Best when you don't know in advance how many iterations you need.</p>
+
+                <div class="syntax-box">
+                    <h4>📐 Syntax</h4>
+                    <div class="syntax-template">
+<span class="keyword">while</span> (<span class="variable">condition</span>) {
+    <span class="comment">// Code to repeat while condition is true</span>
+    <span class="comment">// Make sure to update variables to eventually exit!</span>
+}
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">WhileLoopExamples.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">WhileLoopExamples</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="comment">// Basic while loop</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"=== Basic While Loop ==="</span>);
+        <span class="keyword">int</span> count = <span class="number">1</span>;
+        <span class="keyword">while</span> (count <= <span class="number">5</span>) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Count: "</span> + count);
+            count++;  <span class="comment">// Don't forget to increment!</span>
+        }
+        
+        <span class="comment">// Finding digits in a number</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Count Digits ==="</span>);
+        <span class="keyword">int</span> number = <span class="number">12345</span>;
+        <span class="keyword">int</span> original = number;
+        <span class="keyword">int</span> digitCount = <span class="number">0</span>;
+        
+        <span class="keyword">while</span> (number > <span class="number">0</span>) {
+            number = number / <span class="number">10</span>;  <span class="comment">// Remove last digit</span>
+            digitCount++;
+        }
+        <span class="class-name">System</span>.out.<span class="method">println</span>(original + <span class="string">" has "</span> + digitCount + <span class="string">" digits"</span>);
+        
+        <span class="comment">// Sum digits of a number</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Sum of Digits ==="</span>);
+        number = <span class="number">12345</span>;
+        <span class="keyword">int</span> digitSum = <span class="number">0</span>;
+        
+        <span class="keyword">while</span> (number > <span class="number">0</span>) {
+            <span class="keyword">int</span> digit = number % <span class="number">10</span>;  <span class="comment">// Get last digit</span>
+            digitSum += digit;
+            number = number / <span class="number">10</span>;     <span class="comment">// Remove last digit</span>
+        }
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Sum of digits in 12345: "</span> + digitSum);
+        
+        <span class="comment">// Finding GCD using Euclidean algorithm</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== GCD Calculator ==="</span>);
+        <span class="keyword">int</span> a = <span class="number">48</span>, b = <span class="number">18</span>;
+        <span class="keyword">int</span> origA = a, origB = b;
+        
+        <span class="keyword">while</span> (b != <span class="number">0</span>) {
+            <span class="keyword">int</span> temp = b;
+            b = a % b;
+            a = temp;
+        }
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"GCD of "</span> + origA + <span class="string">" and "</span> + origB + <span class="string">" is "</span> + a);
+        
+        <span class="comment">// Reverse a number</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Reverse Number ==="</span>);
+        number = <span class="number">12345</span>;
+        <span class="keyword">int</span> reversed = <span class="number">0</span>;
+        
+        <span class="keyword">while</span> (number > <span class="number">0</span>) {
+            <span class="keyword">int</span> digit = number % <span class="number">10</span>;
+            reversed = reversed * <span class="number">10</span> + digit;
+            number /= <span class="number">10</span>;
+        }
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"12345 reversed: "</span> + reversed);
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">=== Basic While Loop ===
+Count: 1
+Count: 2
+Count: 3
+Count: 4
+Count: 5
+
+=== Count Digits ===
+12345 has 5 digits
+
+=== Sum of Digits ===
+Sum of digits in 12345: 15
+
+=== GCD Calculator ===
+GCD of 48 and 18 is 6
+
+=== Reverse Number ===
+12345 reversed: 54321</div>
+                </div>
+
+                <div class="info-box warning">
+                    <div class="info-title">⚠️ Infinite Loop Warning</div>
+                    <p>Always ensure your while loop's condition will eventually become false. An infinite loop occurs when the condition never becomes false, freezing your program. Always update loop variables!</p>
+                </div>
+            </div>
+
+            <!-- do-while Loop -->
+            <div class="content-block">
+                <h3><span class="icon">🔃</span> The do-while Loop</h3>
+                <p>Similar to while, but the condition is checked <strong>after</strong> the code block executes. This guarantees the code runs <strong>at least once</strong>.</p>
+
+                <div class="syntax-box">
+                    <h4>📐 Syntax</h4>
+                    <div class="syntax-template">
+<span class="keyword">do</span> {
+    <span class="comment">// Code to execute</span>
+    <span class="comment">// Runs at least once!</span>
+} <span class="keyword">while</span> (<span class="variable">condition</span>);  <span class="comment">// Note the semicolon!</span>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">DoWhileExamples.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">import</span> java.util.Scanner;
+
+<span class="keyword">public class</span> <span class="class-name">DoWhileExamples</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="comment">// Basic do-while - always executes at least once</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"=== Do-While vs While ==="</span>);
+        
+        <span class="keyword">int</span> x = <span class="number">10</span>;
+        
+        <span class="comment">// This while loop never executes</span>
+        <span class="keyword">while</span> (x < <span class="number">5</span>) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"While: "</span> + x);
+            x++;
+        }
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"While loop didn't execute"</span>);
+        
+        <span class="comment">// This do-while executes once</span>
+        x = <span class="number">10</span>;
+        <span class="keyword">do</span> {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Do-While: "</span> + x);
+            x++;
+        } <span class="keyword">while</span> (x < <span class="number">5</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Do-while executed once!"</span>);
+        
+        <span class="comment">// Menu system - perfect use case for do-while</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Menu System Example ==="</span>);
+        <span class="keyword">int</span> choice;
+        
+        <span class="comment">// Simulating menu choices without Scanner</span>
+        <span class="keyword">int</span>[] choices = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>};  <span class="comment">// Simulated inputs</span>
+        <span class="keyword">int</span> index = <span class="number">0</span>;
+        
+        <span class="keyword">do</span> {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n╔═══════════════════╗"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"║    MAIN MENU      ║"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"╠═══════════════════╣"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"║ 1. View Profile   ║"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"║ 2. Edit Settings  ║"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"║ 3. Help           ║"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"║ 4. Exit           ║"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"╚═══════════════════╝"</span>);
+            
+            choice = choices[index++];  <span class="comment">// Simulate user input</span>
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Selected: "</span> + choice);
+            
+            <span class="keyword">switch</span> (choice) {
+                <span class="keyword">case</span> <span class="number">1</span> -> <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"📋 Showing profile..."</span>);
+                <span class="keyword">case</span> <span class="number">2</span> -> <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"⚙️ Opening settings..."</span>);
+                <span class="keyword">case</span> <span class="number">3</span> -> <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"❓ Help: Contact support@example.com"</span>);
+                <span class="keyword">case</span> <span class="number">4</span> -> <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"👋 Goodbye!"</span>);
+                <span class="keyword">default</span> -> <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"❌ Invalid option!"</span>);
+            }
+        } <span class="keyword">while</span> (choice != <span class="number">4</span>);
+        
+        <span class="comment">// Input validation pattern</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Input Validation ==="</span>);
+        <span class="keyword">int</span>[] attempts = {<span class="number">-5</span>, <span class="number">150</span>, <span class="number">75</span>};  <span class="comment">// Simulated inputs</span>
+        <span class="keyword">int</span> attemptIndex = <span class="number">0</span>;
+        <span class="keyword">int</span> validNumber;
+        
+        <span class="keyword">do</span> {
+            validNumber = attempts[attemptIndex++];
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Entered: "</span> + validNumber);
+            <span class="keyword">if</span> (validNumber < <span class="number">0</span> || validNumber > <span class="number">100</span>) {
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Please enter a number between 0-100"</span>);
+            }
+        } <span class="keyword">while</span> (validNumber < <span class="number">0</span> || validNumber > <span class="number">100</span>);
+        
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"✅ Valid input received: "</span> + validNumber);
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">=== Do-While vs While ===
+While loop didn't execute
+Do-While: 10
+Do-while executed once!
+
+=== Menu System Example ===
+╔═══════════════════╗
+║    MAIN MENU      ║
+...
+Selected: 1
+📋 Showing profile...
+...
+Selected: 4
+👋 Goodbye!
+
+=== Input Validation ===
+Entered: -5
+Please enter a number between 0-100
+Entered: 150
+Please enter a number between 0-100
+Entered: 75
+✅ Valid input received: 75</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2.3: Branching -->
+    <section id="branching">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">2.3</span>
+                <h2>Branching Statements</h2>
+                <p>Control the flow within loops using break and continue</p>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">⏹️</span> The break Statement</h3>
+                <p>The <code>break</code> statement immediately exits the current loop or switch statement. It's useful when you've found what you're looking for or need to exit early.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">BreakExample.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">BreakExample</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="comment">// Search for a number in array</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"=== Linear Search ==="</span>);
+        <span class="keyword">int</span>[] numbers = {<span class="number">5</span>, <span class="number">12</span>, <span class="number">8</span>, <span class="number">130</span>, <span class="number">44</span>, <span class="number">23</span>, <span class="number">99</span>};
+        <span class="keyword">int</span> target = <span class="number">130</span>;
+        <span class="keyword">int</span> foundIndex = -<span class="number">1</span>;
+        
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < numbers.length; i++) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Checking index "</span> + i + <span class="string">": "</span> + numbers[i]);
+            <span class="keyword">if</span> (numbers[i] == target) {
+                foundIndex = i;
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"🎯 Found! Breaking out..."</span>);
+                <span class="keyword">break</span>;  <span class="comment">// Exit loop immediately</span>
+            }
+        }
+        
+        <span class="keyword">if</span> (foundIndex != -<span class="number">1</span>) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Found "</span> + target + <span class="string">" at index "</span> + foundIndex);
+        } <span class="keyword">else</span> {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Not found"</span>);
+        }
+        
+        <span class="comment">// Break in while loop</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Find First Vowel ==="</span>);
+        <span class="class-name">String</span> word = <span class="string">"rhythm"</span>;
+        <span class="keyword">char</span> firstVowel = <span class="string">'\0'</span>;
+        
+        <span class="keyword">for</span> (<span class="keyword">char</span> c : word.<span class="method">toCharArray</span>()) {
+            <span class="keyword">if</span> (<span class="string">"aeiouAEIOU"</span>.<span class="method">indexOf</span>(c) != -<span class="number">1</span>) {
+                firstVowel = c;
+                <span class="keyword">break</span>;
+            }
+        }
+        
+        <span class="keyword">if</span> (firstVowel != <span class="string">'\0'</span>) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"First vowel in '"</span> + word + <span class="string">"': "</span> + firstVowel);
+        } <span class="keyword">else</span> {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"'"</span> + word + <span class="string">"' has no vowels!"</span>);
+        }
+        
+        <span class="comment">// Breaking out of nested loops with labels</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Labeled Break ==="</span>);
+        <span class="keyword">outer</span>:
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i <= <span class="number">3</span>; i++) {
+            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j <= <span class="number">3</span>; j++) {
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"i="</span> + i + <span class="string">", j="</span> + j);
+                <span class="keyword">if</span> (i == <span class="number">2</span> && j == <span class="number">2</span>) {
+                    <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Breaking out of BOTH loops!"</span>);
+                    <span class="keyword">break</span> outer;  <span class="comment">// Breaks out of outer loop</span>
+                }
+            }
+        }
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Done!"</span>);
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">=== Linear Search ===
+Checking index 0: 5
+Checking index 1: 12
+Checking index 2: 8
+Checking index 3: 130
+🎯 Found! Breaking out...
+Found 130 at index 3
+
+=== Find First Vowel ===
+'rhythm' has no vowels!
+
+=== Labeled Break ===
+i=1, j=1
+i=1, j=2
+i=1, j=3
+i=2, j=1
+i=2, j=2
+Breaking out of BOTH loops!
+Done!</div>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">⏭️</span> The continue Statement</h3>
+                <p>The <code>continue</code> statement skips the current iteration and moves to the next one. It's useful when you want to skip certain values without exiting the entire loop.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">ContinueExample.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">ContinueExample</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="comment">// Print odd numbers only</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"=== Odd Numbers 1-10 ==="</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i <= <span class="number">10</span>; i++) {
+            <span class="keyword">if</span> (i % <span class="number">2</span> == <span class="number">0</span>) {
+                <span class="keyword">continue</span>;  <span class="comment">// Skip even numbers</span>
+            }
+            <span class="class-name">System</span>.out.<span class="method">print</span>(i + <span class="string">" "</span>);
+        }
+        <span class="class-name">System</span>.out.<span class="method">println</span>();
+        
+        <span class="comment">// Skip negative numbers when calculating sum</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Sum Positive Numbers ==="</span>);
+        <span class="keyword">int</span>[] values = {<span class="number">5</span>, -<span class="number">3</span>, <span class="number">10</span>, -<span class="number">7</span>, <span class="number">15</span>, <span class="number">8</span>, -<span class="number">2</span>};
+        <span class="keyword">int</span> positiveSum = <span class="number">0</span>;
+        
+        <span class="keyword">for</span> (<span class="keyword">int</span> val : values) {
+            <span class="keyword">if</span> (val < <span class="number">0</span>) {
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Skipping negative: "</span> + val);
+                <span class="keyword">continue</span>;
+            }
+            positiveSum += val;
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Added "</span> + val + <span class="string">", Sum: "</span> + positiveSum);
+        }
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Total of positives: "</span> + positiveSum);
+        
+        <span class="comment">// Skip specific characters</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Remove Vowels ==="</span>);
+        <span class="class-name">String</span> text = <span class="string">"Hello World"</span>;
+        <span class="class-name">StringBuilder</span> noVowels = <span class="keyword">new</span> <span class="class-name">StringBuilder</span>();
+        
+        <span class="keyword">for</span> (<span class="keyword">char</span> c : text.<span class="method">toCharArray</span>()) {
+            <span class="keyword">if</span> (<span class="string">"aeiouAEIOU"</span>.<span class="method">indexOf</span>(c) != -<span class="number">1</span>) {
+                <span class="keyword">continue</span>;  <span class="comment">// Skip vowels</span>
+            }
+            noVowels.<span class="method">append</span>(c);
+        }
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Original: "</span> + text);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"No vowels: "</span> + noVowels);
+        
+        <span class="comment">// FizzBuzz with continue</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== FizzBuzz (1-15) ==="</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i <= <span class="number">15</span>; i++) {
+            <span class="keyword">if</span> (i % <span class="number">3</span> == <span class="number">0</span> && i % <span class="number">5</span> == <span class="number">0</span>) {
+                <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"FizzBuzz "</span>);
+                <span class="keyword">continue</span>;
+            }
+            <span class="keyword">if</span> (i % <span class="number">3</span> == <span class="number">0</span>) {
+                <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"Fizz "</span>);
+                <span class="keyword">continue</span>;
+            }
+            <span class="keyword">if</span> (i % <span class="number">5</span> == <span class="number">0</span>) {
+                <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"Buzz "</span>);
+                <span class="keyword">continue</span>;
+            }
+            <span class="class-name">System</span>.out.<span class="method">print</span>(i + <span class="string">" "</span>);
+        }
+        <span class="class-name">System</span>.out.<span class="method">println</span>();
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">=== Odd Numbers 1-10 ===
+1 3 5 7 9 
+
+=== Sum Positive Numbers ===
+Added 5, Sum: 5
+Skipping negative: -3
+Added 10, Sum: 15
+Skipping negative: -7
+Added 15, Sum: 30
+Added 8, Sum: 38
+Skipping negative: -2
+Total of positives: 38
+
+=== Remove Vowels ===
+Original: Hello World
+No vowels: Hll Wrld
+
+=== FizzBuzz (1-15) ===
+1 2 Fizz 4 Buzz Fizz 7 8 Fizz Buzz 11 Fizz 13 14 FizzBuzz</div>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-title">💡 break vs continue</div>
+                    <p><code>break</code> exits the entire loop completely. <code>continue</code> only skips the current iteration and continues with the next one. Think of break as "stop everything" and continue as "skip this one."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2.4: Mini Projects -->
+    <section id="projects" class="project-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">2.4</span>
+                <h2>Mini Projects</h2>
+                <p>Put your control flow skills into practice</p>
+            </div>
+
+            <!-- Project 1: Calculator -->
+            <div class="project-card">
+                <h3>🧮 Project 1: Interactive Calculator <span class="project-badge">Beginner</span></h3>
+                <p>Build a fully functional calculator that performs basic arithmetic operations using everything we've learned.</p>
+                
+                <div class="project-features">
+                    <span class="project-feature">Switch Statements</span>
+                    <span class="project-feature">Do-While Loop</span>
+                    <span class="project-feature">Input Validation</span>
+                    <span class="project-feature">User Menu</span>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">Calculator.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">import</span> java.util.Scanner;
+
+<span class="comment">/**
+ * Interactive Calculator Application
+ * Demonstrates: switch, do-while, if-else, input validation
+ */</span>
+<span class="keyword">public class</span> <span class="class-name">Calculator</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="class-name">Scanner</span> scanner = <span class="keyword">new</span> <span class="class-name">Scanner</span>(<span class="class-name">System</span>.in);
+        <span class="keyword">int</span> choice;
+        
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"╔══════════════════════════════════════╗"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"║     🧮 JAVA CALCULATOR 🧮            ║"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"╚══════════════════════════════════════╝"</span>);
+        
+        <span class="keyword">do</span> {
+            <span class="comment">// Display menu</span>
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n┌─────────────────────────────────────┐"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"│           SELECT OPERATION          │"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"├─────────────────────────────────────┤"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"│  1. ➕ Addition                     │"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"│  2. ➖ Subtraction                  │"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"│  3. ✖️  Multiplication               │"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"│  4. ➗ Division                     │"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"│  5. 📊 Modulus                      │"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"│  6. 🔋 Power                        │"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"│  7. √  Square Root                  │"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"│  0. 🚪 Exit                         │"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"└─────────────────────────────────────┘"</span>);
+            <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"Enter your choice: "</span>);
+            
+            <span class="comment">// Input validation for menu choice</span>
+            <span class="keyword">while</span> (!scanner.<span class="method">hasNextInt</span>()) {
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"❌ Invalid input! Please enter a number."</span>);
+                scanner.<span class="method">next</span>();
+                <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"Enter your choice: "</span>);
+            }
+            choice = scanner.<span class="method">nextInt</span>();
+            
+            <span class="comment">// Exit if user chooses 0</span>
+            <span class="keyword">if</span> (choice == <span class="number">0</span>) {
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n👋 Thank you for using Calculator!"</span>);
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"   Goodbye! 🌟"</span>);
+                <span class="keyword">break</span>;
+            }
+            
+            <span class="comment">// Validate choice range</span>
+            <span class="keyword">if</span> (choice < <span class="number">1</span> || choice > <span class="number">7</span>) {
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"❌ Invalid choice! Please select 1-7 or 0 to exit."</span>);
+                <span class="keyword">continue</span>;
+            }
+            
+            <span class="comment">// Get operands based on operation</span>
+            <span class="keyword">double</span> num1, num2 = <span class="number">0</span>, result;
+            
+            <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"Enter first number: "</span>);
+            <span class="keyword">while</span> (!scanner.<span class="method">hasNextDouble</span>()) {
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"❌ Invalid! Enter a valid number."</span>);
+                scanner.<span class="method">next</span>();
+                <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"Enter first number: "</span>);
+            }
+            num1 = scanner.<span class="method">nextDouble</span>();
+            
+            <span class="comment">// Square root only needs one number</span>
+            <span class="keyword">if</span> (choice != <span class="number">7</span>) {
+                <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"Enter second number: "</span>);
+                <span class="keyword">while</span> (!scanner.<span class="method">hasNextDouble</span>()) {
+                    <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"❌ Invalid! Enter a valid number."</span>);
+                    scanner.<span class="method">next</span>();
+                    <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"Enter second number: "</span>);
+                }
+                num2 = scanner.<span class="method">nextDouble</span>();
+            }
+            
+            <span class="comment">// Perform calculation using switch</span>
+            <span class="keyword">switch</span> (choice) {
+                <span class="keyword">case</span> <span class="number">1</span> -> {
+                    result = num1 + num2;
+                    <span class="class-name">System</span>.out.<span class="method">printf</span>(<span class="string">"\n✨ Result: %.2f + %.2f = %.2f%n"</span>, num1, num2, result);
+                }
+                <span class="keyword">case</span> <span class="number">2</span> -> {
+                    result = num1 - num2;
+                    <span class="class-name">System</span>.out.<span class="method">printf</span>(<span class="string">"\n✨ Result: %.2f - %.2f = %.2f%n"</span>, num1, num2, result);
+                }
+                <span class="keyword">case</span> <span class="number">3</span> -> {
+                    result = num1 * num2;
+                    <span class="class-name">System</span>.out.<span class="method">printf</span>(<span class="string">"\n✨ Result: %.2f × %.2f = %.2f%n"</span>, num1, num2, result);
+                }
+                <span class="keyword">case</span> <span class="number">4</span> -> {
+                    <span class="keyword">if</span> (num2 == <span class="number">0</span>) {
+                        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n⚠️ Error: Division by zero!"</span>);
+                    } <span class="keyword">else</span> {
+                        result = num1 / num2;
+                        <span class="class-name">System</span>.out.<span class="method">printf</span>(<span class="string">"\n✨ Result: %.2f ÷ %.2f = %.2f%n"</span>, num1, num2, result);
+                    }
+                }
+                <span class="keyword">case</span> <span class="number">5</span> -> {
+                    <span class="keyword">if</span> (num2 == <span class="number">0</span>) {
+                        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n⚠️ Error: Division by zero!"</span>);
+                    } <span class="keyword">else</span> {
+                        result = num1 % num2;
+                        <span class="class-name">System</span>.out.<span class="method">printf</span>(<span class="string">"\n✨ Result: %.2f %% %.2f = %.2f%n"</span>, num1, num2, result);
+                    }
+                }
+                <span class="keyword">case</span> <span class="number">6</span> -> {
+                    result = <span class="class-name">Math</span>.<span class="method">pow</span>(num1, num2);
+                    <span class="class-name">System</span>.out.<span class="method">printf</span>(<span class="string">"\n✨ Result: %.2f ^ %.2f = %.2f%n"</span>, num1, num2, result);
+                }
+                <span class="keyword">case</span> <span class="number">7</span> -> {
+                    <span class="keyword">if</span> (num1 < <span class="number">0</span>) {
+                        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n⚠️ Error: Cannot calculate square root of negative number!"</span>);
+                    } <span class="keyword">else</span> {
+                        result = <span class="class-name">Math</span>.<span class="method">sqrt</span>(num1);
+                        <span class="class-name">System</span>.out.<span class="method">printf</span>(<span class="string">"\n✨ Result: √%.2f = %.2f%n"</span>, num1, result);
+                    }
+                }
+            }
+            
+        } <span class="keyword">while</span> (choice != <span class="number">0</span>);
+        
+        scanner.<span class="method">close</span>();
+    }
+}</code></pre>
+                </div>
+
+                <div class="terminal-block">
+                    <div class="terminal-header">
+                        <div class="code-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <span class="terminal-title">Sample Run</span>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-output">╔══════════════════════════════════════╗</div>
+                        <div class="terminal-output">║     🧮 JAVA CALCULATOR 🧮            ║</div>
+                        <div class="terminal-output">╚══════════════════════════════════════╝</div>
+                        <div class="terminal-output"></div>
+                        <div class="terminal-output">┌─────────────────────────────────────┐</div>
+                        <div class="terminal-output">│           SELECT OPERATION          │</div>
+                        <div class="terminal-output">├─────────────────────────────────────┤</div>
+                        <div class="terminal-output">│  1. ➕ Addition                     │</div>
+                        <div class="terminal-output">│  2. ➖ Subtraction                  │</div>
+                        <div class="terminal-output">│  ...</div>
+                        <div class="terminal-output">└─────────────────────────────────────┘</div>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">Enter your choice:</span>
+                            <span class="terminal-command"> 3</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">Enter first number:</span>
+                            <span class="terminal-command"> 15</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">Enter second number:</span>
+                            <span class="terminal-command"> 7</span>
+                        </div>
+                        <div class="terminal-output highlight">✨ Result: 15.00 × 7.00 = 105.00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 2: Number Guessing Game -->
+            <div class="project-card">
+                <h3>🎮 Project 2: Number Guessing Game <span class="project-badge">Intermediate</span></h3>
+                <p>Create an interactive game where the computer picks a random number and the player tries to guess it with hints!</p>
+                
+                <div class="project-features">
+                    <span class="project-feature">While Loops</span>
+                    <span class="project-feature">If-Else Chains</span>
+                    <span class="project-feature">Random Numbers</span>
+                    <span class="project-feature">Score Tracking</span>
+                    <span class="project-feature">Difficulty Levels</span>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">GuessingGame.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">import</span> java.util.Random;
+<span class="keyword">import</span> java.util.Scanner;
+
+<span class="comment">/**
+ * Number Guessing Game
+ * Demonstrates: while, if-else, switch, break, continue
+ * Features: Multiple difficulty levels, score tracking, hints
+ */</span>
+<span class="keyword">public class</span> <span class="class-name">GuessingGame</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="class-name">Scanner</span> scanner = <span class="keyword">new</span> <span class="class-name">Scanner</span>(<span class="class-name">System</span>.in);
+        <span class="class-name">Random</span> random = <span class="keyword">new</span> <span class="class-name">Random</span>();
+        
+        <span class="keyword">int</span> totalGames = <span class="number">0</span>;
+        <span class="keyword">int</span> totalWins = <span class="number">0</span>;
+        <span class="keyword">boolean</span> playAgain = <span class="keyword">true</span>;
+        
+        <span class="comment">// Welcome message</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"╔═══════════════════════════════════════════════╗"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"║     🎯 NUMBER GUESSING GAME 🎯                ║"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"║   Can you guess the secret number?            ║"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"╚═══════════════════════════════════════════════╝"</span>);
+        
+        <span class="keyword">while</span> (playAgain) {
+            totalGames++;
+            
+            <span class="comment">// Select difficulty</span>
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n🎚️ Select Difficulty:"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"   1. 😊 Easy   (1-50,  10 attempts)"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"   2. 😐 Medium (1-100,  7 attempts)"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"   3. 😈 Hard   (1-200,  5 attempts)"</span>);
+            <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"Your choice: "</span>);
+            
+            <span class="keyword">int</span> difficulty = scanner.<span class="method">nextInt</span>();
+            <span class="keyword">int</span> maxNumber, maxAttempts;
+            
+            <span class="comment">// Set difficulty parameters</span>
+            <span class="keyword">switch</span> (difficulty) {
+                <span class="keyword">case</span> <span class="number">1</span> -> { maxNumber = <span class="number">50</span>;  maxAttempts = <span class="number">10</span>; }
+                <span class="keyword">case</span> <span class="number">3</span> -> { maxNumber = <span class="number">200</span>; maxAttempts = <span class="number">5</span>; }
+                <span class="keyword">default</span> -> { maxNumber = <span class="number">100</span>; maxAttempts = <span class="number">7</span>; }
+            }
+            
+            <span class="comment">// Generate secret number</span>
+            <span class="keyword">int</span> secretNumber = random.<span class="method">nextInt</span>(maxNumber) + <span class="number">1</span>;
+            <span class="keyword">int</span> attempts = <span class="number">0</span>;
+            <span class="keyword">boolean</span> hasWon = <span class="keyword">false</span>;
+            
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n🎲 I'm thinking of a number between 1 and "</span> + maxNumber);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"📊 You have "</span> + maxAttempts + <span class="string">" attempts. Good luck!\n"</span>);
+            
+            <span class="comment">// Game loop</span>
+            <span class="keyword">while</span> (attempts < maxAttempts) {
+                attempts++;
+                <span class="keyword">int</span> remaining = maxAttempts - attempts;
+                
+                <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"Attempt "</span> + attempts + <span class="string">"/"</span> + maxAttempts + <span class="string">" - Enter your guess: "</span>);
+                
+                <span class="comment">// Input validation</span>
+                <span class="keyword">while</span> (!scanner.<span class="method">hasNextInt</span>()) {
+                    <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"❌ Please enter a valid number!"</span>);
+                    scanner.<span class="method">next</span>();
+                    <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"Enter your guess: "</span>);
+                }
+                <span class="keyword">int</span> guess = scanner.<span class="method">nextInt</span>();
+                
+                <span class="comment">// Validate range</span>
+                <span class="keyword">if</span> (guess < <span class="number">1</span> || guess > maxNumber) {
+                    <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"⚠️ Please guess between 1 and "</span> + maxNumber);
+                    attempts--;  <span class="comment">// Don't count invalid guesses</span>
+                    <span class="keyword">continue</span>;
+                }
+                
+                <span class="comment">// Check guess</span>
+                <span class="keyword">if</span> (guess == secretNumber) {
+                    hasWon = <span class="keyword">true</span>;
+                    totalWins++;
+                    <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n🎉🎉🎉 CONGRATULATIONS! 🎉🎉🎉"</span>);
+                    <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"You guessed it in "</span> + attempts + <span class="string">" attempts!"</span>);
+                    
+                    <span class="comment">// Score based on attempts</span>
+                    <span class="keyword">int</span> score = (maxAttempts - attempts + <span class="number">1</span>) * <span class="number">100</span>;
+                    <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"🏆 Score: "</span> + score + <span class="string">" points!"</span>);
+                    <span class="keyword">break</span>;
+                    
+                } <span class="keyword">else if</span> (guess < secretNumber) {
+                    <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"📈 Too LOW! "</span>);
+                    
+                    <span class="comment">// Provide hint based on distance</span>
+                    <span class="keyword">int</span> diff = secretNumber - guess;
+                    <span class="keyword">if</span> (diff > <span class="number">50</span>) {
+                        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"(Way too low! 🥶)"</span>);
+                    } <span class="keyword">else if</span> (diff > <span class="number">20</span>) {
+                        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"(Cold ❄️)"</span>);
+                    } <span class="keyword">else if</span> (diff > <span class="number">10</span>) {
+                        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"(Warm 🌡️)"</span>);
+                    } <span class="keyword">else if</span> (diff > <span class="number">5</span>) {
+                        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"(Hot! 🔥)"</span>);
+                    } <span class="keyword">else</span> {
+                        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"(Very close! 🎯)"</span>);
+                    }
+                    
+                } <span class="keyword">else</span> {
+                    <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"📉 Too HIGH! "</span>);
+                    
+                    <span class="keyword">int</span> diff = guess - secretNumber;
+                    <span class="keyword">if</span> (diff > <span class="number">50</span>) {
+                        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"(Way too high! 🚀)"</span>);
+                    } <span class="keyword">else if</span> (diff > <span class="number">20</span>) {
+                        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"(Cold ❄️)"</span>);
+                    } <span class="keyword">else if</span> (diff > <span class="number">10</span>) {
+                        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"(Warm 🌡️)"</span>);
+                    } <span class="keyword">else if</span> (diff > <span class="number">5</span>) {
+                        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"(Hot! 🔥)"</span>);
+                    } <span class="keyword">else</span> {
+                        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"(Very close! 🎯)"</span>);
+                    }
+                }
+                
+                <span class="comment">// Show remaining attempts</span>
+                <span class="keyword">if</span> (remaining > <span class="number">0</span>) {
+                    <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"   Attempts remaining: "</span> + remaining + <span class="string">"\n"</span>);
+                }
+            }
+            
+            <span class="comment">// Game over - didn't guess</span>
+            <span class="keyword">if</span> (!hasWon) {
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n💔 Game Over!"</span>);
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"The secret number was: "</span> + secretNumber);
+            }
+            
+            <span class="comment">// Statistics</span>
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n📊 Statistics:"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"   Games played: "</span> + totalGames);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"   Games won: "</span> + totalWins);
+            <span class="class-name">System</span>.out.<span class="method">printf</span>(<span class="string">"   Win rate: %.1f%%\n"</span>, (totalWins * <span class="number">100.0</span>) / totalGames);
+            
+            <span class="comment">// Play again?</span>
+            <span class="class-name">System</span>.out.<span class="method">print</span>(<span class="string">"\n🔄 Play again? (y/n): "</span>);
+            <span class="class-name">String</span> response = scanner.<span class="method">next</span>();
+            playAgain = response.<span class="method">equalsIgnoreCase</span>(<span class="string">"y"</span>);
+        }
+        
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n╔═══════════════════════════════════════════════╗"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"║      Thanks for playing! See you soon! 👋     ║"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"╚═══════════════════════════════════════════════╝"</span>);
+        
+        scanner.<span class="method">close</span>();
+    }
+}</code></pre>
+                </div>
+
+                <div class="terminal-block">
+                    <div class="terminal-header">
+                        <div class="code-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <span class="terminal-title">Sample Gameplay</span>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-output">╔═══════════════════════════════════════════════╗</div>
+                        <div class="terminal-output">║     🎯 NUMBER GUESSING GAME 🎯                ║</div>
+                        <div class="terminal-output">╚═══════════════════════════════════════════════╝</div>
+                        <div class="terminal-output"></div>
+                        <div class="terminal-output">🎚️ Select Difficulty:</div>
+                        <div class="terminal-output">   1. 😊 Easy   (1-50,  10 attempts)</div>
+                        <div class="terminal-output">   2. 😐 Medium (1-100,  7 attempts)</div>
+                        <div class="terminal-output">   3. 😈 Hard   (1-200,  5 attempts)</div>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">Your choice:</span>
+                            <span class="terminal-command input"> 2</span>
+                        </div>
+                        <div class="terminal-output"></div>
+                        <div class="terminal-output">🎲 I'm thinking of a number between 1 and 100</div>
+                        <div class="terminal-output">📊 You have 7 attempts. Good luck!</div>
+                        <div class="terminal-output"></div>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">Attempt 1/7 - Enter your guess:</span>
+                            <span class="terminal-command input"> 50</span>
+                        </div>
+                        <div class="terminal-output">📈 Too LOW! (Warm 🌡️)</div>
+                        <div class="terminal-output">   Attempts remaining: 6</div>
+                        <div class="terminal-output"></div>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">Attempt 2/7 - Enter your guess:</span>
+                            <span class="terminal-command input"> 75</span>
+                        </div>
+                        <div class="terminal-output">📉 Too HIGH! (Hot! 🔥)</div>
+                        <div class="terminal-output">   Attempts remaining: 5</div>
+                        <div class="terminal-output"></div>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">Attempt 3/7 - Enter your guess:</span>
+                            <span class="terminal-command input"> 63</span>
+                        </div>
+                        <div class="terminal-output highlight"></div>
+                        <div class="terminal-output highlight">🎉🎉🎉 CONGRATULATIONS! 🎉🎉🎉</div>
+                        <div class="terminal-output highlight">You guessed it in 3 attempts!</div>
+                        <div class="terminal-output highlight">🏆 Score: 500 points!</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chapter Summary -->
+            <div class="project-card" style="background: rgba(124,58,237,0.2);">
+                <h3>📝 Chapter Summary</h3>
+                <p>In this chapter, you've learned the essential control flow constructs in Java:</p>
+                
+                <div class="concept-grid" style="margin-top: 1.5rem;">
+                    <div class="concept-card" style="background: rgba(255,255,255,0.95);">
+                        <h4>🔀 Conditionals</h4>
+                        <p><code>if</code>, <code>else if</code>, <code>else</code> for decision-making. <code>switch</code> for multiple value matching.</p>
+                    </div>
+                    <div class="concept-card" style="background: rgba(255,255,255,0.95);">
+                        <h4>🔄 Loops</h4>
+                        <p><code>for</code> for counted iterations, <code>while</code> for condition-based, <code>do-while</code> for at-least-once execution.</p>
+                    </div>
+                    <div class="concept-card" style="background: rgba(255,255,255,0.95);">
+                        <h4>⏹️ Branching</h4>
+                        <p><code>break</code> to exit loops early, <code>continue</code> to skip iterations. Labels for nested loops.</p>
+                    </div>
+                    <div class="concept-card" style="background: rgba(255,255,255,0.95);">
+                        <h4>🎮 Practice</h4>
+                        <p>Built a calculator and guessing game combining all control flow concepts!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-nav">
+                <a href="#">← Chapter 1: Getting Started</a>
+                <a href="#">Chapter 3: Arrays & Methods →</a>
+            </div>
+            <p>Chapter 2: Control Flow | Java 25 Edition</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;">© 2025 | Learn Java Programming</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Fade-in animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        document.querySelectorAll('.content-block, .concept-card, .project-card').forEach(el => {
+            el.classList.add('fade-in');
+            observer.observe(el);
+        });
+
+        // Copy code functionality
+        document.querySelectorAll('.code-block').forEach(block => {
+            const copyBtn = document.createElement('button');
+            copyBtn.innerHTML = '📋 Copy';
+            copyBtn.style.cssText = `
+                position: absolute;
+                top: 50px;
+                right: 10px;
+                background: rgba(255,255,255,0.1);
+                border: none;
+                border-radius: 6px;
+                padding: 6px 12px;
+                cursor: pointer;
+                font-size: 12px;
+                color: #888;
+                opacity: 0;
+                transition: opacity 0.3s;
+            `;
+            
+            block.appendChild(copyBtn);
+            
+            block.addEventListener('mouseenter', () => copyBtn.style.opacity = '1');
+            block.addEventListener('mouseleave', () => copyBtn.style.opacity = '0');
+            
+            copyBtn.addEventListener('click', () => {
+                const code = block.querySelector('code').innerText;
+                navigator.clipboard.writeText(code);
+                copyBtn.innerHTML = '✅ Copied!';
+                setTimeout(() => copyBtn.innerHTML = '📋 Copy', 2000);
+            });
+        });
+    </script>
+</body>
+</html>

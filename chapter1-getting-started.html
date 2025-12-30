@@ -1,0 +1,2423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 1: Getting Started with Java</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B35;
+            --secondary: #004E89;
+            --accent: #1A936F;
+            --dark: #0D1B2A;
+            --light: #F7F7F7;
+            --purple: #7C3AED;
+            --gradient-primary: linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%);
+            --gradient-secondary: linear-gradient(135deg, #004E89 0%, #1B6CA8 100%);
+            --gradient-accent: linear-gradient(135deg, #1A936F 0%, #2AB090 100%);
+            --gradient-purple: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%);
+            --code-bg: #1E1E2E;
+            --shadow-soft: 0 4px 24px rgba(0,0,0,0.08);
+            --shadow-medium: 0 8px 32px rgba(0,0,0,0.12);
+            --shadow-strong: 0 16px 48px rgba(0,0,0,0.16);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.7;
+            font-size: 17px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--dark);
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 150%;
+            background: radial-gradient(ellipse, rgba(255,107,53,0.15) 0%, transparent 60%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 60%;
+            height: 100%;
+            background: radial-gradient(ellipse, rgba(0,78,137,0.2) 0%, transparent 50%);
+            animation: pulse 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 10;
+            padding: 2rem;
+        }
+
+        .chapter-badge {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .hero h1 span {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.7);
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 300;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: white;
+            max-width: 900px;
+            margin: -4rem auto 0;
+            border-radius: 20px;
+            padding: 2.5rem 3rem;
+            box-shadow: var(--shadow-strong);
+            position: relative;
+            z-index: 20;
+        }
+
+        .toc h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .toc-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: var(--light);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--dark);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .toc-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .toc-number {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .toc-text {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 5rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+
+        .section-number {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1.2rem;
+            line-height: 50px;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Content Styles */
+        .content-block {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .content-block h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .content-block h3 .icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-secondary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .content-block p {
+            color: #555;
+            margin-bottom: 1rem;
+        }
+
+        .content-block h4 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin: 1.5rem 0 1rem;
+        }
+
+        .content-block ul, .content-block ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #555;
+        }
+
+        .content-block li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--code-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .code-header {
+            background: #2A2A3E;
+            padding: 0.875rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .code-header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .code-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .code-dots span {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .code-dots span:nth-child(1) { background: #FF5F56; }
+        .code-dots span:nth-child(2) { background: #FFBD2E; }
+        .code-dots span:nth-child(3) { background: #27C93F; }
+
+        .code-title {
+            color: #888;
+            font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+            margin-left: 1rem;
+        }
+
+        .code-lang {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        pre {
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 0;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: #E4E4E7;
+        }
+
+        .keyword { color: #FF79C6; }
+        .string { color: #F1FA8C; }
+        .comment { color: #6272A4; font-style: italic; }
+        .class-name { color: #8BE9FD; }
+        .method { color: #50FA7B; }
+        .number { color: #BD93F9; }
+        .annotation { color: #FFB86C; }
+        .type { color: #FF79C6; }
+        .variable { color: #F8F8F2; }
+        .operator { color: #FF79C6; }
+        .bracket { color: #F8F8F2; }
+
+        /* Line numbers for code */
+        .code-with-lines {
+            display: flex;
+        }
+
+        .line-numbers {
+            padding: 1.5rem 1rem;
+            text-align: right;
+            border-right: 1px solid #3A3A4E;
+            user-select: none;
+            color: #6272A4;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .code-content {
+            flex: 1;
+            overflow-x: auto;
+        }
+
+        /* Output Block */
+        .output-block {
+            background: #1A1A2E;
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .output-label {
+            color: var(--accent);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .output-text {
+            color: #50FA7B;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        /* Terminal/Command Block */
+        .terminal-block {
+            background: #0D0D0D;
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .terminal-header {
+            background: #2D2D2D;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .terminal-title {
+            color: #999;
+            font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+            margin-left: 1rem;
+        }
+
+        .terminal-body {
+            padding: 1.5rem;
+        }
+
+        .terminal-line {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .terminal-prompt {
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            margin-right: 0.75rem;
+            user-select: none;
+        }
+
+        .terminal-command {
+            color: #F8F8F2;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .terminal-output {
+            color: #888;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            margin-left: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-primary);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .feature-card h4 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Timeline */
+        .history-timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .history-timeline::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary), var(--accent));
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 80px;
+            margin-bottom: 2.5rem;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-year {
+            position: absolute;
+            left: 0;
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--primary);
+            box-shadow: var(--shadow-soft);
+            border: 3px solid var(--primary);
+            z-index: 1;
+        }
+
+        .timeline-content {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .timeline-content h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-content p {
+            color: #666;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Step Cards */
+        .step-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-soft);
+            border-left: 4px solid var(--primary);
+            position: relative;
+        }
+
+        .step-card.secondary {
+            border-left-color: var(--secondary);
+        }
+
+        .step-card.accent {
+            border-left-color: var(--accent);
+        }
+
+        .step-card.purple {
+            border-left-color: var(--purple);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: var(--gradient-primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .step-card.secondary .step-number {
+            background: var(--gradient-secondary);
+        }
+
+        .step-card.accent .step-number {
+            background: var(--gradient-accent);
+        }
+
+        .step-card.purple .step-number {
+            background: var(--gradient-purple);
+        }
+
+        .step-card h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            padding-top: 0.5rem;
+        }
+
+        .step-card p {
+            color: #555;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(135deg, rgba(0,78,137,0.08) 0%, rgba(0,78,137,0.03) 100%);
+            border-left: 4px solid var(--secondary);
+            border-radius: 0 16px 16px 0;
+            padding: 1.5rem 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .info-box.warning {
+            background: linear-gradient(135deg, rgba(255,189,46,0.15) 0%, rgba(255,189,46,0.05) 100%);
+            border-left-color: #FFBD2E;
+        }
+
+        .info-box.success {
+            background: linear-gradient(135deg, rgba(26,147,111,0.1) 0%, rgba(26,147,111,0.03) 100%);
+            border-left-color: var(--accent);
+        }
+
+        .info-box.tip {
+            background: linear-gradient(135deg, rgba(124,58,237,0.1) 0%, rgba(124,58,237,0.03) 100%);
+            border-left-color: var(--purple);
+        }
+
+        .info-title {
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-box.warning .info-title { color: #B8860B; }
+        .info-box.success .info-title { color: var(--accent); }
+        .info-box.tip .info-title { color: var(--purple); }
+
+        .info-box p {
+            color: #555;
+            margin: 0;
+        }
+
+        /* Callout Box */
+        .callout {
+            background: linear-gradient(135deg, rgba(255,107,53,0.1) 0%, rgba(255,107,53,0.05) 100%);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 16px 16px 0;
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+        }
+
+        .callout-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .callout p {
+            color: #555;
+            margin: 0;
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            margin: 1.5rem 0;
+        }
+
+        .data-table th {
+            background: var(--dark);
+            color: white;
+            padding: 1.1rem 1.25rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .data-table td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid #F0F0F0;
+            color: #555;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover td {
+            background: #F8F9FA;
+        }
+
+        .data-table code {
+            background: var(--code-bg);
+            color: #FF79C6;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        /* Diagram Styles */
+        .diagram-container {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin: 2rem 0;
+            box-shadow: var(--shadow-soft);
+            overflow-x: auto;
+        }
+
+        .diagram-title {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 2rem;
+        }
+
+        .wora-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .wora-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .wora-box {
+            padding: 1.25rem 1.75rem;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 500;
+            min-width: 140px;
+            transition: transform 0.3s ease;
+        }
+
+        .wora-box:hover {
+            transform: scale(1.05);
+        }
+
+        .wora-box.source {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .wora-box.compiler {
+            background: var(--gradient-secondary);
+            color: white;
+        }
+
+        .wora-box.bytecode {
+            background: var(--gradient-accent);
+            color: white;
+        }
+
+        .wora-box.jvm {
+            background: var(--gradient-purple);
+            color: white;
+        }
+
+        .wora-box small {
+            display: block;
+            opacity: 0.8;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+
+        .wora-arrow {
+            font-size: 1.5rem;
+            color: #CCC;
+        }
+
+        .wora-arrow.down {
+            font-size: 2rem;
+        }
+
+        .platforms-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .platform-box {
+            background: #F8F9FA;
+            border: 2px solid #E5E5E5;
+            color: var(--dark);
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Code Explanation */
+        .code-explanation {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 900px) {
+            .code-explanation {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .explanation-item {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .explanation-item h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .explanation-item h4 code {
+            background: var(--code-bg);
+            color: #FF79C6;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .explanation-item p {
+            color: #666;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Operator Grid */
+        .operator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .operator-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+            transition: transform 0.3s ease;
+        }
+
+        .operator-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .operator-symbol {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .operator-name {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        footer p {
+            opacity: 0.7;
+        }
+
+        .footer-nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .footer-nav a:hover {
+            background: var(--gradient-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .toc { margin: -2rem 1rem 0; padding: 1.5rem; }
+            .content-block { padding: 1.5rem; }
+            section { padding: 3rem 0; }
+            .history-timeline::before { left: 25px; }
+            .timeline-item { padding-left: 70px; }
+            .timeline-year { width: 50px; height: 50px; font-size: 0.75rem; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #F0F0F0;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient-primary);
+            border-radius: 5px;
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <span class="chapter-badge">Chapter 1</span>
+            <h1>Getting Started with <span>Java</span></h1>
+            <p class="hero-subtitle">From installation to your first program — begin your journey into the world of Java programming</p>
+        </div>
+    </header>
+
+    <!-- Table of Contents -->
+    <nav class="toc">
+        <h3>📑 In This Chapter</h3>
+        <div class="toc-grid">
+            <a href="#introduction" class="toc-item">
+                <span class="toc-number">1.1</span>
+                <span class="toc-text">Introduction to Java</span>
+            </a>
+            <a href="#setup" class="toc-item">
+                <span class="toc-number">1.2</span>
+                <span class="toc-text">Setting Up Environment</span>
+            </a>
+            <a href="#first-program" class="toc-item">
+                <span class="toc-number">1.3</span>
+                <span class="toc-text">Your First Program</span>
+            </a>
+            <a href="#basic-syntax" class="toc-item">
+                <span class="toc-number">1.4</span>
+                <span class="toc-text">Basic Syntax</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Section 1.1: Introduction to Java -->
+    <section id="introduction">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">1.1</span>
+                <h2>Introduction to Java</h2>
+                <p>Understanding Java's origins, key features, and the revolutionary WORA principle</p>
+            </div>
+
+            <!-- History -->
+            <div class="content-block">
+                <h3><span class="icon">📜</span> A Brief History of Java</h3>
+                <p>Java's story begins in the early 1990s at Sun Microsystems. What started as a project for interactive television evolved into one of the most influential programming languages in computing history.</p>
+
+                <div class="history-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-year">1991</div>
+                        <div class="timeline-content">
+                            <h4>Project "Green" Begins</h4>
+                            <p>James Gosling, Mike Sheridan, and Patrick Naughton initiated the "Green Project" at Sun Microsystems. The language was originally called "Oak" after a tree outside Gosling's office.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">1995</div>
+                        <div class="timeline-content">
+                            <h4>Java 1.0 Released</h4>
+                            <p>Renamed to "Java" (inspired by Java coffee), the language was officially released with the slogan "Write Once, Run Anywhere." Netscape Navigator added Java support.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2006</div>
+                        <div class="timeline-content">
+                            <h4>Java Goes Open Source</h4>
+                            <p>Sun Microsystems released most of Java as open-source software under the GNU General Public License, making it freely available to developers worldwide.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2010</div>
+                        <div class="timeline-content">
+                            <h4>Oracle Acquires Sun</h4>
+                            <p>Oracle Corporation acquired Sun Microsystems and became the steward of Java, continuing its development and releasing regular updates.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2017</div>
+                        <div class="timeline-content">
+                            <h4>6-Month Release Cycle</h4>
+                            <p>Java adopted a new release cadence with feature releases every 6 months, accelerating innovation while maintaining Long-Term Support (LTS) versions.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2025</div>
+                        <div class="timeline-content">
+                            <h4>Java 25 LTS Released</h4>
+                            <p>The latest LTS release brings compact source files, structured concurrency, and AI-ready features, marking Java's 30th anniversary.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Features -->
+            <div class="content-block">
+                <h3><span class="icon">⭐</span> Key Features of Java</h3>
+                <p>Java was designed with specific goals in mind that have made it enduringly popular:</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h4>Simple & Familiar</h4>
+                        <p>Java's syntax is clean and easy to learn, based on C/C++ but removing complex features like pointers and multiple inheritance.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🧩</div>
+                        <h4>Object-Oriented</h4>
+                        <p>Everything in Java is an object (except primitives). This promotes modular, reusable, and maintainable code through encapsulation, inheritance, and polymorphism.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🌍</div>
+                        <h4>Platform Independent</h4>
+                        <p>Java code compiles to bytecode that runs on any device with a JVM, enabling true cross-platform development.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🛡️</div>
+                        <h4>Secure</h4>
+                        <p>Built-in security features include bytecode verification, sandboxing, and no direct memory access, making Java ideal for networked applications.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💪</div>
+                        <h4>Robust</h4>
+                        <p>Strong type checking, exception handling, and automatic garbage collection eliminate many common programming errors.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <h4>Multi-threaded</h4>
+                        <p>Native support for concurrent programming allows efficient utilization of modern multi-core processors.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WORA -->
+            <div class="content-block">
+                <h3><span class="icon">🚀</span> Write Once, Run Anywhere (WORA)</h3>
+                <p>Java's most revolutionary concept is platform independence. Unlike languages like C++ that compile directly to machine code for a specific platform, Java takes a different approach:</p>
+
+                <div class="diagram-container">
+                    <div class="diagram-title">How "Write Once, Run Anywhere" Works</div>
+                    <div class="wora-diagram">
+                        <div class="wora-row">
+                            <div class="wora-box source">
+                                📝 Java Source Code
+                                <small>HelloWorld.java</small>
+                            </div>
+                        </div>
+                        <div class="wora-arrow down">⬇️</div>
+                        <div class="wora-row">
+                            <div class="wora-box compiler">
+                                ⚙️ Java Compiler
+                                <small>javac</small>
+                            </div>
+                        </div>
+                        <div class="wora-arrow down">⬇️</div>
+                        <div class="wora-row">
+                            <div class="wora-box bytecode">
+                                📦 Bytecode
+                                <small>HelloWorld.class</small>
+                            </div>
+                        </div>
+                        <div class="wora-arrow down">⬇️</div>
+                        <div class="wora-row">
+                            <div class="wora-box jvm">
+                                🖥️ Java Virtual Machine (JVM)
+                                <small>Platform-specific implementation</small>
+                            </div>
+                        </div>
+                        <div class="wora-arrow down">⬇️</div>
+                        <div class="platforms-row">
+                            <div class="platform-box">🪟 Windows</div>
+                            <div class="platform-box">🍎 macOS</div>
+                            <div class="platform-box">🐧 Linux</div>
+                            <div class="platform-box">📱 Android</div>
+                            <div class="platform-box">☁️ Cloud</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box success">
+                    <div class="info-title">💡 Key Insight</div>
+                    <p>The JVM acts as an abstraction layer between your code and the underlying hardware. Each platform has its own JVM implementation that translates bytecode into native machine instructions, but your Java code remains the same across all platforms.</p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">The WORA workflow</span>
+                        </div>
+                        <span class="code-lang">Terminal</span>
+                    </div>
+                    <pre><code><span class="comment"># Step 1: Write your Java code (same on any OS)</span>
+<span class="variable">$</span> <span class="method">cat</span> HelloWorld.java
+<span class="keyword">public class</span> <span class="class-name">HelloWorld</span> {
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Hello from Java!"</span>);
+    }
+}
+
+<span class="comment"># Step 2: Compile once to bytecode</span>
+<span class="variable">$</span> <span class="method">javac</span> HelloWorld.java
+<span class="comment"># Creates: HelloWorld.class (bytecode)</span>
+
+<span class="comment"># Step 3: Run anywhere with a JVM</span>
+<span class="variable">$</span> <span class="method">java</span> HelloWorld
+<span class="string">Hello from Java!</span>
+
+<span class="comment"># Same .class file works on Windows, Mac, Linux, etc.!</span></code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 1.2: Setting Up Environment -->
+    <section id="setup" style="background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">1.2</span>
+                <h2>Setting Up the Environment</h2>
+                <p>Installing JDK and configuring VS Code for Java development</p>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">🔧</span> What You Need</h3>
+                <p>Before writing Java code, you need two essential tools:</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">☕</div>
+                        <h4>JDK (Java Development Kit)</h4>
+                        <p>Contains the Java compiler (javac), Java Runtime Environment (JRE), and development tools needed to write, compile, and run Java programs.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💻</div>
+                        <h4>IDE (Integrated Development Environment)</h4>
+                        <p>A code editor with features like syntax highlighting, code completion, debugging, and project management. We'll use VS Code with Java extensions.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JDK Installation -->
+            <div class="content-block">
+                <h3><span class="icon">📥</span> Step 1: Installing the JDK</h3>
+                
+                <div class="step-container">
+                    <div class="step-card">
+                        <span class="step-number">1</span>
+                        <h4>Download the JDK</h4>
+                        <p>Visit the official Oracle website or use OpenJDK distributions:</p>
+                        <ul>
+                            <li><strong>Oracle JDK:</strong> <code>https://www.oracle.com/java/technologies/downloads/</code></li>
+                            <li><strong>OpenJDK (Adoptium):</strong> <code>https://adoptium.net/</code></li>
+                            <li><strong>Amazon Corretto:</strong> <code>https://aws.amazon.com/corretto/</code></li>
+                        </ul>
+                        <p>Choose <strong>JDK 25</strong> (latest LTS) or <strong>JDK 21</strong> (previous LTS) for your operating system.</p>
+                    </div>
+
+                    <div class="step-card secondary">
+                        <span class="step-number">2</span>
+                        <h4>Install on Your System</h4>
+                        
+                        <div class="terminal-block">
+                            <div class="terminal-header">
+                                <div class="code-dots">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <span class="terminal-title">Windows (using winget)</span>
+                            </div>
+                            <div class="terminal-body">
+                                <div class="terminal-line">
+                                    <span class="terminal-prompt">></span>
+                                    <span class="terminal-command">winget install Oracle.JDK.25</span>
+                                </div>
+                                <div class="terminal-output"># Or for OpenJDK:</div>
+                                <div class="terminal-line">
+                                    <span class="terminal-prompt">></span>
+                                    <span class="terminal-command">winget install EclipseAdoptium.Temurin.25.JDK</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="terminal-block">
+                            <div class="terminal-header">
+                                <div class="code-dots">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <span class="terminal-title">macOS (using Homebrew)</span>
+                            </div>
+                            <div class="terminal-body">
+                                <div class="terminal-line">
+                                    <span class="terminal-prompt">$</span>
+                                    <span class="terminal-command">brew install openjdk@25</span>
+                                </div>
+                                <div class="terminal-output"># Create symlink for system Java</div>
+                                <div class="terminal-line">
+                                    <span class="terminal-prompt">$</span>
+                                    <span class="terminal-command">sudo ln -sfn /opt/homebrew/opt/openjdk@25/libexec/openjdk.jdk \</span>
+                                </div>
+                                <div class="terminal-output">    /Library/Java/JavaVirtualMachines/openjdk-25.jdk</div>
+                            </div>
+                        </div>
+
+                        <div class="terminal-block">
+                            <div class="terminal-header">
+                                <div class="code-dots">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <span class="terminal-title">Linux (Ubuntu/Debian)</span>
+                            </div>
+                            <div class="terminal-body">
+                                <div class="terminal-line">
+                                    <span class="terminal-prompt">$</span>
+                                    <span class="terminal-command">sudo apt update</span>
+                                </div>
+                                <div class="terminal-line">
+                                    <span class="terminal-prompt">$</span>
+                                    <span class="terminal-command">sudo apt install openjdk-25-jdk</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-card accent">
+                        <span class="step-number">3</span>
+                        <h4>Set Environment Variables (Windows)</h4>
+                        <p>Add Java to your system PATH:</p>
+                        
+                        <div class="terminal-block">
+                            <div class="terminal-header">
+                                <div class="code-dots">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <span class="terminal-title">PowerShell (Run as Administrator)</span>
+                            </div>
+                            <div class="terminal-body">
+                                <div class="terminal-output"># Set JAVA_HOME</div>
+                                <div class="terminal-line">
+                                    <span class="terminal-prompt">></span>
+                                    <span class="terminal-command">[System.Environment]::SetEnvironmentVariable("JAVA_HOME",</span>
+                                </div>
+                                <div class="terminal-output">    "C:\Program Files\Java\jdk-25", "Machine")</div>
+                                <div class="terminal-output"># Add to PATH</div>
+                                <div class="terminal-line">
+                                    <span class="terminal-prompt">></span>
+                                    <span class="terminal-command">$path = [System.Environment]::GetEnvironmentVariable("PATH", "Machine")</span>
+                                </div>
+                                <div class="terminal-line">
+                                    <span class="terminal-prompt">></span>
+                                    <span class="terminal-command">[System.Environment]::SetEnvironmentVariable("PATH",</span>
+                                </div>
+                                <div class="terminal-output">    "$path;%JAVA_HOME%\bin", "Machine")</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-card purple">
+                        <span class="step-number">4</span>
+                        <h4>Verify Installation</h4>
+                        <p>Open a new terminal and check your Java installation:</p>
+                        
+                        <div class="terminal-block">
+                            <div class="terminal-header">
+                                <div class="code-dots">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <span class="terminal-title">Terminal</span>
+                            </div>
+                            <div class="terminal-body">
+                                <div class="terminal-line">
+                                    <span class="terminal-prompt">$</span>
+                                    <span class="terminal-command">java --version</span>
+                                </div>
+                                <div class="terminal-output">openjdk 25 2025-09-16</div>
+                                <div class="terminal-output">OpenJDK Runtime Environment (build 25+36)</div>
+                                <div class="terminal-output">OpenJDK 64-Bit Server VM (build 25+36, mixed mode, sharing)</div>
+                                <br>
+                                <div class="terminal-line">
+                                    <span class="terminal-prompt">$</span>
+                                    <span class="terminal-command">javac --version</span>
+                                </div>
+                                <div class="terminal-output">javac 25</div>
+                            </div>
+                        </div>
+
+                        <div class="info-box success">
+                            <div class="info-title">✅ Success!</div>
+                            <p>If you see the version information, your JDK is installed correctly!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VS Code Setup -->
+            <div class="content-block">
+                <h3><span class="icon">🖥️</span> Step 2: Setting Up VS Code for Java</h3>
+                
+                <div class="step-container">
+                    <div class="step-card">
+                        <span class="step-number">1</span>
+                        <h4>Install Visual Studio Code</h4>
+                        <p>Download VS Code from <code>https://code.visualstudio.com/</code> and install it for your operating system.</p>
+                    </div>
+
+                    <div class="step-card secondary">
+                        <span class="step-number">2</span>
+                        <h4>Install the Extension Pack for Java</h4>
+                        <p>Open VS Code and install the Java extension pack:</p>
+                        
+                        <div class="terminal-block">
+                            <div class="terminal-header">
+                                <div class="code-dots">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <span class="terminal-title">VS Code Command Palette (Ctrl+Shift+P / Cmd+Shift+P)</span>
+                            </div>
+                            <div class="terminal-body">
+                                <div class="terminal-output">1. Press Ctrl+Shift+X (or Cmd+Shift+X on Mac) to open Extensions</div>
+                                <div class="terminal-output">2. Search for "Extension Pack for Java"</div>
+                                <div class="terminal-output">3. Click Install on the pack by Microsoft</div>
+                            </div>
+                        </div>
+
+                        <p style="margin-top: 1rem;">This pack includes:</p>
+                        <ul>
+                            <li><strong>Language Support for Java™</strong> - Syntax highlighting, IntelliSense</li>
+                            <li><strong>Debugger for Java</strong> - Debug your code with breakpoints</li>
+                            <li><strong>Test Runner for Java</strong> - Run JUnit tests</li>
+                            <li><strong>Maven for Java</strong> - Maven project support</li>
+                            <li><strong>Project Manager for Java</strong> - Manage Java projects</li>
+                        </ul>
+                    </div>
+
+                    <div class="step-card accent">
+                        <span class="step-number">3</span>
+                        <h4>Configure Java Runtime in VS Code</h4>
+                        <p>Open VS Code settings and configure Java:</p>
+                        
+                        <div class="code-block">
+                            <div class="code-header">
+                                <div class="code-header-left">
+                                    <div class="code-dots">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <span class="code-title">settings.json</span>
+                                </div>
+                                <span class="code-lang">JSON</span>
+                            </div>
+                            <pre><code>{
+    <span class="string">"java.configuration.runtimes"</span>: [
+        {
+            <span class="string">"name"</span>: <span class="string">"JavaSE-25"</span>,
+            <span class="string">"path"</span>: <span class="string">"/path/to/jdk-25"</span>,
+            <span class="string">"default"</span>: <span class="keyword">true</span>
+        }
+    ],
+    <span class="string">"java.compile.nullAnalysis.mode"</span>: <span class="string">"automatic"</span>,
+    <span class="string">"java.autobuild.enabled"</span>: <span class="keyword">true</span>,
+    <span class="string">"java.saveActions.organizeImports"</span>: <span class="keyword">true</span>
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="step-card purple">
+                        <span class="step-number">4</span>
+                        <h4>Create Your First Java Project</h4>
+                        
+                        <div class="terminal-block">
+                            <div class="terminal-header">
+                                <div class="code-dots">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <span class="terminal-title">VS Code Command Palette</span>
+                            </div>
+                            <div class="terminal-body">
+                                <div class="terminal-output">1. Press Ctrl+Shift+P (or Cmd+Shift+P on Mac)</div>
+                                <div class="terminal-output">2. Type "Java: Create Java Project"</div>
+                                <div class="terminal-output">3. Select "No build tools" for a simple project</div>
+                                <div class="terminal-output">4. Choose a folder location</div>
+                                <div class="terminal-output">5. Enter a project name (e.g., "HelloJava")</div>
+                            </div>
+                        </div>
+
+                        <div class="info-box tip">
+                            <div class="info-title">💡 Pro Tip</div>
+                            <p>You can also use <strong>GitHub Copilot</strong> with VS Code for AI-assisted Java coding! Install the GitHub Copilot extension for intelligent code suggestions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 1.3: Your First Program -->
+    <section id="first-program">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">1.3</span>
+                <h2>Your First Java Program</h2>
+                <p>Understanding the anatomy of a Java program and the main method</p>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">👋</span> Hello, World!</h3>
+                <p>Let's write the classic first program that every programmer creates. This simple program introduces you to Java's basic structure.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">HelloWorld.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="comment">/**
+ * My first Java program!
+ * This program prints a greeting to the console.
+ */</span>
+<span class="keyword">public class</span> <span class="class-name">HelloWorld</span> {
+
+    <span class="comment">// The main method - entry point of the program</span>
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="comment">// Print a message to the console</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Hello, World!"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Welcome to Java Programming!"</span>);
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">Hello, World!<br>Welcome to Java Programming!</div>
+                </div>
+            </div>
+
+            <!-- Breaking Down the Main Method -->
+            <div class="content-block">
+                <h3><span class="icon">🔍</span> Understanding <code>public static void main(String[] args)</code></h3>
+                <p>This line is the entry point of every Java application. Let's break down each keyword:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">The Main Method Signature</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public</span>  <span class="keyword">static</span>  <span class="keyword">void</span>  <span class="method">main</span>(<span class="class-name">String</span>[] args)
+  │        │       │      │         │
+  │        │       │      │         └── Command-line arguments
+  │        │       │      └──────────── Method name (required)
+  │        │       └─────────────────── Return type (nothing)
+  │        └─────────────────────────── No object needed to call
+  └──────────────────────────────────── Accessible from anywhere</code></pre>
+                </div>
+
+                <div class="code-explanation">
+                    <div class="explanation-item">
+                        <h4>🔓 <code>public</code></h4>
+                        <p>An <strong>access modifier</strong> that makes the method accessible from anywhere. The JVM needs to call this method from outside the class, so it must be public.</p>
+                    </div>
+                    <div class="explanation-item">
+                        <h4>📌 <code>static</code></h4>
+                        <p>Means the method belongs to the class, not to instances. The JVM can call main() without creating an object of the class.</p>
+                    </div>
+                    <div class="explanation-item">
+                        <h4>🚫 <code>void</code></h4>
+                        <p>The <strong>return type</strong> indicating the method doesn't return any value. It just executes code and terminates.</p>
+                    </div>
+                    <div class="explanation-item">
+                        <h4>🏠 <code>main</code></h4>
+                        <p>The required name for the entry point method. The JVM looks specifically for a method called "main" to start execution.</p>
+                    </div>
+                    <div class="explanation-item">
+                        <h4>📝 <code>String[] args</code></h4>
+                        <p>An array of strings that stores <strong>command-line arguments</strong> passed when running the program.</p>
+                    </div>
+                    <div class="explanation-item">
+                        <h4>📦 <code>class HelloWorld</code></h4>
+                        <p>Defines a class named HelloWorld. The filename must match the class name (HelloWorld.java).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Using Command Line Arguments -->
+            <div class="content-block">
+                <h3><span class="icon">⌨️</span> Using Command-Line Arguments</h3>
+                <p>The <code>String[] args</code> parameter allows you to pass information to your program when running it:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">Greeting.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">Greeting</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="comment">// Check if arguments were provided</span>
+        <span class="keyword">if</span> (args.length > <span class="number">0</span>) {
+            <span class="comment">// args[0] is the first argument</span>
+            <span class="class-name">String</span> name = args[<span class="number">0</span>];
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Hello, "</span> + name + <span class="string">"!"</span>);
+            
+            <span class="comment">// Print all arguments</span>
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"You provided "</span> + args.length + <span class="string">" argument(s):"</span>);
+            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < args.length; i++) {
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"  args["</span> + i + <span class="string">"] = "</span> + args[i]);
+            }
+        } <span class="keyword">else</span> {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Hello, Stranger!"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Usage: java Greeting &lt;your-name&gt;"</span>);
+        }
+    }
+}</code></pre>
+                </div>
+
+                <div class="terminal-block">
+                    <div class="terminal-header">
+                        <div class="code-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <span class="terminal-title">Running with Arguments</span>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-command">javac Greeting.java</span>
+                        </div>
+                        <br>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-command">java Greeting</span>
+                        </div>
+                        <div class="terminal-output">Hello, Stranger!</div>
+                        <div class="terminal-output">Usage: java Greeting &lt;your-name&gt;</div>
+                        <br>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-command">java Greeting Alice</span>
+                        </div>
+                        <div class="terminal-output">Hello, Alice!</div>
+                        <div class="terminal-output">You provided 1 argument(s):</div>
+                        <div class="terminal-output">  args[0] = Alice</div>
+                        <br>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-command">java Greeting Bob Developer Java</span>
+                        </div>
+                        <div class="terminal-output">Hello, Bob!</div>
+                        <div class="terminal-output">You provided 3 argument(s):</div>
+                        <div class="terminal-output">  args[0] = Bob</div>
+                        <div class="terminal-output">  args[1] = Developer</div>
+                        <div class="terminal-output">  args[2] = Java</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Java 25 Simplified -->
+            <div class="content-block">
+                <h3><span class="icon">✨</span> Java 25: Simplified Main Method</h3>
+                <p>Java 25 introduces a simpler way to write main methods for quick programs:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">Hello.java (Java 25 Style)</span>
+                        </div>
+                        <span class="code-lang">Java 25</span>
+                    </div>
+                    <pre><code><span class="comment">// Java 25 - No class declaration needed!</span>
+<span class="comment">// No public, no static, no String[] args required</span>
+
+<span class="keyword">void</span> <span class="method">main</span>() {
+    <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Hello from Java 25!"</span>);
+    
+    <span class="comment">// You can still use IO directly</span>
+    <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"This is much simpler!"</span>);
+}</code></pre>
+                </div>
+
+                <div class="callout">
+                    <div class="callout-title">📝 Note on Versions</div>
+                    <p>The simplified syntax is great for learning and scripting, but the traditional <code>public static void main(String[] args)</code> syntax is still the standard for production applications and is required for understanding how Java works at a deeper level.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 1.4: Basic Syntax -->
+    <section id="basic-syntax" style="background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">1.4</span>
+                <h2>Basic Syntax</h2>
+                <p>Variables, data types, and operators — the building blocks of Java programs</p>
+            </div>
+
+            <!-- Variables -->
+            <div class="content-block">
+                <h3><span class="icon">📦</span> Variables</h3>
+                <p>Variables are containers for storing data values. In Java, every variable must have a declared type.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">Variables.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">Variables</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="comment">// Variable declaration and initialization</span>
+        <span class="keyword">int</span> age = <span class="number">25</span>;                    <span class="comment">// Integer number</span>
+        <span class="keyword">double</span> salary = <span class="number">55000.50</span>;         <span class="comment">// Decimal number</span>
+        <span class="keyword">char</span> grade = <span class="string">'A'</span>;                <span class="comment">// Single character</span>
+        <span class="keyword">boolean</span> isStudent = <span class="keyword">true</span>;        <span class="comment">// true or false</span>
+        <span class="class-name">String</span> name = <span class="string">"Alice"</span>;           <span class="comment">// Text (reference type)</span>
+        
+        <span class="comment">// Declaration without initialization</span>
+        <span class="keyword">int</span> count;
+        count = <span class="number">10</span>;                      <span class="comment">// Assign later</span>
+        
+        <span class="comment">// Multiple declarations</span>
+        <span class="keyword">int</span> x = <span class="number">5</span>, y = <span class="number">10</span>, z = <span class="number">15</span>;
+        
+        <span class="comment">// Constants (unchangeable values)</span>
+        <span class="keyword">final double</span> PI = <span class="number">3.14159</span>;
+        <span class="keyword">final</span> <span class="class-name">String</span> COMPANY = <span class="string">"TechCorp"</span>;
+        
+        <span class="comment">// Using var (Java 10+) - type inference</span>
+        <span class="keyword">var</span> message = <span class="string">"Hello"</span>;           <span class="comment">// Compiler infers String</span>
+        <span class="keyword">var</span> number = <span class="number">42</span>;                 <span class="comment">// Compiler infers int</span>
+        <span class="keyword">var</span> price = <span class="number">19.99</span>;               <span class="comment">// Compiler infers double</span>
+        
+        <span class="comment">// Print all variables</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Name: "</span> + name);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Age: "</span> + age);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Salary: $"</span> + salary);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Grade: "</span> + grade);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Is Student: "</span> + isStudent);
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">Name: Alice<br>Age: 25<br>Salary: $55000.5<br>Grade: A<br>Is Student: true</div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-title">📋 Variable Naming Rules</div>
+                    <p>
+                        • Must start with a letter, underscore (_), or dollar sign ($)<br>
+                        • Can contain letters, digits, underscores, and dollar signs<br>
+                        • Cannot use Java reserved keywords (int, class, public, etc.)<br>
+                        • Case-sensitive (age and Age are different variables)<br>
+                        • Convention: use camelCase for variables (myVariableName)
+                    </p>
+                </div>
+            </div>
+
+            <!-- Data Types -->
+            <div class="content-block">
+                <h3><span class="icon">🔢</span> Data Types</h3>
+                <p>Java has two categories of data types: <strong>primitive types</strong> (built-in) and <strong>reference types</strong> (objects).</p>
+
+                <h4>Primitive Data Types</h4>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Size</th>
+                            <th>Range</th>
+                            <th>Default</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>byte</code></td>
+                            <td>1 byte</td>
+                            <td>-128 to 127</td>
+                            <td>0</td>
+                            <td><code>byte b = 100;</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>short</code></td>
+                            <td>2 bytes</td>
+                            <td>-32,768 to 32,767</td>
+                            <td>0</td>
+                            <td><code>short s = 5000;</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>int</code></td>
+                            <td>4 bytes</td>
+                            <td>-2.1B to 2.1B</td>
+                            <td>0</td>
+                            <td><code>int i = 100000;</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>long</code></td>
+                            <td>8 bytes</td>
+                            <td>±9.2 quintillion</td>
+                            <td>0L</td>
+                            <td><code>long l = 15000000000L;</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>float</code></td>
+                            <td>4 bytes</td>
+                            <td>~7 decimal digits</td>
+                            <td>0.0f</td>
+                            <td><code>float f = 5.75f;</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>double</code></td>
+                            <td>8 bytes</td>
+                            <td>~15 decimal digits</td>
+                            <td>0.0d</td>
+                            <td><code>double d = 19.99;</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>boolean</code></td>
+                            <td>1 bit</td>
+                            <td>true or false</td>
+                            <td>false</td>
+                            <td><code>boolean b = true;</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>char</code></td>
+                            <td>2 bytes</td>
+                            <td>0 to 65,535 (Unicode)</td>
+                            <td>'\u0000'</td>
+                            <td><code>char c = 'A';</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">DataTypes.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">DataTypes</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="comment">// Integer types</span>
+        <span class="keyword">byte</span> smallNumber = <span class="number">127</span>;              <span class="comment">// -128 to 127</span>
+        <span class="keyword">short</span> mediumNumber = <span class="number">32000</span>;          <span class="comment">// Rarely used</span>
+        <span class="keyword">int</span> regularNumber = <span class="number">2_000_000</span>;       <span class="comment">// Most common (underscores for readability)</span>
+        <span class="keyword">long</span> bigNumber = <span class="number">9_000_000_000L</span>;     <span class="comment">// Note the L suffix</span>
+        
+        <span class="comment">// Floating-point types</span>
+        <span class="keyword">float</span> price = <span class="number">19.99f</span>;                <span class="comment">// Note the f suffix</span>
+        <span class="keyword">double</span> pi = <span class="number">3.141592653589793</span>;       <span class="comment">// More precision (default)</span>
+        
+        <span class="comment">// Character type</span>
+        <span class="keyword">char</span> letter = <span class="string">'A'</span>;                   <span class="comment">// Single quotes</span>
+        <span class="keyword">char</span> unicode = <span class="string">'\u0041'</span>;             <span class="comment">// Unicode for 'A'</span>
+        <span class="keyword">char</span> emoji = <span class="string">'☕'</span>;                   <span class="comment">// Unicode characters</span>
+        
+        <span class="comment">// Boolean type</span>
+        <span class="keyword">boolean</span> isJavaFun = <span class="keyword">true</span>;
+        <span class="keyword">boolean</span> isRaining = <span class="keyword">false</span>;
+        
+        <span class="comment">// Print type information</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"=== Integer Types ==="</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"byte: "</span> + smallNumber);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"int: "</span> + regularNumber);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"long: "</span> + bigNumber);
+        
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Floating-Point Types ==="</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"float: "</span> + price);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"double: "</span> + pi);
+        
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Other Types ==="</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"char: "</span> + letter + <span class="string">" "</span> + emoji);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"boolean: "</span> + isJavaFun);
+    }
+}</code></pre>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-label">📤 Output</div>
+                    <div class="output-text">=== Integer Types ===<br>byte: 127<br>int: 2000000<br>long: 9000000000<br><br>=== Floating-Point Types ===<br>float: 19.99<br>double: 3.141592653589793<br><br>=== Other Types ===<br>char: A ☕<br>boolean: true</div>
+                </div>
+
+                <div class="info-box warning">
+                    <div class="info-title">⚠️ Common Mistakes</div>
+                    <p>
+                        • Forgetting <code>L</code> suffix for long literals: <code>long x = 3000000000L;</code><br>
+                        • Forgetting <code>f</code> suffix for float literals: <code>float y = 5.5f;</code><br>
+                        • Using double quotes for char: <code>char c = 'A';</code> (single quotes!)<br>
+                        • Exceeding type range causes overflow errors
+                    </p>
+                </div>
+            </div>
+
+            <!-- Operators -->
+            <div class="content-block">
+                <h3><span class="icon">➕</span> Operators</h3>
+                <p>Operators are symbols that perform operations on variables and values.</p>
+
+                <h4>Arithmetic Operators</h4>
+                <div class="operator-grid">
+                    <div class="operator-card">
+                        <div class="operator-symbol">+</div>
+                        <div class="operator-name">Addition</div>
+                    </div>
+                    <div class="operator-card">
+                        <div class="operator-symbol">-</div>
+                        <div class="operator-name">Subtraction</div>
+                    </div>
+                    <div class="operator-card">
+                        <div class="operator-symbol">*</div>
+                        <div class="operator-name">Multiplication</div>
+                    </div>
+                    <div class="operator-card">
+                        <div class="operator-symbol">/</div>
+                        <div class="operator-name">Division</div>
+                    </div>
+                    <div class="operator-card">
+                        <div class="operator-symbol">%</div>
+                        <div class="operator-name">Modulus</div>
+                    </div>
+                    <div class="operator-card">
+                        <div class="operator-symbol">++</div>
+                        <div class="operator-name">Increment</div>
+                    </div>
+                    <div class="operator-card">
+                        <div class="operator-symbol">--</div>
+                        <div class="operator-name">Decrement</div>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">ArithmeticOperators.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">ArithmeticOperators</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="keyword">int</span> a = <span class="number">10</span>, b = <span class="number">3</span>;
+        
+        <span class="comment">// Basic arithmetic</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"a + b = "</span> + (a + b));    <span class="comment">// 13</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"a - b = "</span> + (a - b));    <span class="comment">// 7</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"a * b = "</span> + (a * b));    <span class="comment">// 30</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"a / b = "</span> + (a / b));    <span class="comment">// 3 (integer division)</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"a % b = "</span> + (a % b));    <span class="comment">// 1 (remainder)</span>
+        
+        <span class="comment">// Division with decimals</span>
+        <span class="keyword">double</span> result = (<span class="keyword">double</span>) a / b;
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"a / b (double) = "</span> + result);  <span class="comment">// 3.333...</span>
+        
+        <span class="comment">// Increment and Decrement</span>
+        <span class="keyword">int</span> count = <span class="number">5</span>;
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"count = "</span> + count);       <span class="comment">// 5</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"++count = "</span> + ++count);   <span class="comment">// 6 (pre-increment)</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"count++ = "</span> + count++);   <span class="comment">// 6 (post-increment)</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"count = "</span> + count);       <span class="comment">// 7</span>
+        
+        <span class="comment">// Compound assignment operators</span>
+        <span class="keyword">int</span> x = <span class="number">10</span>;
+        x += <span class="number">5</span>;   <span class="comment">// x = x + 5 → 15</span>
+        x -= <span class="number">3</span>;   <span class="comment">// x = x - 3 → 12</span>
+        x *= <span class="number">2</span>;   <span class="comment">// x = x * 2 → 24</span>
+        x /= <span class="number">4</span>;   <span class="comment">// x = x / 4 → 6</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Final x = "</span> + x);        <span class="comment">// 6</span>
+    }
+}</code></pre>
+                </div>
+
+                <h4>Comparison Operators</h4>
+                <div class="operator-grid">
+                    <div class="operator-card">
+                        <div class="operator-symbol">==</div>
+                        <div class="operator-name">Equal to</div>
+                    </div>
+                    <div class="operator-card">
+                        <div class="operator-symbol">!=</div>
+                        <div class="operator-name">Not equal</div>
+                    </div>
+                    <div class="operator-card">
+                        <div class="operator-symbol">></div>
+                        <div class="operator-name">Greater than</div>
+                    </div>
+                    <div class="operator-card">
+                        <div class="operator-symbol"><</div>
+                        <div class="operator-name">Less than</div>
+                    </div>
+                    <div class="operator-card">
+                        <div class="operator-symbol">>=</div>
+                        <div class="operator-name">Greater or equal</div>
+                    </div>
+                    <div class="operator-card">
+                        <div class="operator-symbol"><=</div>
+                        <div class="operator-name">Less or equal</div>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">ComparisonOperators.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">ComparisonOperators</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="keyword">int</span> x = <span class="number">10</span>, y = <span class="number">20</span>;
+        
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"x = "</span> + x + <span class="string">", y = "</span> + y);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"x == y: "</span> + (x == y));   <span class="comment">// false</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"x != y: "</span> + (x != y));   <span class="comment">// true</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"x > y: "</span> + (x > y));     <span class="comment">// false</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"x < y: "</span> + (x < y));     <span class="comment">// true</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"x >= 10: "</span> + (x >= <span class="number">10</span>)); <span class="comment">// true</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"y <= 20: "</span> + (y <= <span class="number">20</span>)); <span class="comment">// true</span>
+    }
+}</code></pre>
+                </div>
+
+                <h4>Logical Operators</h4>
+                <div class="operator-grid">
+                    <div class="operator-card">
+                        <div class="operator-symbol">&&</div>
+                        <div class="operator-name">Logical AND</div>
+                    </div>
+                    <div class="operator-card">
+                        <div class="operator-symbol">||</div>
+                        <div class="operator-name">Logical OR</div>
+                    </div>
+                    <div class="operator-card">
+                        <div class="operator-symbol">!</div>
+                        <div class="operator-name">Logical NOT</div>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">LogicalOperators.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="keyword">public class</span> <span class="class-name">LogicalOperators</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="keyword">boolean</span> a = <span class="keyword">true</span>;
+        <span class="keyword">boolean</span> b = <span class="keyword">false</span>;
+        
+        <span class="comment">// Logical AND (both must be true)</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"true && true: "</span> + (<span class="keyword">true</span> && <span class="keyword">true</span>));   <span class="comment">// true</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"true && false: "</span> + (a && b));       <span class="comment">// false</span>
+        
+        <span class="comment">// Logical OR (at least one must be true)</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"true || false: "</span> + (a || b));       <span class="comment">// true</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"false || false: "</span> + (b || b));      <span class="comment">// false</span>
+        
+        <span class="comment">// Logical NOT (inverts the value)</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"!true: "</span> + !a);                      <span class="comment">// false</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"!false: "</span> + !b);                     <span class="comment">// true</span>
+        
+        <span class="comment">// Practical example</span>
+        <span class="keyword">int</span> age = <span class="number">25</span>;
+        <span class="keyword">boolean</span> hasLicense = <span class="keyword">true</span>;
+        
+        <span class="keyword">boolean</span> canDrive = (age >= <span class="number">18</span>) && hasLicense;
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Can drive: "</span> + canDrive);           <span class="comment">// true</span>
+        
+        <span class="keyword">boolean</span> isWeekend = <span class="keyword">true</span>;
+        <span class="keyword">boolean</span> isHoliday = <span class="keyword">false</span>;
+        <span class="keyword">boolean</span> dayOff = isWeekend || isHoliday;
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Day off: "</span> + dayOff);               <span class="comment">// true</span>
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Putting It All Together -->
+            <div class="content-block">
+                <h3><span class="icon">🎯</span> Putting It All Together</h3>
+                <p>Let's combine everything we've learned in a practical example:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="code-title">SimpleCalculator.java</span>
+                        </div>
+                        <span class="code-lang">Java</span>
+                    </div>
+                    <pre><code><span class="comment">/**
+ * A simple calculator demonstrating variables, data types, and operators.
+ * Usage: java SimpleCalculator &lt;num1&gt; &lt;operator&gt; &lt;num2&gt;
+ * Example: java SimpleCalculator 10 + 5
+ */</span>
+<span class="keyword">public class</span> <span class="class-name">SimpleCalculator</span> {
+
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="class-name">String</span>[] args) {
+        <span class="comment">// Check if correct number of arguments provided</span>
+        <span class="keyword">if</span> (args.length != <span class="number">3</span>) {
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Usage: java SimpleCalculator &lt;num1&gt; &lt;operator&gt; &lt;num2&gt;"</span>);
+            <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Example: java SimpleCalculator 10 + 5"</span>);
+            <span class="keyword">return</span>;
+        }
+        
+        <span class="comment">// Parse the arguments</span>
+        <span class="keyword">double</span> num1 = <span class="class-name">Double</span>.<span class="method">parseDouble</span>(args[<span class="number">0</span>]);
+        <span class="class-name">String</span> operator = args[<span class="number">1</span>];
+        <span class="keyword">double</span> num2 = <span class="class-name">Double</span>.<span class="method">parseDouble</span>(args[<span class="number">2</span>]);
+        
+        <span class="comment">// Variable to store result</span>
+        <span class="keyword">double</span> result;
+        <span class="keyword">boolean</span> validOperation = <span class="keyword">true</span>;
+        
+        <span class="comment">// Perform calculation based on operator</span>
+        <span class="keyword">switch</span> (operator) {
+            <span class="keyword">case</span> <span class="string">"+"</span>:
+                result = num1 + num2;
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="string">"-"</span>:
+                result = num1 - num2;
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="string">"*"</span>, <span class="string">"x"</span>:
+                result = num1 * num2;
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="string">"/"</span>:
+                <span class="keyword">if</span> (num2 != <span class="number">0</span>) {
+                    result = num1 / num2;
+                } <span class="keyword">else</span> {
+                    <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Error: Division by zero!"</span>);
+                    <span class="keyword">return</span>;
+                }
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="string">"%"</span>:
+                result = num1 % num2;
+                <span class="keyword">break</span>;
+            <span class="keyword">default</span>:
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Unknown operator: "</span> + operator);
+                <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"Supported operators: + - * / %"</span>);
+                <span class="keyword">return</span>;
+        }
+        
+        <span class="comment">// Display the result</span>
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"━━━━━━━━━━━━━━━━━━━━━━━━━"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"  Calculation Result"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"━━━━━━━━━━━━━━━━━━━━━━━━━"</span>);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"  "</span> + num1 + <span class="string">" "</span> + operator + <span class="string">" "</span> + num2 + <span class="string">" = "</span> + result);
+        <span class="class-name">System</span>.out.<span class="method">println</span>(<span class="string">"━━━━━━━━━━━━━━━━━━━━━━━━━"</span>);
+    }
+}</code></pre>
+                </div>
+
+                <div class="terminal-block">
+                    <div class="terminal-header">
+                        <div class="code-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <span class="terminal-title">Running the Calculator</span>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-command">javac SimpleCalculator.java</span>
+                        </div>
+                        <br>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-command">java SimpleCalculator 10 + 5</span>
+                        </div>
+                        <div class="terminal-output">━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+                        <div class="terminal-output">  Calculation Result</div>
+                        <div class="terminal-output">━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+                        <div class="terminal-output">  10.0 + 5.0 = 15.0</div>
+                        <div class="terminal-output">━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+                        <br>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-command">java SimpleCalculator 20 / 3</span>
+                        </div>
+                        <div class="terminal-output">━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+                        <div class="terminal-output">  Calculation Result</div>
+                        <div class="terminal-output">━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+                        <div class="terminal-output">  20.0 / 3.0 = 6.666666666666667</div>
+                        <div class="terminal-output">━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+                        <br>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-command">java SimpleCalculator 17 % 5</span>
+                        </div>
+                        <div class="terminal-output">━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+                        <div class="terminal-output">  Calculation Result</div>
+                        <div class="terminal-output">━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+                        <div class="terminal-output">  17.0 % 5.0 = 2.0</div>
+                        <div class="terminal-output">━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chapter Summary -->
+            <div class="content-block" style="background: linear-gradient(135deg, rgba(255,107,53,0.05) 0%, rgba(0,78,137,0.05) 100%);">
+                <h3><span class="icon">📝</span> Chapter Summary</h3>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: var(--gradient-secondary);">📜</div>
+                        <h4>Java History</h4>
+                        <p>Created in 1995 by James Gosling at Sun Microsystems. Now owned by Oracle. Java 25 is the latest LTS release (2025).</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: var(--gradient-accent);">🌍</div>
+                        <h4>WORA Principle</h4>
+                        <p>"Write Once, Run Anywhere" — Java code compiles to bytecode that runs on any platform with a JVM.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: var(--gradient-purple);">🔧</div>
+                        <h4>Environment Setup</h4>
+                        <p>Install JDK for compiling (javac) and running (java) programs. Use VS Code with Java extensions for development.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🏠</div>
+                        <h4>Main Method</h4>
+                        <p><code>public static void main(String[] args)</code> is the entry point. Each keyword has a specific purpose.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: var(--gradient-secondary);">📦</div>
+                        <h4>Data Types</h4>
+                        <p>8 primitive types: byte, short, int, long, float, double, boolean, char. Plus reference types like String.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: var(--gradient-accent);">➕</div>
+                        <h4>Operators</h4>
+                        <p>Arithmetic (+, -, *, /, %), comparison (==, !=, <, >), and logical (&&, ||, !) operators for data manipulation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-nav">
+                <a href="#">← Previous Chapter</a>
+                <a href="#">Next Chapter: Control Flow →</a>
+            </div>
+            <p>Chapter 1: Getting Started with Java | Java 25 Edition</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;">© 2025 | Learn Java Programming</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.content-block, .feature-card, .step-card, .timeline-item').forEach(el => {
+            el.classList.add('fade-in');
+            observer.observe(el);
+        });
+
+        // Add copy button to code blocks (optional enhancement)
+        document.querySelectorAll('.code-block').forEach(block => {
+            const copyBtn = document.createElement('button');
+            copyBtn.innerHTML = '📋';
+            copyBtn.style.cssText = `
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: rgba(255,255,255,0.1);
+                border: none;
+                border-radius: 6px;
+                padding: 8px;
+                cursor: pointer;
+                font-size: 14px;
+                opacity: 0;
+                transition: opacity 0.3s;
+            `;
+            
+            block.style.position = 'relative';
+            block.appendChild(copyBtn);
+            
+            block.addEventListener('mouseenter', () => copyBtn.style.opacity = '1');
+            block.addEventListener('mouseleave', () => copyBtn.style.opacity = '0');
+            
+            copyBtn.addEventListener('click', () => {
+                const code = block.querySelector('code').innerText;
+                navigator.clipboard.writeText(code);
+                copyBtn.innerHTML = '✅';
+                setTimeout(() => copyBtn.innerHTML = '📋', 2000);
+            });
+        });
+    </script>
+</body>
+</html>

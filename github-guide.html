@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Repository Guide: Push Your Java Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2DA44E;
+            --secondary: #0969DA;
+            --accent: #8250DF;
+            --dark: #0D1117;
+            --light: #F6F8FA;
+            --orange: #F97316;
+            --pink: #EC4899;
+            --cyan: #06B6D4;
+            --red: #EF4444;
+            --yellow: #F59E0B;
+            --gradient-primary: linear-gradient(135deg, #2DA44E 0%, #3FB950 100%);
+            --gradient-secondary: linear-gradient(135deg, #0969DA 0%, #58A6FF 100%);
+            --gradient-accent: linear-gradient(135deg, #8250DF 0%, #A371F7 100%);
+            --gradient-dark: linear-gradient(135deg, #0D1117 0%, #161B22 100%);
+            --code-bg: #161B22;
+            --shadow-soft: 0 4px 24px rgba(0,0,0,0.08);
+            --shadow-medium: 0 8px 32px rgba(0,0,0,0.12);
+            --shadow-strong: 0 16px 48px rgba(0,0,0,0.16);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.7;
+            font-size: 17px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #0D1117 0%, #161B22 50%, #21262D 100%);
+            min-height: 55vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 150%;
+            background: radial-gradient(ellipse, rgba(45,164,78,0.2) 0%, transparent 60%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 60%;
+            height: 100%;
+            background: radial-gradient(ellipse, rgba(9,105,218,0.15) 0%, transparent 50%);
+            animation: pulse 10s ease-in-out infinite reverse;
+        }
+
+        /* GitHub logo animation */
+        .github-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.05;
+            z-index: 1;
+        }
+
+        .github-bg svg {
+            width: 400px;
+            height: 400px;
+            fill: white;
+            animation: rotate 60s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 10;
+            padding: 2rem;
+        }
+
+        .guide-badge {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .hero h1 span {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #8B949E;
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Prerequisites */
+        .prerequisites {
+            background: white;
+            padding: 2.5rem;
+            margin-top: -50px;
+            position: relative;
+            z-index: 20;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 24px;
+            box-shadow: var(--shadow-strong);
+        }
+
+        .prerequisites h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .prereq-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .prereq-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: var(--light);
+            border-radius: 12px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .prereq-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .prereq-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .prereq-text {
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--dark);
+        }
+
+        .prereq-text a {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+
+        .prereq-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Step Sections */
+        .step-section {
+            padding: 4rem 0;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(45,164,78,0.3);
+        }
+
+        .step-header-text h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .step-header-text p {
+            color: #57606A;
+            font-size: 1rem;
+        }
+
+        /* Content Block */
+        .content-block {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .content-block h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .content-block h3 .icon {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient-secondary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .content-block p {
+            color: #57606A;
+            margin-bottom: 1rem;
+        }
+
+        .content-block h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin: 1.5rem 0 1rem;
+        }
+
+        .content-block ul, .content-block ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #57606A;
+        }
+
+        .content-block li {
+            margin-bottom: 0.5rem;
+        }
+
+        .content-block code {
+            background: #EFF1F3;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--dark);
+        }
+
+        /* Numbered List Steps */
+        .numbered-steps {
+            counter-reset: step-counter;
+            list-style: none;
+            margin-left: 0;
+            padding-left: 0;
+        }
+
+        .numbered-steps li {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .numbered-steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 28px;
+            height: 28px;
+            background: var(--gradient-secondary);
+            border-radius: 50%;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--code-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .code-header {
+            background: #21262D;
+            padding: 0.875rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .code-header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .code-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .code-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .code-dot.red { background: #FF5F57; }
+        .code-dot.yellow { background: #FEBC2E; }
+        .code-dot.green { background: #28C840; }
+
+        .code-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: #8B949E;
+            background: #30363D;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+        }
+
+        .code-content {
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+
+        .code-content pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: #E6EDF3;
+            margin: 0;
+        }
+
+        /* Syntax Highlighting */
+        .command { color: #79C0FF; }
+        .flag { color: #FF7B72; }
+        .string { color: #A5D6FF; }
+        .comment { color: #8B949E; font-style: italic; }
+        .path { color: #FFA657; }
+        .variable { color: #7EE787; }
+
+        /* Info Boxes */
+        .info-box {
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .info-box.tip {
+            background: linear-gradient(135deg, rgba(45,164,78,0.1) 0%, rgba(63,185,80,0.1) 100%);
+            border: 1px solid rgba(45,164,78,0.2);
+        }
+
+        .info-box.warning {
+            background: linear-gradient(135deg, rgba(245,158,11,0.1) 0%, rgba(251,191,36,0.1) 100%);
+            border: 1px solid rgba(245,158,11,0.2);
+        }
+
+        .info-box.note {
+            background: linear-gradient(135deg, rgba(9,105,218,0.1) 0%, rgba(88,166,255,0.1) 100%);
+            border: 1px solid rgba(9,105,218,0.2);
+        }
+
+        .info-box.danger {
+            background: linear-gradient(135deg, rgba(239,68,68,0.1) 0%, rgba(248,113,113,0.1) 100%);
+            border: 1px solid rgba(239,68,68,0.2);
+        }
+
+        .info-box-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .info-box.tip .info-box-icon { background: var(--gradient-primary); color: white; }
+        .info-box.warning .info-box-icon { background: linear-gradient(135deg, #F59E0B, #FBBF24); color: white; }
+        .info-box.note .info-box-icon { background: var(--gradient-secondary); color: white; }
+        .info-box.danger .info-box-icon { background: linear-gradient(135deg, #EF4444, #F87171); color: white; }
+
+        .info-box-content h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box.tip .info-box-content h4 { color: #1A7F37; }
+        .info-box.warning .info-box-content h4 { color: #9A6700; }
+        .info-box.note .info-box-content h4 { color: #0550AE; }
+        .info-box.danger .info-box-content h4 { color: #CF222E; }
+
+        .info-box-content p {
+            margin: 0;
+            color: #57606A;
+            font-size: 0.95rem;
+        }
+
+        /* Auth Options */
+        .auth-options {
+            display: grid;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .auth-option {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 2px solid #E1E4E8;
+            transition: all 0.3s ease;
+        }
+
+        .auth-option:hover {
+            border-color: var(--primary);
+        }
+
+        .auth-option.recommended {
+            border-color: var(--primary);
+            position: relative;
+        }
+
+        .auth-option.recommended::before {
+            content: '✓ Recommended';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .auth-option h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .auth-option h4 span {
+            font-size: 1.2rem;
+        }
+
+        /* Command Table */
+        .command-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .command-table th,
+        .command-table td {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid #E1E4E8;
+        }
+
+        .command-table th {
+            background: var(--gradient-dark);
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .command-table tr:nth-child(even) {
+            background: var(--light);
+        }
+
+        .command-table tr:hover {
+            background: rgba(45,164,78,0.05);
+        }
+
+        .command-table td {
+            color: #57606A;
+        }
+
+        .command-table code {
+            background: #E1E4E8;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--dark);
+        }
+
+        /* Workflow Cards */
+        .workflow-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .workflow-card {
+            background: white;
+            border: 2px solid #E1E4E8;
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .workflow-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .workflow-card::after {
+            content: '→';
+            position: absolute;
+            right: -18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .workflow-card:last-child::after {
+            display: none;
+        }
+
+        .workflow-step {
+            width: 35px;
+            height: 35px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin: 0 auto 0.75rem;
+        }
+
+        .workflow-card h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .workflow-card code {
+            font-size: 0.75rem;
+            background: #EFF1F3;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        /* Troubleshooting */
+        .troubleshoot-item {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--red);
+        }
+
+        .troubleshoot-item h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .troubleshoot-item h4::before {
+            content: '❌';
+        }
+
+        .troubleshoot-solution {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px dashed #E1E4E8;
+        }
+
+        .troubleshoot-solution h5 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .troubleshoot-solution h5::before {
+            content: '✅';
+        }
+
+        /* VS Code Integration */
+        .vscode-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .vscode-step {
+            background: linear-gradient(135deg, rgba(0,122,204,0.05) 0%, rgba(0,122,204,0.1) 100%);
+            border: 2px solid rgba(0,122,204,0.2);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .vscode-step-num {
+            width: 30px;
+            height: 30px;
+            background: #007ACC;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .vscode-step p {
+            margin: 0;
+            color: #57606A;
+            font-size: 0.95rem;
+        }
+
+        .vscode-step code {
+            background: rgba(0,122,204,0.1);
+            color: #007ACC;
+        }
+
+        /* Scroll Animation */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .step-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .step-number {
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+            }
+
+            .content-block {
+                padding: 1.5rem;
+            }
+
+            .code-content {
+                padding: 1rem;
+            }
+
+            .code-content pre {
+                font-size: 0.8rem;
+            }
+
+            .prerequisites {
+                margin: -40px 1rem 0;
+                padding: 2rem 1.5rem;
+            }
+
+            .workflow-card::after {
+                display: none;
+            }
+
+            .numbered-steps li {
+                padding-left: 2.5rem;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: var(--gradient-dark);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        footer h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        footer p {
+            color: #8B949E;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            background: rgba(45,164,78,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #3FB950;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-link:hover {
+            background: rgba(45,164,78,0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="github-bg">
+            <svg viewBox="0 0 98 96" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z"/>
+            </svg>
+        </div>
+        <div class="hero-content">
+            <div class="guide-badge">Step-by-Step Guide</div>
+            <h1>Push Your Java Project to <span>GitHub</span></h1>
+            <p class="hero-subtitle">Learn how to create a GitHub repository and push your VS Code Java project using Git commands.</p>
+        </div>
+    </header>
+
+    <!-- Prerequisites -->
+    <div class="prerequisites">
+        <h2>📋 Prerequisites</h2>
+        <div class="prereq-grid">
+            <div class="prereq-item">
+                <div class="prereq-icon">🔧</div>
+                <div class="prereq-text">
+                    Git installed<br>
+                    <a href="https://git-scm.com/downloads" target="_blank">Download Git →</a>
+                </div>
+            </div>
+            <div class="prereq-item">
+                <div class="prereq-icon">👤</div>
+                <div class="prereq-text">
+                    GitHub account<br>
+                    <a href="https://github.com" target="_blank">Sign up free →</a>
+                </div>
+            </div>
+            <div class="prereq-item">
+                <div class="prereq-icon">💻</div>
+                <div class="prereq-text">
+                    VS Code with Java project<br>
+                    Ready to push
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="container">
+        <!-- Step 1: Configure Git -->
+        <section class="step-section animate-on-scroll" id="step1">
+            <div class="step-header">
+                <div class="step-number">1</div>
+                <div class="step-header-text">
+                    <h2>Configure Git</h2>
+                    <p>One-time setup on your computer</p>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">⚙️</span> Set Your Identity</h3>
+                <p>Open a terminal in VS Code (<code>Ctrl + `</code> or Terminal → New Terminal) and configure your Git identity:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-label">Terminal</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="comment"># Set your name</span>
+<span class="command">git config</span> <span class="flag">--global</span> user.name <span class="string">"Your Name"</span>
+
+<span class="comment"># Set your email (use the same email as your GitHub account)</span>
+<span class="command">git config</span> <span class="flag">--global</span> user.email <span class="string">"your.email@example.com"</span>
+
+<span class="comment"># Verify your configuration</span>
+<span class="command">git config</span> <span class="flag">--list</span></pre>
+                    </div>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-icon">💡</div>
+                    <div class="info-box-content">
+                        <h4>Why This Matters</h4>
+                        <p>Git uses this information to identify who made each commit. Make sure to use the same email address as your GitHub account for proper attribution.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 2: Create GitHub Repository -->
+        <section class="step-section animate-on-scroll" id="step2">
+            <div class="step-header">
+                <div class="step-number">2</div>
+                <div class="step-header-text">
+                    <h2>Create a Repository on GitHub</h2>
+                    <p>Set up your remote repository</p>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">🌐</span> Create New Repository</h3>
+                <p>Follow these steps on GitHub:</p>
+
+                <ol class="numbered-steps">
+                    <li>Go to <a href="https://github.com" target="_blank">github.com</a> and log in</li>
+                    <li>Click the <strong>+</strong> icon in the top-right corner → <strong>New repository</strong></li>
+                    <li>Fill in the repository details:
+                        <ul>
+                            <li><strong>Repository name:</strong> <code>java-tutorial-project</code></li>
+                            <li><strong>Description:</strong> (optional) "Java programming tutorial samples"</li>
+                            <li><strong>Visibility:</strong> Public or Private</li>
+                        </ul>
+                    </li>
+                    <li>Click <strong>Create repository</strong></li>
+                    <li><strong>Keep this page open</strong> - you'll need the repository URL</li>
+                </ol>
+
+                <div class="info-box warning">
+                    <div class="info-box-icon">⚠️</div>
+                    <div class="info-box-content">
+                        <h4>Important: Leave These Unchecked!</h4>
+                        <p>Do NOT check "Add a README file", ".gitignore", or "license" options. We'll push these from your local project to avoid merge conflicts.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 3: Initialize Git -->
+        <section class="step-section animate-on-scroll" id="step3">
+            <div class="step-header">
+                <div class="step-number">3</div>
+                <div class="step-header-text">
+                    <h2>Initialize Git in Your Project</h2>
+                    <p>Set up version control locally</p>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">📁</span> Navigate and Initialize</h3>
+                <p>In VS Code terminal, navigate to your project folder and initialize Git:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-label">Terminal</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="comment"># Navigate to your project folder (if not already there)</span>
+<span class="command">cd</span> <span class="path">path/to/your/java-project</span>
+
+<span class="comment"># Initialize a new Git repository</span>
+<span class="command">git init</span>
+
+<span class="comment"># You should see: Initialized empty Git repository in .../</span></pre>
+                    </div>
+                </div>
+
+                <div class="info-box note">
+                    <div class="info-box-icon">📝</div>
+                    <div class="info-box-content">
+                        <h4>What This Does</h4>
+                        <p>The <code>git init</code> command creates a hidden <code>.git</code> folder in your project, which Git uses to track all changes to your files.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 4: Create .gitignore -->
+        <section class="step-section animate-on-scroll" id="step4">
+            <div class="step-header">
+                <div class="step-number">4</div>
+                <div class="step-header-text">
+                    <h2>Create a .gitignore File</h2>
+                    <p>Exclude unnecessary files from version control</p>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">🚫</span> Ignore Unnecessary Files</h3>
+                <p>Create a <code>.gitignore</code> file in your project root to exclude compiled files, IDE settings, and other unnecessary files:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-label">.gitignore</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="comment"># Compiled class files</span>
+*.class
+
+<span class="comment"># Package files</span>
+*.jar
+*.war
+*.ear
+
+<span class="comment"># VS Code</span>
+.vscode/
+!.vscode/settings.json
+!.vscode/launch.json
+
+<span class="comment"># IDE files</span>
+.idea/
+*.iml
+
+<span class="comment"># OS files</span>
+.DS_Store
+Thumbs.db
+
+<span class="comment"># Build output</span>
+bin/
+out/
+target/
+build/
+
+<span class="comment"># Log files</span>
+*.log</pre>
+                    </div>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-icon">💡</div>
+                    <div class="info-box-content">
+                        <h4>Pro Tip</h4>
+                        <p>You can create this file in VS Code: File → New File → Save as <code>.gitignore</code> (with the dot at the beginning).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 5: Stage and Commit -->
+        <section class="step-section animate-on-scroll" id="step5">
+            <div class="step-header">
+                <div class="step-number">5</div>
+                <div class="step-header-text">
+                    <h2>Stage and Commit Your Files</h2>
+                    <p>Save your changes to Git history</p>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">📦</span> Add and Commit</h3>
+                <p>Stage all your files and create your first commit:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-label">Terminal</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="comment"># Add all files to staging area</span>
+<span class="command">git add</span> <span class="flag">.</span>
+
+<span class="comment"># Check what files are staged</span>
+<span class="command">git status</span>
+
+<span class="comment"># Create your first commit</span>
+<span class="command">git commit</span> <span class="flag">-m</span> <span class="string">"Initial commit: Java tutorial project"</span></pre>
+                    </div>
+                </div>
+
+                <div class="workflow-cards">
+                    <div class="workflow-card">
+                        <div class="workflow-step">1</div>
+                        <h4>Working Directory</h4>
+                        <code>Your files</code>
+                    </div>
+                    <div class="workflow-card">
+                        <div class="workflow-step">2</div>
+                        <h4>Staging Area</h4>
+                        <code>git add .</code>
+                    </div>
+                    <div class="workflow-card">
+                        <div class="workflow-step">3</div>
+                        <h4>Repository</h4>
+                        <code>git commit</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 6: Connect and Push -->
+        <section class="step-section animate-on-scroll" id="step6">
+            <div class="step-header">
+                <div class="step-number">6</div>
+                <div class="step-header-text">
+                    <h2>Connect to GitHub and Push</h2>
+                    <p>Upload your code to the remote repository</p>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">🚀</span> Push to Remote</h3>
+                <p>Connect your local repository to GitHub and push your code:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-label">Terminal</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="comment"># Add the remote repository (replace with YOUR repository URL)</span>
+<span class="command">git remote add</span> origin <span class="string">https://github.com/YOUR-USERNAME/java-tutorial-project.git</span>
+
+<span class="comment"># Rename branch to 'main' (if not already)</span>
+<span class="command">git branch</span> <span class="flag">-M</span> main
+
+<span class="comment"># Push to GitHub</span>
+<span class="command">git push</span> <span class="flag">-u</span> origin main</pre>
+                    </div>
+                </div>
+
+                <div class="info-box note">
+                    <div class="info-box-icon">📝</div>
+                    <div class="info-box-content">
+                        <h4>The -u Flag</h4>
+                        <p>The <code>-u</code> (or <code>--set-upstream</code>) flag links your local branch to the remote branch. After this, you can simply use <code>git push</code> for future pushes.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 7: Authentication -->
+        <section class="step-section animate-on-scroll" id="step7">
+            <div class="step-header">
+                <div class="step-number">7</div>
+                <div class="step-header-text">
+                    <h2>Authentication</h2>
+                    <p>Securely connect to your GitHub account</p>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">🔐</span> Authentication Options</h3>
+                <p>When you push, GitHub will ask for authentication. Choose one of these methods:</p>
+
+                <div class="auth-options">
+                    <!-- Option A: Personal Access Token -->
+                    <div class="auth-option recommended">
+                        <h4><span>🔑</span> Option A: Personal Access Token</h4>
+                        <ol class="numbered-steps">
+                            <li>Go to GitHub → <strong>Settings</strong> → <strong>Developer settings</strong> → <strong>Personal access tokens</strong> → <strong>Tokens (classic)</strong></li>
+                            <li>Click <strong>Generate new token (classic)</strong></li>
+                            <li>Give it a name, set expiration, check the <strong>repo</strong> scope</li>
+                            <li>Click <strong>Generate token</strong></li>
+                            <li><strong>Copy the token</strong> (you won't see it again!)</li>
+                            <li>Use this token as your password when prompted</li>
+                        </ol>
+                    </div>
+
+                    <!-- Option B: GitHub CLI -->
+                    <div class="auth-option">
+                        <h4><span>💻</span> Option B: GitHub CLI</h4>
+                        <div class="code-block" style="margin: 1rem 0;">
+                            <div class="code-header">
+                                <div class="code-header-left">
+                                    <div class="code-dots">
+                                        <span class="code-dot red"></span>
+                                        <span class="code-dot yellow"></span>
+                                        <span class="code-dot green"></span>
+                                    </div>
+                                    <span class="code-label">Terminal</span>
+                                </div>
+                            </div>
+                            <div class="code-content">
+<pre><span class="comment"># Install GitHub CLI first, then run:</span>
+<span class="command">gh auth login</span>
+
+<span class="comment"># Follow the interactive prompts</span></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Option C: SSH Key -->
+                    <div class="auth-option">
+                        <h4><span>🔒</span> Option C: SSH Key</h4>
+                        <div class="code-block" style="margin: 1rem 0;">
+                            <div class="code-header">
+                                <div class="code-header-left">
+                                    <div class="code-dots">
+                                        <span class="code-dot red"></span>
+                                        <span class="code-dot yellow"></span>
+                                        <span class="code-dot green"></span>
+                                    </div>
+                                    <span class="code-label">Terminal</span>
+                                </div>
+                            </div>
+                            <div class="code-content">
+<pre><span class="comment"># Generate SSH key</span>
+<span class="command">ssh-keygen</span> <span class="flag">-t</span> ed25519 <span class="flag">-C</span> <span class="string">"your.email@example.com"</span>
+
+<span class="comment"># Start SSH agent</span>
+<span class="command">eval</span> <span class="string">"$(ssh-agent -s)"</span>
+
+<span class="comment"># Add key to agent</span>
+<span class="command">ssh-add</span> <span class="path">~/.ssh/id_ed25519</span>
+
+<span class="comment"># Copy public key (add this to GitHub)</span>
+<span class="command">cat</span> <span class="path">~/.ssh/id_ed25519.pub</span></pre>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.9rem; color: #57606A;">Then add the key to GitHub: Settings → SSH and GPG keys → New SSH key</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Reference -->
+        <section class="step-section animate-on-scroll" id="reference">
+            <div class="step-header">
+                <div class="step-number">📖</div>
+                <div class="step-header-text">
+                    <h2>Quick Reference</h2>
+                    <p>Common Git commands you'll use daily</p>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">⌨️</span> Essential Git Commands</h3>
+
+                <table class="command-table">
+                    <thead>
+                        <tr>
+                            <th>Command</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>git status</code></td>
+                            <td>Check current status of your repository</td>
+                        </tr>
+                        <tr>
+                            <td><code>git add .</code></td>
+                            <td>Stage all changes for commit</td>
+                        </tr>
+                        <tr>
+                            <td><code>git add filename</code></td>
+                            <td>Stage a specific file</td>
+                        </tr>
+                        <tr>
+                            <td><code>git commit -m "message"</code></td>
+                            <td>Commit staged changes with a message</td>
+                        </tr>
+                        <tr>
+                            <td><code>git push</code></td>
+                            <td>Push commits to remote repository</td>
+                        </tr>
+                        <tr>
+                            <td><code>git pull</code></td>
+                            <td>Pull latest changes from remote</td>
+                        </tr>
+                        <tr>
+                            <td><code>git log --oneline</code></td>
+                            <td>View commit history (compact)</td>
+                        </tr>
+                        <tr>
+                            <td><code>git diff</code></td>
+                            <td>View unstaged changes</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin-top: 2rem;"><span class="icon">🔄</span> Daily Workflow</h3>
+                <p>After the initial setup, this is your typical workflow:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-label">Daily Workflow</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="comment"># 1. Make changes to your code in VS Code</span>
+
+<span class="comment"># 2. Check what changed</span>
+<span class="command">git status</span>
+
+<span class="comment"># 3. Stage your changes</span>
+<span class="command">git add</span> <span class="flag">.</span>
+
+<span class="comment"># 4. Commit with a descriptive message</span>
+<span class="command">git commit</span> <span class="flag">-m</span> <span class="string">"Add Chapter 3: OOP basics examples"</span>
+
+<span class="comment"># 5. Push to GitHub</span>
+<span class="command">git push</span></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VS Code Integration -->
+        <section class="step-section animate-on-scroll" id="vscode">
+            <div class="step-header">
+                <div class="step-number">💡</div>
+                <div class="step-header-text">
+                    <h2>VS Code Git Integration</h2>
+                    <p>Alternative to command line</p>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">🖥️</span> Using VS Code's Built-in Git</h3>
+                <p>VS Code has excellent Git support built right in:</p>
+
+                <div class="vscode-steps">
+                    <div class="vscode-step">
+                        <div class="vscode-step-num">1</div>
+                        <p>Click the <strong>Source Control</strong> icon in the sidebar (or press <code>Ctrl+Shift+G</code>)</p>
+                    </div>
+                    <div class="vscode-step">
+                        <div class="vscode-step-num">2</div>
+                        <p>Click <strong>Initialize Repository</strong> if not already done</p>
+                    </div>
+                    <div class="vscode-step">
+                        <div class="vscode-step-num">3</div>
+                        <p>Stage files by clicking <strong>+</strong> next to each file or "Changes"</p>
+                    </div>
+                    <div class="vscode-step">
+                        <div class="vscode-step-num">4</div>
+                        <p>Enter a commit message in the text box at the top</p>
+                    </div>
+                    <div class="vscode-step">
+                        <div class="vscode-step-num">5</div>
+                        <p>Click the <strong>✓ checkmark</strong> to commit your changes</p>
+                    </div>
+                    <div class="vscode-step">
+                        <div class="vscode-step-num">6</div>
+                        <p>Click <strong>Publish Branch</strong> to push to GitHub</p>
+                    </div>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-icon">💡</div>
+                    <div class="info-box-content">
+                        <h4>Install GitHub Extension</h4>
+                        <p>For an even better experience, install the "GitHub Pull Requests and Issues" extension from the VS Code marketplace.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Troubleshooting -->
+        <section class="step-section animate-on-scroll" id="troubleshooting">
+            <div class="step-header">
+                <div class="step-number">🔧</div>
+                <div class="step-header-text">
+                    <h2>Troubleshooting</h2>
+                    <p>Common issues and how to fix them</p>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3><span class="icon">🛠️</span> Common Problems & Solutions</h3>
+
+                <div class="troubleshoot-item">
+                    <h4>"remote origin already exists"</h4>
+                    <div class="troubleshoot-solution">
+                        <h5>Solution:</h5>
+                        <div class="code-block" style="margin: 0.5rem 0;">
+                            <div class="code-content" style="padding: 1rem;">
+<pre><span class="command">git remote remove</span> origin
+<span class="command">git remote add</span> origin <span class="string">https://github.com/YOUR-USERNAME/repo-name.git</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="troubleshoot-item">
+                    <h4>"failed to push some refs"</h4>
+                    <div class="troubleshoot-solution">
+                        <h5>Solution:</h5>
+                        <div class="code-block" style="margin: 0.5rem 0;">
+                            <div class="code-content" style="padding: 1rem;">
+<pre><span class="command">git pull</span> <span class="flag">--rebase</span> origin main
+<span class="command">git push</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="troubleshoot-item">
+                    <h4>"Authentication failed"</h4>
+                    <div class="troubleshoot-solution">
+                        <h5>Solution:</h5>
+                        <ul>
+                            <li>Make sure you're using a <strong>Personal Access Token</strong>, not your GitHub password</li>
+                            <li>Check that your token has the <strong>repo</strong> permission enabled</li>
+                            <li>Ensure the token hasn't expired</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="troubleshoot-item">
+                    <h4>"Permission denied (publickey)"</h4>
+                    <div class="troubleshoot-solution">
+                        <h5>Solution:</h5>
+                        <ul>
+                            <li>Your SSH key isn't set up correctly</li>
+                            <li>Try using HTTPS URL instead of SSH</li>
+                            <li>Or regenerate and add your SSH key to GitHub</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <h3>🎉 You're All Set!</h3>
+        <p>Your Java project is now on GitHub. Happy coding!</p>
+        <div class="footer-links">
+            <a href="https://docs.github.com" target="_blank" class="footer-link">📚 GitHub Docs</a>
+            <a href="https://git-scm.com/doc" target="_blank" class="footer-link">📖 Git Documentation</a>
+            <a href="https://code.visualstudio.com/docs/sourcecontrol/overview" target="_blank" class="footer-link">💻 VS Code Git Guide</a>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

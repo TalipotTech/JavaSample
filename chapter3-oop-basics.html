@@ -1,0 +1,2163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 3: Object-Oriented Programming Basics in Java</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #F97316;
+            --secondary: #3B82F6;
+            --accent: #10B981;
+            --dark: #0F172A;
+            --light: #F8FAFC;
+            --purple: #8B5CF6;
+            --pink: #EC4899;
+            --cyan: #06B6D4;
+            --red: #EF4444;
+            --gradient-primary: linear-gradient(135deg, #F97316 0%, #FB923C 100%);
+            --gradient-secondary: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
+            --gradient-accent: linear-gradient(135deg, #10B981 0%, #34D399 100%);
+            --gradient-purple: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
+            --gradient-dark: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            --code-bg: #1E293B;
+            --shadow-soft: 0 4px 24px rgba(0,0,0,0.08);
+            --shadow-medium: 0 8px 32px rgba(0,0,0,0.12);
+            --shadow-strong: 0 16px 48px rgba(0,0,0,0.16);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.7;
+            font-size: 17px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%);
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 150%;
+            background: radial-gradient(ellipse, rgba(249,115,22,0.2) 0%, transparent 60%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 60%;
+            height: 100%;
+            background: radial-gradient(ellipse, rgba(59,130,246,0.15) 0%, transparent 50%);
+            animation: pulse 10s ease-in-out infinite reverse;
+        }
+
+        /* OOP shapes animation */
+        .oop-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            opacity: 0.1;
+        }
+
+        .shape {
+            position: absolute;
+            border: 2px solid var(--primary);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape.circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape.square {
+            width: 50px;
+            height: 50px;
+            top: 60%;
+            left: 80%;
+            animation-delay: 1s;
+        }
+
+        .shape.diamond {
+            width: 40px;
+            height: 40px;
+            top: 30%;
+            right: 15%;
+            transform: rotate(45deg);
+            animation-delay: 2s;
+        }
+
+        .shape.rectangle {
+            width: 80px;
+            height: 40px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 10;
+            padding: 2rem;
+        }
+
+        .chapter-badge {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .hero h1 span {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #94A3B8;
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: white;
+            padding: 3rem 2rem;
+            margin-top: -60px;
+            position: relative;
+            z-index: 20;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 24px;
+            box-shadow: var(--shadow-strong);
+        }
+
+        .toc h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .toc-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: var(--light);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--dark);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .toc-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .toc-number {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .toc-text {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 5rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+
+        .section-number {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1.2rem;
+            line-height: 50px;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: #64748B;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Content Styles */
+        .content-block {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .content-block h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .content-block h3 .icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-secondary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .content-block p {
+            color: #475569;
+            margin-bottom: 1rem;
+        }
+
+        .content-block h4 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin: 2rem 0 1rem;
+        }
+
+        .content-block ul, .content-block ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #475569;
+        }
+
+        .content-block li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--code-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-medium);
+            position: relative;
+        }
+
+        .code-header {
+            background: #334155;
+            padding: 0.875rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .code-header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .code-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .code-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .code-dot.red { background: #EF4444; }
+        .code-dot.yellow { background: #F59E0B; }
+        .code-dot.green { background: #10B981; }
+
+        .code-filename {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #94A3B8;
+        }
+
+        .code-content {
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+
+        .code-content pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: #E2E8F0;
+            margin: 0;
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: #C084FC; font-weight: 500; }
+        .type { color: #22D3EE; }
+        .string { color: #86EFAC; }
+        .number { color: #FDE68A; }
+        .comment { color: #64748B; font-style: italic; }
+        .method { color: #FBBF24; }
+        .annotation { color: #FB923C; }
+        .variable { color: #E2E8F0; }
+        .operator { color: #F472B6; }
+
+        /* Output Blocks */
+        .output-block {
+            background: linear-gradient(135deg, #065F46 0%, #047857 100%);
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: #D1FAE5;
+            position: relative;
+        }
+
+        .output-block::before {
+            content: '▶ Output';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: #10B981;
+            padding: 2px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .output-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .info-box.tip {
+            background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(52,211,153,0.1) 100%);
+            border: 1px solid rgba(16,185,129,0.2);
+        }
+
+        .info-box.warning {
+            background: linear-gradient(135deg, rgba(245,158,11,0.1) 0%, rgba(251,191,36,0.1) 100%);
+            border: 1px solid rgba(245,158,11,0.2);
+        }
+
+        .info-box.note {
+            background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(96,165,250,0.1) 100%);
+            border: 1px solid rgba(59,130,246,0.2);
+        }
+
+        .info-box.danger {
+            background: linear-gradient(135deg, rgba(239,68,68,0.1) 0%, rgba(248,113,113,0.1) 100%);
+            border: 1px solid rgba(239,68,68,0.2);
+        }
+
+        .info-box-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .info-box.tip .info-box-icon { background: var(--gradient-accent); color: white; }
+        .info-box.warning .info-box-icon { background: linear-gradient(135deg, #F59E0B, #FBBF24); color: white; }
+        .info-box.note .info-box-icon { background: linear-gradient(135deg, #3B82F6, #60A5FA); color: white; }
+        .info-box.danger .info-box-icon { background: linear-gradient(135deg, #EF4444, #F87171); color: white; }
+
+        .info-box-content h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box.tip .info-box-content h4 { color: #059669; }
+        .info-box.warning .info-box-content h4 { color: #D97706; }
+        .info-box.note .info-box-content h4 { color: #2563EB; }
+        .info-box.danger .info-box-content h4 { color: #DC2626; }
+
+        .info-box-content p {
+            margin: 0;
+            color: #475569;
+            font-size: 0.95rem;
+        }
+
+        /* Concept Cards */
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, rgba(249,115,22,0.05) 0%, rgba(59,130,246,0.05) 100%);
+            border-radius: 16px;
+            padding: 1.75rem;
+            border: 1px solid rgba(249,115,22,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+            border-color: var(--primary);
+        }
+
+        .concept-card-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .concept-card h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .concept-card p {
+            color: #64748B;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Blueprint Diagram */
+        .blueprint-diagram {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+            padding: 2rem;
+            background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+            border-radius: 16px;
+        }
+
+        .blueprint-box {
+            background: white;
+            border: 3px dashed var(--primary);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            text-align: center;
+            min-width: 200px;
+        }
+
+        .blueprint-box.class-box {
+            border-style: dashed;
+        }
+
+        .blueprint-box.object-box {
+            border-style: solid;
+            border-color: var(--secondary);
+        }
+
+        .blueprint-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748B;
+            margin-bottom: 0.5rem;
+        }
+
+        .blueprint-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--dark);
+        }
+
+        .blueprint-arrow {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        /* UML Class Diagram */
+        .uml-diagram {
+            background: white;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            overflow: hidden;
+            max-width: 350px;
+            margin: 1.5rem auto;
+        }
+
+        .uml-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.75rem;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+
+        .uml-section {
+            padding: 1rem;
+            border-bottom: 1px solid #E2E8F0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        .uml-section:last-child {
+            border-bottom: none;
+        }
+
+        .uml-item {
+            margin: 0.25rem 0;
+            color: #475569;
+        }
+
+        .uml-item .access {
+            color: var(--primary);
+        }
+
+        /* Method Breakdown */
+        .method-breakdown {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            border: 1px solid #E2E8F0;
+        }
+
+        .method-signature {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px dashed #E2E8F0;
+        }
+
+        .method-part {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .method-part.access {
+            background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+            color: white;
+        }
+
+        .method-part.return-type {
+            background: linear-gradient(135deg, #06B6D4, #22D3EE);
+            color: white;
+        }
+
+        .method-part.method-name {
+            background: linear-gradient(135deg, #F59E0B, #FBBF24);
+            color: white;
+        }
+
+        .method-part.params {
+            background: linear-gradient(135deg, #10B981, #34D399);
+            color: white;
+        }
+
+        .method-legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .legend-color.access { background: linear-gradient(135deg, #8B5CF6, #A78BFA); }
+        .legend-color.return-type { background: linear-gradient(135deg, #06B6D4, #22D3EE); }
+        .legend-color.method-name { background: linear-gradient(135deg, #F59E0B, #FBBF24); }
+        .legend-color.params { background: linear-gradient(135deg, #10B981, #34D399); }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .comparison-table th {
+            background: var(--gradient-primary);
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #F8FAFC;
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(249,115,22,0.05);
+        }
+
+        .comparison-table td {
+            color: #475569;
+        }
+
+        .comparison-table code {
+            background: #E2E8F0;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--primary);
+        }
+
+        /* Syntax Box */
+        .syntax-box {
+            background: linear-gradient(135deg, rgba(249,115,22,0.05) 0%, rgba(59,130,246,0.05) 100%);
+            border: 2px dashed rgba(249,115,22,0.3);
+            border-radius: 16px;
+            padding: 1.75rem;
+            margin: 1.5rem 0;
+        }
+
+        .syntax-box-title {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .syntax-box pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            color: var(--dark);
+            margin: 0;
+            line-height: 1.8;
+        }
+
+        /* Static vs Instance Diagram */
+        .static-diagram {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .static-box {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 2px solid #E2E8F0;
+            text-align: center;
+        }
+
+        .static-box.static {
+            border-color: var(--purple);
+        }
+
+        .static-box.instance {
+            border-color: var(--secondary);
+        }
+
+        .static-box-header {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #E2E8F0;
+        }
+
+        .static-box.static .static-box-header {
+            color: var(--purple);
+        }
+
+        .static-box.instance .static-box-header {
+            color: var(--secondary);
+        }
+
+        .static-box-content {
+            font-size: 0.95rem;
+            color: #475569;
+        }
+
+        .static-box-content code {
+            display: block;
+            background: #F1F5F9;
+            padding: 0.5rem;
+            border-radius: 6px;
+            margin: 0.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        /* Scroll Animation */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .section-header h2 {
+                font-size: 1.75rem;
+            }
+
+            .content-block {
+                padding: 1.5rem;
+            }
+
+            .code-content {
+                padding: 1rem;
+            }
+
+            .code-content pre {
+                font-size: 0.8rem;
+            }
+
+            .toc {
+                margin: -40px 1rem 0;
+                padding: 2rem 1.5rem;
+            }
+
+            .blueprint-diagram {
+                flex-direction: column;
+            }
+
+            .blueprint-arrow {
+                transform: rotate(90deg);
+            }
+
+            .method-signature {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="oop-shapes">
+            <div class="shape circle"></div>
+            <div class="shape square"></div>
+            <div class="shape diamond"></div>
+            <div class="shape rectangle"></div>
+        </div>
+        <div class="hero-content">
+            <div class="chapter-badge">Chapter 3</div>
+            <h1>Object-Oriented <span>Programming</span></h1>
+            <p class="hero-subtitle">Learn the fundamental building blocks of OOP: classes, objects, methods, constructors, and the static keyword.</p>
+        </div>
+    </header>
+
+    <!-- Table of Contents -->
+    <nav class="toc">
+        <h2>📚 What You'll Learn</h2>
+        <div class="toc-grid">
+            <a href="#classes-objects" class="toc-item">
+                <span class="toc-number">3.1</span>
+                <span class="toc-text">Classes vs Objects</span>
+            </a>
+            <a href="#methods" class="toc-item">
+                <span class="toc-number">3.2</span>
+                <span class="toc-text">Methods</span>
+            </a>
+            <a href="#constructors" class="toc-item">
+                <span class="toc-number">3.3</span>
+                <span class="toc-text">Constructors</span>
+            </a>
+            <a href="#static" class="toc-item">
+                <span class="toc-number">3.4</span>
+                <span class="toc-text">The static Keyword</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Section 3.1: Classes vs Objects -->
+        <section id="classes-objects">
+            <div class="section-header animate-on-scroll">
+                <div class="section-number">3.1</div>
+                <h2>Classes vs Objects</h2>
+                <p>Understand the relationship between blueprints (classes) and instances (objects).</p>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">🏗️</span> What is a Class?</h3>
+                <p>A <strong>class</strong> is a blueprint or template that defines the structure and behavior of objects. It specifies what data (fields) an object will hold and what actions (methods) it can perform.</p>
+
+                <p>Think of a class like an architectural blueprint for a house. The blueprint defines the structure, rooms, and features, but it's not a house itself - it's the plan used to build actual houses.</p>
+
+                <div class="blueprint-diagram">
+                    <div class="blueprint-box class-box">
+                        <div class="blueprint-label">Class (Blueprint)</div>
+                        <div class="blueprint-name">Car</div>
+                    </div>
+                    <div class="blueprint-arrow">→</div>
+                    <div class="blueprint-box object-box">
+                        <div class="blueprint-label">Object (Instance)</div>
+                        <div class="blueprint-name">myCar</div>
+                    </div>
+                    <div class="blueprint-box object-box">
+                        <div class="blueprint-label">Object (Instance)</div>
+                        <div class="blueprint-name">yourCar</div>
+                    </div>
+                </div>
+
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <div class="concept-card-icon">📋</div>
+                        <h4>Class</h4>
+                        <p>A template that defines fields (data) and methods (behavior). Created once, used to make many objects.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-card-icon">📦</div>
+                        <h4>Object</h4>
+                        <p>An instance of a class. Each object has its own copy of the instance fields with unique values.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-card-icon">🔤</div>
+                        <h4>Fields</h4>
+                        <p>Variables that store the state/data of an object. Also called instance variables or attributes.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-card-icon">⚡</div>
+                        <h4>Methods</h4>
+                        <p>Functions defined in a class that describe what actions an object can perform.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">🚗</span> Creating a Class</h3>
+                <p>Let's create a <code>Car</code> class to understand the anatomy of a Java class:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">Car.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">Car</span> {
+    <span class="comment">// Fields (instance variables) - the data</span>
+    <span class="type">String</span> brand;
+    <span class="type">String</span> model;
+    <span class="type">String</span> color;
+    <span class="type">int</span> year;
+    <span class="type">int</span> speed;
+    <span class="type">boolean</span> isRunning;
+    
+    <span class="comment">// Methods - the behavior</span>
+    <span class="keyword">void</span> <span class="method">start</span>() {
+        isRunning = <span class="keyword">true</span>;
+        <span class="type">System</span>.out.<span class="method">println</span>(brand + <span class="string">" "</span> + model + <span class="string">" is now running!"</span>);
+    }
+    
+    <span class="keyword">void</span> <span class="method">stop</span>() {
+        isRunning = <span class="keyword">false</span>;
+        speed = <span class="number">0</span>;
+        <span class="type">System</span>.out.<span class="method">println</span>(brand + <span class="string">" "</span> + model + <span class="string">" has stopped."</span>);
+    }
+    
+    <span class="keyword">void</span> <span class="method">accelerate</span>(<span class="type">int</span> amount) {
+        <span class="keyword">if</span> (isRunning) {
+            speed += amount;
+            <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Accelerating... Speed is now "</span> + speed + <span class="string">" mph"</span>);
+        } <span class="keyword">else</span> {
+            <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Start the car first!"</span>);
+        }
+    }
+    
+    <span class="keyword">void</span> <span class="method">displayInfo</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"--- Car Information ---"</span>);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Brand: "</span> + brand);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Model: "</span> + model);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Color: "</span> + color);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Year: "</span> + year);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Speed: "</span> + speed + <span class="string">" mph"</span>);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Running: "</span> + isRunning);
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="uml-diagram">
+                    <div class="uml-header">Car</div>
+                    <div class="uml-section">
+                        <div class="uml-item"><span class="access">-</span> brand: String</div>
+                        <div class="uml-item"><span class="access">-</span> model: String</div>
+                        <div class="uml-item"><span class="access">-</span> color: String</div>
+                        <div class="uml-item"><span class="access">-</span> year: int</div>
+                        <div class="uml-item"><span class="access">-</span> speed: int</div>
+                        <div class="uml-item"><span class="access">-</span> isRunning: boolean</div>
+                    </div>
+                    <div class="uml-section">
+                        <div class="uml-item"><span class="access">+</span> start(): void</div>
+                        <div class="uml-item"><span class="access">+</span> stop(): void</div>
+                        <div class="uml-item"><span class="access">+</span> accelerate(int): void</div>
+                        <div class="uml-item"><span class="access">+</span> displayInfo(): void</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">🎯</span> Creating Objects</h3>
+                <p>Once you have a class, you can create objects (instances) from it using the <code>new</code> keyword:</p>
+
+                <div class="syntax-box">
+                    <span class="syntax-box-title">Object Creation Syntax</span>
+<pre><span class="type">ClassName</span> objectName = <span class="keyword">new</span> <span class="type">ClassName</span>();
+
+<span class="comment">// Access fields</span>
+objectName.fieldName = value;
+
+<span class="comment">// Call methods</span>
+objectName.<span class="method">methodName</span>();</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">CarDemo.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">CarDemo</span> {
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="comment">// Create first car object</span>
+        <span class="type">Car</span> myCar = <span class="keyword">new</span> <span class="type">Car</span>();
+        myCar.brand = <span class="string">"Toyota"</span>;
+        myCar.model = <span class="string">"Camry"</span>;
+        myCar.color = <span class="string">"Silver"</span>;
+        myCar.year = <span class="number">2023</span>;
+        
+        <span class="comment">// Create second car object</span>
+        <span class="type">Car</span> yourCar = <span class="keyword">new</span> <span class="type">Car</span>();
+        yourCar.brand = <span class="string">"Honda"</span>;
+        yourCar.model = <span class="string">"Civic"</span>;
+        yourCar.color = <span class="string">"Blue"</span>;
+        yourCar.year = <span class="number">2024</span>;
+        
+        <span class="comment">// Use the objects</span>
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"=== My Car ==="</span>);
+        myCar.<span class="method">displayInfo</span>();
+        myCar.<span class="method">start</span>();
+        myCar.<span class="method">accelerate</span>(<span class="number">30</span>);
+        myCar.<span class="method">accelerate</span>(<span class="number">20</span>);
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Your Car ==="</span>);
+        yourCar.<span class="method">displayInfo</span>();
+        yourCar.<span class="method">accelerate</span>(<span class="number">50</span>);  <span class="comment">// Try without starting</span>
+        yourCar.<span class="method">start</span>();
+        yourCar.<span class="method">accelerate</span>(<span class="number">50</span>);
+        yourCar.<span class="method">stop</span>();
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-block">
+<pre>=== My Car ===
+--- Car Information ---
+Brand: Toyota
+Model: Camry
+Color: Silver
+Year: 2023
+Speed: 0 mph
+Running: false
+Toyota Camry is now running!
+Accelerating... Speed is now 30 mph
+Accelerating... Speed is now 50 mph
+
+=== Your Car ===
+--- Car Information ---
+Brand: Honda
+Model: Civic
+Color: Blue
+Year: 2024
+Speed: 0 mph
+Running: false
+Start the car first!
+Honda Civic is now running!
+Accelerating... Speed is now 50 mph
+Honda Civic has stopped.</pre>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-icon">💡</div>
+                    <div class="info-box-content">
+                        <h4>Each Object is Independent</h4>
+                        <p>Notice how <code>myCar</code> and <code>yourCar</code> have their own separate values. Changing one doesn't affect the other - they're independent instances of the same class!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3.2: Methods -->
+        <section id="methods">
+            <div class="section-header animate-on-scroll">
+                <div class="section-number">3.2</div>
+                <h2>Methods</h2>
+                <p>Define the behavior of your objects with methods - reusable blocks of code.</p>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">⚙️</span> Anatomy of a Method</h3>
+                <p>A method is a block of code that performs a specific task. Methods help organize code, promote reusability, and make programs easier to understand.</p>
+
+                <div class="method-breakdown">
+                    <div class="method-signature">
+                        <span class="method-part access">public</span>
+                        <span class="method-part return-type">int</span>
+                        <span class="method-part method-name">calculateSum</span>
+                        <span class="method-part params">(int a, int b)</span>
+                    </div>
+                    <div class="method-legend">
+                        <div class="legend-item">
+                            <span class="legend-color access"></span>
+                            <span>Access Modifier</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color return-type"></span>
+                            <span>Return Type</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color method-name"></span>
+                            <span>Method Name</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color params"></span>
+                            <span>Parameters</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">Calculator.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">Calculator</span> {
+    
+    <span class="comment">// Method with no parameters, no return value</span>
+    <span class="keyword">public void</span> <span class="method">displayWelcome</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Welcome to Calculator!"</span>);
+    }
+    
+    <span class="comment">// Method with parameters, no return value</span>
+    <span class="keyword">public void</span> <span class="method">printSum</span>(<span class="type">int</span> a, <span class="type">int</span> b) {
+        <span class="type">int</span> sum = a + b;
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Sum: "</span> + sum);
+    }
+    
+    <span class="comment">// Method with parameters AND return value</span>
+    <span class="keyword">public int</span> <span class="method">add</span>(<span class="type">int</span> a, <span class="type">int</span> b) {
+        <span class="keyword">return</span> a + b;
+    }
+    
+    <span class="comment">// Method with no parameters but has return value</span>
+    <span class="keyword">public</span> <span class="type">String</span> <span class="method">getVersion</span>() {
+        <span class="keyword">return</span> <span class="string">"Calculator v1.0"</span>;
+    }
+    
+    <span class="comment">// Method returning a boolean</span>
+    <span class="keyword">public boolean</span> <span class="method">isPositive</span>(<span class="type">int</span> number) {
+        <span class="keyword">return</span> number > <span class="number">0</span>;
+    }
+    
+    <span class="comment">// Method with multiple parameters</span>
+    <span class="keyword">public double</span> <span class="method">calculateAverage</span>(<span class="type">double</span> a, <span class="type">double</span> b, <span class="type">double</span> c) {
+        <span class="keyword">return</span> (a + b + c) / <span class="number">3.0</span>;
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">CalculatorDemo.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">CalculatorDemo</span> {
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="type">Calculator</span> calc = <span class="keyword">new</span> <span class="type">Calculator</span>();
+        
+        <span class="comment">// Call method with no return</span>
+        calc.<span class="method">displayWelcome</span>();
+        
+        <span class="comment">// Call method with parameters, no return</span>
+        calc.<span class="method">printSum</span>(<span class="number">10</span>, <span class="number">20</span>);
+        
+        <span class="comment">// Call method and use return value</span>
+        <span class="type">int</span> result = calc.<span class="method">add</span>(<span class="number">15</span>, <span class="number">25</span>);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Add result: "</span> + result);
+        
+        <span class="comment">// Call method that returns String</span>
+        <span class="type">String</span> version = calc.<span class="method">getVersion</span>();
+        <span class="type">System</span>.out.<span class="method">println</span>(version);
+        
+        <span class="comment">// Call method that returns boolean</span>
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Is 5 positive? "</span> + calc.<span class="method">isPositive</span>(<span class="number">5</span>));
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Is -3 positive? "</span> + calc.<span class="method">isPositive</span>(-<span class="number">3</span>));
+        
+        <span class="comment">// Call method with multiple parameters</span>
+        <span class="type">double</span> avg = calc.<span class="method">calculateAverage</span>(<span class="number">85.5</span>, <span class="number">90.0</span>, <span class="number">78.5</span>);
+        <span class="type">System</span>.out.<span class="method">printf</span>(<span class="string">"Average: %.2f%n"</span>, avg);
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-block">
+<pre>Welcome to Calculator!
+Sum: 30
+Add result: 40
+Calculator v1.0
+Is 5 positive? true
+Is -3 positive? false
+Average: 84.67</pre>
+                </div>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">🔄</span> Method Overloading</h3>
+                <p>Method overloading allows you to define multiple methods with the same name but different parameters. Java determines which method to call based on the arguments provided.</p>
+
+                <div class="info-box note">
+                    <div class="info-box-icon">📝</div>
+                    <div class="info-box-content">
+                        <h4>Overloading Rules</h4>
+                        <p>Methods can be overloaded by: (1) different number of parameters, (2) different types of parameters, or (3) different order of parameter types. Return type alone is NOT sufficient for overloading.</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">MathOperations.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">MathOperations</span> {
+    
+    <span class="comment">// Overloading by NUMBER of parameters</span>
+    <span class="keyword">public int</span> <span class="method">add</span>(<span class="type">int</span> a, <span class="type">int</span> b) {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Adding 2 integers"</span>);
+        <span class="keyword">return</span> a + b;
+    }
+    
+    <span class="keyword">public int</span> <span class="method">add</span>(<span class="type">int</span> a, <span class="type">int</span> b, <span class="type">int</span> c) {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Adding 3 integers"</span>);
+        <span class="keyword">return</span> a + b + c;
+    }
+    
+    <span class="keyword">public int</span> <span class="method">add</span>(<span class="type">int</span> a, <span class="type">int</span> b, <span class="type">int</span> c, <span class="type">int</span> d) {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Adding 4 integers"</span>);
+        <span class="keyword">return</span> a + b + c + d;
+    }
+    
+    <span class="comment">// Overloading by TYPE of parameters</span>
+    <span class="keyword">public double</span> <span class="method">add</span>(<span class="type">double</span> a, <span class="type">double</span> b) {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Adding 2 doubles"</span>);
+        <span class="keyword">return</span> a + b;
+    }
+    
+    <span class="keyword">public</span> <span class="type">String</span> <span class="method">add</span>(<span class="type">String</span> a, <span class="type">String</span> b) {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Concatenating 2 strings"</span>);
+        <span class="keyword">return</span> a + b;
+    }
+    
+    <span class="comment">// Overloading for calculating area</span>
+    <span class="keyword">public double</span> <span class="method">calculateArea</span>(<span class="type">double</span> radius) {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Calculating circle area"</span>);
+        <span class="keyword">return</span> <span class="type">Math</span>.PI * radius * radius;
+    }
+    
+    <span class="keyword">public double</span> <span class="method">calculateArea</span>(<span class="type">double</span> length, <span class="type">double</span> width) {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Calculating rectangle area"</span>);
+        <span class="keyword">return</span> length * width;
+    }
+    
+    <span class="keyword">public double</span> <span class="method">calculateArea</span>(<span class="type">double</span> base, <span class="type">double</span> height, <span class="type">boolean</span> isTriangle) {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Calculating triangle area"</span>);
+        <span class="keyword">return</span> <span class="number">0.5</span> * base * height;
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">OverloadingDemo.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">OverloadingDemo</span> {
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="type">MathOperations</span> math = <span class="keyword">new</span> <span class="type">MathOperations</span>();
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"=== Add Method Overloading ==="</span>);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Result: "</span> + math.<span class="method">add</span>(<span class="number">5</span>, <span class="number">10</span>));
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Result: "</span> + math.<span class="method">add</span>(<span class="number">5</span>, <span class="number">10</span>, <span class="number">15</span>));
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Result: "</span> + math.<span class="method">add</span>(<span class="number">5</span>, <span class="number">10</span>, <span class="number">15</span>, <span class="number">20</span>));
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Result: "</span> + math.<span class="method">add</span>(<span class="number">3.14</span>, <span class="number">2.86</span>));
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Result: "</span> + math.<span class="method">add</span>(<span class="string">"Hello, "</span>, <span class="string">"World!"</span>));
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Area Method Overloading ==="</span>);
+        <span class="type">System</span>.out.<span class="method">printf</span>(<span class="string">"Circle (r=5): %.2f%n"</span>, math.<span class="method">calculateArea</span>(<span class="number">5.0</span>));
+        <span class="type">System</span>.out.<span class="method">printf</span>(<span class="string">"Rectangle (4x6): %.2f%n"</span>, math.<span class="method">calculateArea</span>(<span class="number">4.0</span>, <span class="number">6.0</span>));
+        <span class="type">System</span>.out.<span class="method">printf</span>(<span class="string">"Triangle (base=8, h=5): %.2f%n"</span>, math.<span class="method">calculateArea</span>(<span class="number">8.0</span>, <span class="number">5.0</span>, <span class="keyword">true</span>));
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-block">
+<pre>=== Add Method Overloading ===
+Adding 2 integers
+Result: 15
+Adding 3 integers
+Result: 30
+Adding 4 integers
+Result: 50
+Adding 2 doubles
+Result: 6.0
+Concatenating 2 strings
+Result: Hello, World!
+
+=== Area Method Overloading ===
+Calculating circle area
+Circle (r=5): 78.54
+Calculating rectangle area
+Rectangle (4x6): 24.00
+Calculating triangle area
+Triangle (base=8, h=5): 20.00</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3.3: Constructors -->
+        <section id="constructors">
+            <div class="section-header animate-on-scroll">
+                <div class="section-number">3.3</div>
+                <h2>Constructors</h2>
+                <p>Initialize objects properly when they're created using constructors.</p>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">🏭</span> What is a Constructor?</h3>
+                <p>A constructor is a special method that is called automatically when an object is created. It's used to initialize the object's state (fields) with default or provided values.</p>
+
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <div class="concept-card-icon">📛</div>
+                        <h4>Same Name as Class</h4>
+                        <p>Constructor must have exactly the same name as the class it belongs to.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-card-icon">🚫</div>
+                        <h4>No Return Type</h4>
+                        <p>Constructors don't have a return type - not even void.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-card-icon">🔄</div>
+                        <h4>Auto-Invoked</h4>
+                        <p>Called automatically when you use the <code>new</code> keyword.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-card-icon">📚</div>
+                        <h4>Can Be Overloaded</h4>
+                        <p>You can have multiple constructors with different parameters.</p>
+                    </div>
+                </div>
+
+                <div class="syntax-box">
+                    <span class="syntax-box-title">Constructor Syntax</span>
+<pre><span class="keyword">public class</span> <span class="type">ClassName</span> {
+    <span class="comment">// Default constructor (no parameters)</span>
+    <span class="keyword">public</span> <span class="method">ClassName</span>() {
+        <span class="comment">// Initialize with default values</span>
+    }
+    
+    <span class="comment">// Parameterized constructor</span>
+    <span class="keyword">public</span> <span class="method">ClassName</span>(<span class="type">dataType</span> param1, <span class="type">dataType</span> param2) {
+        <span class="comment">// Initialize with provided values</span>
+    }
+}</pre>
+                </div>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">📝</span> Default Constructor</h3>
+                <p>A default constructor has no parameters. If you don't define any constructor, Java provides one automatically. But if you define any constructor, the automatic one is not provided.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">Student.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">Student</span> {
+    <span class="type">String</span> name;
+    <span class="type">int</span> age;
+    <span class="type">String</span> major;
+    <span class="type">double</span> gpa;
+    
+    <span class="comment">// Default constructor</span>
+    <span class="keyword">public</span> <span class="method">Student</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Default constructor called!"</span>);
+        name = <span class="string">"Unknown"</span>;
+        age = <span class="number">18</span>;
+        major = <span class="string">"Undeclared"</span>;
+        gpa = <span class="number">0.0</span>;
+    }
+    
+    <span class="keyword">public void</span> <span class="method">displayInfo</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Name: "</span> + name);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Age: "</span> + age);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Major: "</span> + major);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"GPA: "</span> + gpa);
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">DefaultConstructorDemo.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">DefaultConstructorDemo</span> {
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="comment">// Constructor is called automatically</span>
+        <span class="type">Student</span> student1 = <span class="keyword">new</span> <span class="type">Student</span>();
+        student1.<span class="method">displayInfo</span>();
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n--- After modification ---"</span>);
+        student1.name = <span class="string">"Alice"</span>;
+        student1.age = <span class="number">20</span>;
+        student1.major = <span class="string">"Computer Science"</span>;
+        student1.gpa = <span class="number">3.8</span>;
+        student1.<span class="method">displayInfo</span>();
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-block">
+<pre>Default constructor called!
+Name: Unknown
+Age: 18
+Major: Undeclared
+GPA: 0.0
+
+--- After modification ---
+Name: Alice
+Age: 20
+Major: Computer Science
+GPA: 3.8</pre>
+                </div>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">🎛️</span> Parameterized Constructor</h3>
+                <p>A parameterized constructor accepts arguments to initialize the object with specific values at creation time.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">Book.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">Book</span> {
+    <span class="keyword">private</span> <span class="type">String</span> title;
+    <span class="keyword">private</span> <span class="type">String</span> author;
+    <span class="keyword">private</span> <span class="type">int</span> pages;
+    <span class="keyword">private</span> <span class="type">double</span> price;
+    
+    <span class="comment">// Parameterized constructor</span>
+    <span class="keyword">public</span> <span class="method">Book</span>(<span class="type">String</span> title, <span class="type">String</span> author, <span class="type">int</span> pages, <span class="type">double</span> price) {
+        <span class="comment">// 'this' refers to the current object's field</span>
+        <span class="keyword">this</span>.title = title;
+        <span class="keyword">this</span>.author = author;
+        <span class="keyword">this</span>.pages = pages;
+        <span class="keyword">this</span>.price = price;
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Book created: "</span> + title);
+    }
+    
+    <span class="keyword">public void</span> <span class="method">displayInfo</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Title: "</span> + title);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Author: "</span> + author);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Pages: "</span> + pages);
+        <span class="type">System</span>.out.<span class="method">printf</span>(<span class="string">"Price: $%.2f%n"</span>, price);
+    }
+    
+    <span class="comment">// Getters</span>
+    <span class="keyword">public</span> <span class="type">String</span> <span class="method">getTitle</span>() { <span class="keyword">return</span> title; }
+    <span class="keyword">public</span> <span class="type">String</span> <span class="method">getAuthor</span>() { <span class="keyword">return</span> author; }
+    <span class="keyword">public</span> <span class="type">int</span> <span class="method">getPages</span>() { <span class="keyword">return</span> pages; }
+    <span class="keyword">public</span> <span class="type">double</span> <span class="method">getPrice</span>() { <span class="keyword">return</span> price; }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">BookDemo.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">BookDemo</span> {
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="comment">// Create books with specific values</span>
+        <span class="type">Book</span> book1 = <span class="keyword">new</span> <span class="type">Book</span>(<span class="string">"Java Programming"</span>, <span class="string">"John Smith"</span>, <span class="number">450</span>, <span class="number">49.99</span>);
+        <span class="type">Book</span> book2 = <span class="keyword">new</span> <span class="type">Book</span>(<span class="string">"Clean Code"</span>, <span class="string">"Robert Martin"</span>, <span class="number">464</span>, <span class="number">39.99</span>);
+        <span class="type">Book</span> book3 = <span class="keyword">new</span> <span class="type">Book</span>(<span class="string">"Design Patterns"</span>, <span class="string">"Gang of Four"</span>, <span class="number">395</span>, <span class="number">54.99</span>);
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Book 1 ==="</span>);
+        book1.<span class="method">displayInfo</span>();
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Book 2 ==="</span>);
+        book2.<span class="method">displayInfo</span>();
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Book 3 ==="</span>);
+        book3.<span class="method">displayInfo</span>();
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-block">
+<pre>Book created: Java Programming
+Book created: Clean Code
+Book created: Design Patterns
+
+=== Book 1 ===
+Title: Java Programming
+Author: John Smith
+Pages: 450
+Price: $49.99
+
+=== Book 2 ===
+Title: Clean Code
+Author: Robert Martin
+Pages: 464
+Price: $39.99
+
+=== Book 3 ===
+Title: Design Patterns
+Author: Gang of Four
+Pages: 395
+Price: $54.99</pre>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-icon">💡</div>
+                    <div class="info-box-content">
+                        <h4>The 'this' Keyword</h4>
+                        <p>Use <code>this.fieldName</code> when your parameter name is the same as the field name. It distinguishes between the instance variable and the parameter.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">🔀</span> Constructor Overloading</h3>
+                <p>Like methods, constructors can be overloaded to provide different ways of initializing objects.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">Employee.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">Employee</span> {
+    <span class="keyword">private</span> <span class="type">String</span> name;
+    <span class="keyword">private</span> <span class="type">int</span> id;
+    <span class="keyword">private</span> <span class="type">String</span> department;
+    <span class="keyword">private</span> <span class="type">double</span> salary;
+    
+    <span class="comment">// Constructor 1: Default</span>
+    <span class="keyword">public</span> <span class="method">Employee</span>() {
+        <span class="keyword">this</span>(<span class="string">"Unknown"</span>, <span class="number">0</span>, <span class="string">"Unassigned"</span>, <span class="number">0.0</span>);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Default constructor used"</span>);
+    }
+    
+    <span class="comment">// Constructor 2: Name and ID only</span>
+    <span class="keyword">public</span> <span class="method">Employee</span>(<span class="type">String</span> name, <span class="type">int</span> id) {
+        <span class="keyword">this</span>(name, id, <span class="string">"General"</span>, <span class="number">30000.0</span>);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Name+ID constructor used"</span>);
+    }
+    
+    <span class="comment">// Constructor 3: Name, ID, and Department</span>
+    <span class="keyword">public</span> <span class="method">Employee</span>(<span class="type">String</span> name, <span class="type">int</span> id, <span class="type">String</span> department) {
+        <span class="keyword">this</span>(name, id, department, <span class="number">35000.0</span>);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Name+ID+Dept constructor used"</span>);
+    }
+    
+    <span class="comment">// Constructor 4: Full constructor</span>
+    <span class="keyword">public</span> <span class="method">Employee</span>(<span class="type">String</span> name, <span class="type">int</span> id, <span class="type">String</span> department, <span class="type">double</span> salary) {
+        <span class="keyword">this</span>.name = name;
+        <span class="keyword">this</span>.id = id;
+        <span class="keyword">this</span>.department = department;
+        <span class="keyword">this</span>.salary = salary;
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Full constructor used"</span>);
+    }
+    
+    <span class="keyword">public void</span> <span class="method">displayInfo</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"ID: "</span> + id);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Name: "</span> + name);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Department: "</span> + department);
+        <span class="type">System</span>.out.<span class="method">printf</span>(<span class="string">"Salary: $%.2f%n"</span>, salary);
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">EmployeeDemo.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">EmployeeDemo</span> {
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"=== Employee 1 (Default) ==="</span>);
+        <span class="type">Employee</span> emp1 = <span class="keyword">new</span> <span class="type">Employee</span>();
+        emp1.<span class="method">displayInfo</span>();
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Employee 2 (Name + ID) ==="</span>);
+        <span class="type">Employee</span> emp2 = <span class="keyword">new</span> <span class="type">Employee</span>(<span class="string">"Alice"</span>, <span class="number">101</span>);
+        emp2.<span class="method">displayInfo</span>();
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Employee 3 (Name + ID + Dept) ==="</span>);
+        <span class="type">Employee</span> emp3 = <span class="keyword">new</span> <span class="type">Employee</span>(<span class="string">"Bob"</span>, <span class="number">102</span>, <span class="string">"Engineering"</span>);
+        emp3.<span class="method">displayInfo</span>();
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Employee 4 (Full) ==="</span>);
+        <span class="type">Employee</span> emp4 = <span class="keyword">new</span> <span class="type">Employee</span>(<span class="string">"Carol"</span>, <span class="number">103</span>, <span class="string">"Marketing"</span>, <span class="number">55000.0</span>);
+        emp4.<span class="method">displayInfo</span>();
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-block">
+<pre>=== Employee 1 (Default) ===
+Full constructor used
+Default constructor used
+ID: 0
+Name: Unknown
+Department: Unassigned
+Salary: $0.00
+
+=== Employee 2 (Name + ID) ===
+Full constructor used
+Name+ID constructor used
+ID: 101
+Name: Alice
+Department: General
+Salary: $30000.00
+
+=== Employee 3 (Name + ID + Dept) ===
+Full constructor used
+Name+ID+Dept constructor used
+ID: 102
+Name: Bob
+Department: Engineering
+Salary: $35000.00
+
+=== Employee 4 (Full) ===
+Full constructor used
+ID: 103
+Name: Carol
+Department: Marketing
+Salary: $55000.00</pre>
+                </div>
+
+                <div class="info-box note">
+                    <div class="info-box-icon">📝</div>
+                    <div class="info-box-content">
+                        <h4>Constructor Chaining with this()</h4>
+                        <p>Use <code>this(...)</code> to call another constructor in the same class. This must be the first statement in the constructor. It helps avoid code duplication!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3.4: The static Keyword -->
+        <section id="static">
+            <div class="section-header animate-on-scroll">
+                <div class="section-number">3.4</div>
+                <h2>The static Keyword</h2>
+                <p>Learn about class-level members that are shared across all instances.</p>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">🌐</span> Static vs Instance Members</h3>
+                <p>The <code>static</code> keyword indicates that a member belongs to the class itself, not to any specific instance. Static members are shared by all objects of the class.</p>
+
+                <div class="static-diagram">
+                    <div class="static-box static">
+                        <div class="static-box-header">Static Members</div>
+                        <div class="static-box-content">
+                            <p>Belong to the <strong>class</strong></p>
+                            <code>ClassName.staticMember</code>
+                            <p>Shared by all instances</p>
+                            <p>One copy in memory</p>
+                        </div>
+                    </div>
+                    <div class="static-box instance">
+                        <div class="static-box-header">Instance Members</div>
+                        <div class="static-box-content">
+                            <p>Belong to <strong>each object</strong></p>
+                            <code>objectName.instanceMember</code>
+                            <p>Each object has its own</p>
+                            <p>Multiple copies in memory</p>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>Static</th>
+                            <th>Instance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Memory</td>
+                            <td>Single copy for all objects</td>
+                            <td>Separate copy per object</td>
+                        </tr>
+                        <tr>
+                            <td>Access</td>
+                            <td><code>ClassName.member</code></td>
+                            <td><code>objectName.member</code></td>
+                        </tr>
+                        <tr>
+                            <td>Can access</td>
+                            <td>Only static members</td>
+                            <td>Both static and instance</td>
+                        </tr>
+                        <tr>
+                            <td>Use case</td>
+                            <td>Constants, counters, utility methods</td>
+                            <td>Object-specific data and behavior</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-block animate-on-scroll">
+                <h3><span class="icon">🏦</span> Static Example: Bank Account</h3>
+                <p>Let's see static members in action with a bank account example:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">BankAccount.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">BankAccount</span> {
+    <span class="comment">// Static variables - shared by ALL accounts</span>
+    <span class="keyword">private static</span> <span class="type">String</span> bankName = <span class="string">"Java National Bank"</span>;
+    <span class="keyword">private static</span> <span class="type">double</span> interestRate = <span class="number">0.025</span>;  <span class="comment">// 2.5%</span>
+    <span class="keyword">private static</span> <span class="type">int</span> totalAccounts = <span class="number">0</span>;
+    <span class="keyword">private static</span> <span class="type">double</span> totalDeposits = <span class="number">0</span>;
+    
+    <span class="comment">// Static constant</span>
+    <span class="keyword">public static final</span> <span class="type">double</span> MINIMUM_BALANCE = <span class="number">100.0</span>;
+    
+    <span class="comment">// Instance variables - unique to each account</span>
+    <span class="keyword">private</span> <span class="type">String</span> accountHolder;
+    <span class="keyword">private</span> <span class="type">int</span> accountNumber;
+    <span class="keyword">private</span> <span class="type">double</span> balance;
+    
+    <span class="comment">// Constructor</span>
+    <span class="keyword">public</span> <span class="method">BankAccount</span>(<span class="type">String</span> accountHolder, <span class="type">double</span> initialDeposit) {
+        <span class="keyword">this</span>.accountHolder = accountHolder;
+        <span class="keyword">this</span>.balance = initialDeposit;
+        
+        <span class="comment">// Update static variables</span>
+        totalAccounts++;
+        <span class="keyword">this</span>.accountNumber = <span class="number">1000</span> + totalAccounts;
+        totalDeposits += initialDeposit;
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Account #"</span> + accountNumber + <span class="string">" created for "</span> + accountHolder);
+    }
+    
+    <span class="comment">// Static methods - access static data</span>
+    <span class="keyword">public static</span> <span class="type">String</span> <span class="method">getBankName</span>() {
+        <span class="keyword">return</span> bankName;
+    }
+    
+    <span class="keyword">public static</span> <span class="type">double</span> <span class="method">getInterestRate</span>() {
+        <span class="keyword">return</span> interestRate;
+    }
+    
+    <span class="keyword">public static void</span> <span class="method">setInterestRate</span>(<span class="type">double</span> newRate) {
+        interestRate = newRate;
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Interest rate updated to "</span> + (newRate * <span class="number">100</span>) + <span class="string">"%"</span>);
+    }
+    
+    <span class="keyword">public static</span> <span class="type">int</span> <span class="method">getTotalAccounts</span>() {
+        <span class="keyword">return</span> totalAccounts;
+    }
+    
+    <span class="keyword">public static void</span> <span class="method">displayBankInfo</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"========== Bank Information =========="</span>);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Bank Name: "</span> + bankName);
+        <span class="type">System</span>.out.<span class="method">printf</span>(<span class="string">"Interest Rate: %.1f%%%n"</span>, interestRate * <span class="number">100</span>);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Total Accounts: "</span> + totalAccounts);
+        <span class="type">System</span>.out.<span class="method">printf</span>(<span class="string">"Total Deposits: $%.2f%n"</span>, totalDeposits);
+        <span class="type">System</span>.out.<span class="method">printf</span>(<span class="string">"Minimum Balance: $%.2f%n"</span>, MINIMUM_BALANCE);
+    }
+    
+    <span class="comment">// Instance methods - access instance data</span>
+    <span class="keyword">public void</span> <span class="method">deposit</span>(<span class="type">double</span> amount) {
+        balance += amount;
+        totalDeposits += amount;  <span class="comment">// Can access static from instance</span>
+        <span class="type">System</span>.out.<span class="method">printf</span>(<span class="string">"Deposited $%.2f. New balance: $%.2f%n"</span>, amount, balance);
+    }
+    
+    <span class="keyword">public void</span> <span class="method">withdraw</span>(<span class="type">double</span> amount) {
+        <span class="keyword">if</span> (balance - amount >= MINIMUM_BALANCE) {
+            balance -= amount;
+            totalDeposits -= amount;
+            <span class="type">System</span>.out.<span class="method">printf</span>(<span class="string">"Withdrew $%.2f. New balance: $%.2f%n"</span>, amount, balance);
+        } <span class="keyword">else</span> {
+            <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Cannot withdraw. Would go below minimum balance."</span>);
+        }
+    }
+    
+    <span class="keyword">public void</span> <span class="method">addInterest</span>() {
+        <span class="type">double</span> interest = balance * interestRate;
+        balance += interest;
+        totalDeposits += interest;
+        <span class="type">System</span>.out.<span class="method">printf</span>(<span class="string">"Interest $%.2f added. New balance: $%.2f%n"</span>, interest, balance);
+    }
+    
+    <span class="keyword">public void</span> <span class="method">displayAccount</span>() {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"--- Account #"</span> + accountNumber + <span class="string">" ---"</span>);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Holder: "</span> + accountHolder);
+        <span class="type">System</span>.out.<span class="method">printf</span>(<span class="string">"Balance: $%.2f%n"</span>, balance);
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dots">
+                                <span class="code-dot red"></span>
+                                <span class="code-dot yellow"></span>
+                                <span class="code-dot green"></span>
+                            </div>
+                            <span class="code-filename">BankDemo.java</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><span class="keyword">public class</span> <span class="type">BankDemo</span> {
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="comment">// Access static members WITHOUT creating objects</span>
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Welcome to "</span> + <span class="type">BankAccount</span>.<span class="method">getBankName</span>());
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Minimum balance required: $"</span> + <span class="type">BankAccount</span>.MINIMUM_BALANCE);
+        <span class="type">System</span>.out.<span class="method">println</span>();
+        
+        <span class="comment">// Create accounts</span>
+        <span class="type">BankAccount</span> acc1 = <span class="keyword">new</span> <span class="type">BankAccount</span>(<span class="string">"Alice Johnson"</span>, <span class="number">1000.0</span>);
+        <span class="type">BankAccount</span> acc2 = <span class="keyword">new</span> <span class="type">BankAccount</span>(<span class="string">"Bob Smith"</span>, <span class="number">2500.0</span>);
+        <span class="type">BankAccount</span> acc3 = <span class="keyword">new</span> <span class="type">BankAccount</span>(<span class="string">"Carol Davis"</span>, <span class="number">500.0</span>);
+        
+        <span class="type">System</span>.out.<span class="method">println</span>();
+        
+        <span class="comment">// Show bank-wide statistics (static method)</span>
+        <span class="type">BankAccount</span>.<span class="method">displayBankInfo</span>();
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Account Operations ==="</span>);
+        acc1.<span class="method">deposit</span>(<span class="number">500</span>);
+        acc2.<span class="method">withdraw</span>(<span class="number">200</span>);
+        acc3.<span class="method">withdraw</span>(<span class="number">450</span>);  <span class="comment">// Will fail - minimum balance</span>
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Interest Rate Change ==="</span>);
+        <span class="type">BankAccount</span>.<span class="method">setInterestRate</span>(<span class="number">0.03</span>);  <span class="comment">// 3%</span>
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Adding Interest to All Accounts ==="</span>);
+        acc1.<span class="method">addInterest</span>();
+        acc2.<span class="method">addInterest</span>();
+        acc3.<span class="method">addInterest</span>();
+        
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"\n=== Final Account Summary ==="</span>);
+        acc1.<span class="method">displayAccount</span>();
+        acc2.<span class="method">displayAccount</span>();
+        acc3.<span class="method">displayAccount</span>();
+        
+        <span class="type">System</span>.out.<span class="method">println</span>();
+        <span class="type">BankAccount</span>.<span class="method">displayBankInfo</span>();
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-block">
+<pre>Welcome to Java National Bank
+Minimum balance required: $100.0
+
+Account #1001 created for Alice Johnson
+Account #1002 created for Bob Smith
+Account #1003 created for Carol Davis
+
+========== Bank Information ==========
+Bank Name: Java National Bank
+Interest Rate: 2.5%
+Total Accounts: 3
+Total Deposits: $4000.00
+Minimum Balance: $100.00
+
+=== Account Operations ===
+Deposited $500.00. New balance: $1500.00
+Withdrew $200.00. New balance: $2300.00
+Cannot withdraw. Would go below minimum balance.
+
+=== Interest Rate Change ===
+Interest rate updated to 3.0%
+
+=== Adding Interest to All Accounts ===
+Interest $45.00 added. New balance: $1545.00
+Interest $69.00 added. New balance: $2369.00
+Interest $15.00 added. New balance: $515.00
+
+=== Final Account Summary ===
+--- Account #1001 ---
+Holder: Alice Johnson
+Balance: $1545.00
+--- Account #1002 ---
+Holder: Bob Smith
+Balance: $2369.00
+--- Account #1003 ---
+Holder: Carol Davis
+Balance: $515.00
+
+========== Bank Information ==========
+Bank Name: Java National Bank
+Interest Rate: 3.0%
+Total Accounts: 3
+Total Deposits: $4429.00
+Minimum Balance: $100.00</pre>
+                </div>
+
+                <div class="info-box warning">
+                    <div class="info-box-icon">⚠️</div>
+                    <div class="info-box-content">
+                        <h4>Static Methods Cannot Access Instance Members</h4>
+                        <p>A static method cannot directly access instance variables or call instance methods. It only has access to other static members. This is because static methods can be called without creating an object!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer style="background: var(--gradient-dark); color: white; padding: 3rem 2rem; text-align: center; margin-top: 4rem;">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">🎉 Chapter 3 Complete!</h3>
+            <p style="color: #94A3B8; margin-bottom: 1.5rem;">You've learned the foundations of Object-Oriented Programming in Java!</p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <span style="background: rgba(249,115,22,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">✓ Classes & Objects</span>
+                <span style="background: rgba(249,115,22,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">✓ Methods</span>
+                <span style="background: rgba(249,115,22,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">✓ Constructors</span>
+                <span style="background: rgba(249,115,22,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">✓ Static Keyword</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
